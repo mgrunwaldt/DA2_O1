@@ -5,6 +5,10 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{A745634B-78DA-4125-A399-55C3A5F388F3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{B71EEF98-6C32-4CEF-8FA9-E754B8905985}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessTests", "DataAccessTests\DataAccessTests.csproj", "{14847C7F-ACC9-4414-978F-31431F07B16C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{A745634B-78DA-4125-A399-55C3A5F388F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A745634B-78DA-4125-A399-55C3A5F388F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A745634B-78DA-4125-A399-55C3A5F388F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B71EEF98-6C32-4CEF-8FA9-E754B8905985}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B71EEF98-6C32-4CEF-8FA9-E754B8905985}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B71EEF98-6C32-4CEF-8FA9-E754B8905985}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B71EEF98-6C32-4CEF-8FA9-E754B8905985}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14847C7F-ACC9-4414-978F-31431F07B16C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14847C7F-ACC9-4414-978F-31431F07B16C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14847C7F-ACC9-4414-978F-31431F07B16C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14847C7F-ACC9-4414-978F-31431F07B16C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
