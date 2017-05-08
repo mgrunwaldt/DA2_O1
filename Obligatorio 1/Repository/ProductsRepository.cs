@@ -10,6 +10,11 @@ namespace Repository
 {
     public class ProductsRepository
     {
+        public ProductsRepository(bool forTest = false) {
+            if (forTest) {
+                EmptyDatabase();
+            }
+        }
         public void Add(Product p)
         {
             using (var context = new MyContext()) {
@@ -37,6 +42,13 @@ namespace Repository
         public void Update(Guid id, Product p1)
         {
             throw new NotImplementedException();
+        }
+
+        public void EmptyDatabase() {
+            using (var context = new MyContext())
+            {
+                context.Empty();
+            }
         }
     }
 }

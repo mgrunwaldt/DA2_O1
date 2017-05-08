@@ -11,5 +11,13 @@ namespace DataAccess
     public class MyContext : DbContext
     {
         public DbSet<Product> Products { get; set; }
+
+        public void Empty() {
+            foreach(Product p in Products)
+            {
+                this.Products.Remove(p);
+            }
+            this.SaveChanges();
+        }
     }
 }
