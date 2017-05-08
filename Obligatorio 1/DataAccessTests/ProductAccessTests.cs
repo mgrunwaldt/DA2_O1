@@ -15,7 +15,7 @@ namespace DataAccessTests
             Product p = new Product();
             ProductsRepository pr = new ProductsRepository();
             pr.Add(p);
-            Assert.AreNotEqual(Guid.Empty, p.Id);
+            Assert.AreNotEqual(1, p.Id);
         }
 
         [TestMethod]

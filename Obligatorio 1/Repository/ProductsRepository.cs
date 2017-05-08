@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Entities;
+using DataAccess;
 
 namespace Repository
 {
@@ -11,7 +12,10 @@ namespace Repository
     {
         public void Add(Product p)
         {
-            throw new NotImplementedException();
+            using (var context = new MyContext()) {
+                context.Products.Add(p);
+                context.SaveChanges();
+            }
         }
 
         public Product Get(Guid id)
