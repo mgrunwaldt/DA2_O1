@@ -13,6 +13,7 @@ namespace Repository
         public void Add(Product p)
         {
             using (var context = new MyContext()) {
+                p.Id = Guid.NewGuid();
                 context.Products.Add(p);
                 context.SaveChanges();
             }
