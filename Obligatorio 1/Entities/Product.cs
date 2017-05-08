@@ -19,5 +19,14 @@ namespace Entities
         public string Manufacturer { get; set; }
         public string Name { get; set; }
         public int Price { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if(obj.GetType() == typeof(Product)){
+                Product p = (Product)obj;
+                return p.Id == this.Id && p.Code == this.Code && p.Description == this.Description && p.Manufacturer == this.Manufacturer && p.Name == this.Name && p.Price == this.Price;
+            }
+            return false;
+        }
     }
 }

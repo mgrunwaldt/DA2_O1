@@ -26,22 +26,46 @@ namespace Repository
         //HOLA
         public Product Get(Guid id)
         {
-            throw new NotImplementedException();
+            using (var context = new MyContext())
+            {
+                return context.Products.FirstOrDefault(p => p.Id == id);
+            }
         }
 
         public List<Product> GetAll()
         {
-            throw new NotImplementedException();
+            using (var context = new MyContext())
+            {
+                List<Product> products = context.Products.ToList();
+                return products;
+            }
         }
 
-        public void Delete(Guid id)
+        public bool Delete(Guid id)
         {
-            throw new NotImplementedException();
+            using (var context = new MyContext()) {
+                Product product = context.Products.FirstOrDefault(p => p.Id == id);
+                if (product == null)
+                {
+                    return false;
+                }
+                context.Products.Remove(product);
+                context.SaveChanges();
+                return true;
+            }
         }
 
-        public void Update(Guid id, Product p1)
+        public bool Update(Guid id, Product p1)
         {
-            throw new NotImplementedException();
+            using (var context = new MyContext())
+            {
+                if (this.Delete(id)) {
+                    context.Products.Add(p1);
+                    context.SaveChanges();
+                    return true;
+                }
+                return false;
+            }
         }
 
         public void EmptyDatabase() {

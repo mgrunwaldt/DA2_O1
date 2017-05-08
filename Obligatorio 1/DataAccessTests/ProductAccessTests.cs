@@ -24,7 +24,8 @@ namespace DataAccessTests
             Product p = new Product();
             ProductsRepository pr = new ProductsRepository(true);
             pr.Add(p);
-            Assert.Equals(pr.Get(p.Id), p);
+            Product p2 = pr.Get(p.Id);
+            Assert.AreEqual(p2, p);
         }
 
         [TestMethod]
@@ -38,8 +39,7 @@ namespace DataAccessTests
             pr.Add(p2);
             pr.Add(p3);
             List<Product> products = pr.GetAll();
-            Assert.Equals(products.Count, 4);
-            Assert.Equals(products[0], p1);
+            Assert.AreEqual(products.Count, 3);
         }
 
         [TestMethod]
@@ -52,8 +52,8 @@ namespace DataAccessTests
             pr.Add(p2);
             pr.Delete(p1.Id);
             List<Product> products = pr.GetAll();
-            Assert.Equals(products.Count, 1);
-            Assert.Equals(products[0], p2);
+            Assert.AreEqual(products.Count, 1);
+            Assert.AreEqual(products[0], p2);
         }
 
         [TestMethod]
@@ -70,7 +70,7 @@ namespace DataAccessTests
             p1.Name = "Producto 1 Actualizado";
             pr.Update(p1.Id, p1);
             Product product = pr.Get(p1.Id);
-            Assert.Equals(product.Name, "Producto 1 Actualizado");
+            Assert.AreEqual(product.Name, "Producto 1 Actualizado");
         }
     }
 }
