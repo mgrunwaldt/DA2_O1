@@ -20,6 +20,10 @@ namespace Entities
         public string Name { get; set; }
         public int Price { get; set; }
 
+        public Product() {
+            this.Id = Guid.NewGuid();
+        }
+
         public override bool Equals(object obj)
         {
             if(obj.GetType() == typeof(Product)){
