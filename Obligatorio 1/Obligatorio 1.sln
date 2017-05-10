@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessTests", "DataAcce
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{6E65EDF5-7B22-4CE8-A034-179205774C84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.csproj", "{D76AF991-D195-41CC-998E-9E44513973DD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesTests", "ServicesTests\ServicesTests.csproj", "{75792188-CED5-4C9A-8CBF-1CCC0A24C2B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{6E65EDF5-7B22-4CE8-A034-179205774C84}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E65EDF5-7B22-4CE8-A034-179205774C84}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E65EDF5-7B22-4CE8-A034-179205774C84}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D76AF991-D195-41CC-998E-9E44513973DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D76AF991-D195-41CC-998E-9E44513973DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D76AF991-D195-41CC-998E-9E44513973DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D76AF991-D195-41CC-998E-9E44513973DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75792188-CED5-4C9A-8CBF-1CCC0A24C2B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75792188-CED5-4C9A-8CBF-1CCC0A24C2B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75792188-CED5-4C9A-8CBF-1CCC0A24C2B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75792188-CED5-4C9A-8CBF-1CCC0A24C2B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
