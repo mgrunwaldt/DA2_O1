@@ -36,6 +36,7 @@ namespace Repository
         {
             using (var context = new MyContext())
             {
+
                 List<Product> products = context.Products.ToList();
                 return products;
             }

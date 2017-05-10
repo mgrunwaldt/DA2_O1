@@ -16,7 +16,7 @@ namespace DataAccessTests
         {
             Product p = new Product();
             p.Name = "puto";
-            GenericRepository<Product> pr = new GenericRepository<Product>();
+            GenericRepository<Product> pr = new GenericRepository<Product>(true);
             pr.Add(p);
             Assert.AreNotEqual(Guid.Empty, p.Id);
         }
@@ -50,7 +50,7 @@ namespace DataAccessTests
         {
             Product p1 = new Product();
             Product p2 = new Product();
-            ProductsRepository pr = new ProductsRepository(true);
+            GenericRepository<Product> pr = new GenericRepository<Product>(true);
             pr.Add(p1);
             pr.Add(p2);
             pr.Delete(p1.Id);
@@ -68,10 +68,10 @@ namespace DataAccessTests
             p1.Description = "Descripcion p1";
             p1.Manufacturer = "Fabricante p1";
             p1.Price = 100;
-            ProductsRepository pr = new ProductsRepository(true);
+            GenericRepository<Product> pr = new GenericRepository<Product>(true);
             pr.Add(p1);
             p1.Name = "Producto 1 Actualizado";
-            pr.Update(p1.Id, p1);
+            pr.Update(p1);
             Product product = pr.Get(p1.Id);
             Assert.AreEqual(product.Name, "Producto 1 Actualizado");
         }

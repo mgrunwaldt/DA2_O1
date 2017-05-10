@@ -17,95 +17,69 @@ namespace Repository
 
         public GenericRepository(bool forTest = false)
         {
+            Initialize();
             if (forTest)
             {
                 EmptyDatabase();
             }
         }
 
+        private void Initialize() {
+            if (this.context == null) {
+                this.context = new MyContext();
+            }
+            this.dbSet = this.context.Set<TEntity>();
+        }
+
 
 
         public virtual List<TEntity> GetAll()
         {
-            using (var newContext = new MyContext())
-            {
-                this.dbSet = newContext.Set<TEntity>();
-                var local = dbSet.Local;
-                var list = local.ToList();
-                return list;
-            }
-
-            
+            var list = dbSet.ToList();
+           return dbSet.ToList();
+         /*   var local = dbSet.Local;
+            var list = local.ToList();
+            return list;  */
         }
 
         public virtual TEntity Get(object id)
         {
-            using (var newContext = new MyContext())
-            {
-                this.dbSet = newContext.Set<TEntity>();
-                return dbSet.Find(id);
-            }
-            
+            return dbSet.Find(id);
         }
 
         public virtual void Add(TEntity entity)
         {
-            using (var newContext = new MyContext())
-            {
-                this.dbSet = newContext.Set<TEntity>();
-                dbSet.Add(entity);
-    
-            }
-
-
+            dbSet.Add(entity);
+            context.SaveChanges();
         }
 
         public void EmptyDatabase()
         {
-            using (var newContext = new MyContext())
-            {
-                this.dbSet = newContext.Set<TEntity>();
-                newContext.Empty();
-            }
-            
+            this.context.Empty();
         }
 
         public virtual void Delete(object id)
         {
-            using (var newContext = new MyContext())
-            {
-                this.dbSet = newContext.Set<TEntity>();
-                TEntity entityToDelete = dbSet.Find(id);
-                Delete(entityToDelete);
-            }
-            
-            
+            TEntity entityToDelete = dbSet.Find(id);
+            Delete(entityToDelete);
+            this.context.SaveChanges();
         }
 
         public virtual void Delete(TEntity entityToDelete)
         {
-            using (var newContext = new MyContext())
+            if (context.Entry(entityToDelete).State == EntityState.Detached)
             {
-                this.dbSet = newContext.Set<TEntity>();
-                if (context.Entry(entityToDelete).State == EntityState.Detached)
-                {
-                    dbSet.Attach(entityToDelete);
-                }
-                dbSet.Remove(entityToDelete);
+                dbSet.Attach(entityToDelete);
             }
-            
-           
+            dbSet.Remove(entityToDelete);                       
         }
 
         public virtual void Update(TEntity entityToUpdate)
         {
-            using (var newContext = new MyContext())
-            {
-                this.dbSet = newContext.Set<TEntity>();
-                dbSet.Attach(entityToUpdate);
-                context.Entry(entityToUpdate).State = EntityState.Modified;
-            }
-           
+            dbSet.Attach(entityToUpdate);
+            context.Entry(entityToUpdate).State = EntityState.Modified;
+            this.context.SaveChanges();
+
         }
     }
 }
