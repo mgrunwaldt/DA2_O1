@@ -1,5 +1,8 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Entities;
+using Services;
+using Exceptions;
 
 namespace ServicesTests
 {
@@ -68,14 +71,14 @@ namespace ServicesTests
             u.Email = "matigru@gmail.com";
             u.Username = "Mati";
             UserService service = new UserService();
-            service.Register(user);
+            service.Register(u);
             Assert.AreNotEqual(Guid.Empty, u.Id);
             Assert.AreEqual(u.PhoneNumber, "+59894606123");
         }
 
         [ExpectedException(typeof(WrongEmailFormatException))]
         [TestMethod]
-        public void RegisterMissingDataTest()
+        public void WrongEmailFormatTest()
         {
             User u = new User();
             u.FirstName = "Matias";
