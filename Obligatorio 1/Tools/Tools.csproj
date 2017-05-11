@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EmailHelper.cs" />
     <Compile Include="EncryptionHelper.cs" />
     <Compile Include="PhoneHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

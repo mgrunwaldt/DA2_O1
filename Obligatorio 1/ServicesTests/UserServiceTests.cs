@@ -193,7 +193,7 @@ namespace ServicesTests
             UserService service = getService();
             service.Register(u);
             Assert.AreNotEqual(Guid.Empty, u.Id);
-            Assert.AreEqual(u.PhoneNumber, "+59894606123");
+            Assert.AreEqual(u.PhoneNumber, "0059894606123");
         }
 
         [ExpectedException(typeof(WrongEmailFormatException))]
@@ -205,7 +205,7 @@ namespace ServicesTests
             u.LastName = "Grunwaldt";
             u.Street = "Carlos Butler";
             u.StreetNumber = "1921";
-            u.PhoneNumber = "435345";
+            u.PhoneNumber = "094555666";
             u.Password = "prueba1234";
             u.Email = "matigru";
             u.Username = "Mati";
@@ -222,7 +222,7 @@ namespace ServicesTests
             u.LastName = "Grunwaldt";
             u.Street = "Carlos Butler";
             u.StreetNumber = "1921";
-            u.PhoneNumber = "435345";
+            u.PhoneNumber = "094606123";
             u.Password = "prueba1234";
             u.Email = "matigru@gmail.com";
             u.Username = "Mati";
@@ -232,7 +232,7 @@ namespace ServicesTests
             u2.LastName = "Grunwaldt";
             u2.Street = "Carlos Butler";
             u2.StreetNumber = "1921";
-            u2.PhoneNumber = "435345";
+            u2.PhoneNumber = "094660123";
             u2.Password = "prueba1234";
             u2.Email = "juangru@gmail.com";
             u2.Username = "Mati";
@@ -251,7 +251,7 @@ namespace ServicesTests
             u.LastName = "Grunwaldt";
             u.Street = "Carlos Butler";
             u.StreetNumber = "1921";
-            u.PhoneNumber = "435345";
+            u.PhoneNumber = "099888333";
             u.Password = "prueba1234";
             u.Email = "matigru@gmail.com";
             u.Username = "Mati";
@@ -261,7 +261,7 @@ namespace ServicesTests
             u2.LastName = "Grunwaldt";
             u2.Street = "Carlos Butler";
             u2.StreetNumber = "1921";
-            u2.PhoneNumber = "435345";
+            u2.PhoneNumber = "0059894606123";
             u2.Password = "prueba1234";
             u2.Email = "matigru@gmail.com";
             u2.Username = "Juan";
