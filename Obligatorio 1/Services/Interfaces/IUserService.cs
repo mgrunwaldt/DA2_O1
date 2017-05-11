@@ -8,6 +8,6 @@ namespace Services
 {
     public interface IUserService
     {
-        void Register(User u);
+        void Register(User u, Address a);
     }
 }

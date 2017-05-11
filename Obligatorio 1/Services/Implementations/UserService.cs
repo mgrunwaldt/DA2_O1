@@ -14,7 +14,7 @@ namespace Services
         public UserService(IGenericRepository<User> repo) {
             userRepository = repo;
         }
-        public void Register(User u)
+        public void Register(User u, Address a)
         {
             u.Validate();
             checkForExistingEmail(u.Email);
@@ -23,6 +23,8 @@ namespace Services
             u.Password = EncryptionHelper.GetMD5(u.Password);
             u.PhoneNumber = PhoneHelper.GetPhoneWithCorrectFormat(u.PhoneNumber);
             EmailHelper.CheckEmailFormat(u.Email);
+            a.Validate();
+            u.Address = a;
             userRepository.Add(u);
         }
 
