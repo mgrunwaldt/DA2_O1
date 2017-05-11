@@ -41,7 +41,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExistingEmailException.cs" />
+    <Compile Include="ExistingCategoryNameException.cs" />
     <Compile Include="ExistingUsernameException.cs" />
+    <Compile Include="MissingCategoryDataException.cs" />
     <Compile Include="MissingUserDataException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WrongEmailFormatException.cs" />
