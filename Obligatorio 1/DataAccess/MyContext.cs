@@ -12,10 +12,12 @@ namespace DataAccess
     public class MyContext : DbContext
     {
         public DbSet<Product> Products { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             Database.SetInitializer<MyContext>(null);
+            Database.SetInitializer<MyContext>(new DropCreateDatabaseIfModelChanges<MyContext>());
 
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
             base.OnModelCreating(modelBuilder);
@@ -25,6 +27,10 @@ namespace DataAccess
             foreach(Product p in Products)
             {
                 this.Products.Remove(p);
+            }
+            foreach (User u in Users)
+            {
+                this.Users.Remove(u);
             }
             this.SaveChanges();
         }

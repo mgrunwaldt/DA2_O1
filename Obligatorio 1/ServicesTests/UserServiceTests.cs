@@ -3,12 +3,18 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Entities;
 using Services;
 using Exceptions;
-
+using Repository;
+using Tools;
 namespace ServicesTests
 {
     [TestClass]
     public class UserServiceTests
     {
+        private UserService getService() {
+            GenericRepository<User> repo = new GenericRepository<User>(true);
+            return new UserService(repo);
+        }
+
         [TestMethod]
         public void RegisterOkTest()
         {
@@ -21,13 +27,30 @@ namespace ServicesTests
             u.Password = "prueba1234";
             u.Email = "matigru@gmail.com";
             u.Username = "Mati";
-            UserService service = new UserService();
+            UserService service = getService();
             service.Register(u);
             Assert.AreNotEqual(Guid.Empty, u.Id);
         }
+
         [ExpectedException(typeof(MissingUserDataException))]
         [TestMethod]
-        public void RegisterMissingDataTest()
+        public void RegisterMissingFirstNameTest()
+        {
+            User u = new User();
+            u.LastName = "Grunwaldt";
+            u.Street = "Carlos Butler";
+            u.StreetNumber = "1921";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            UserService service = getService();
+            service.Register(u);
+        }
+
+        [ExpectedException(typeof(MissingUserDataException))]
+        [TestMethod]
+        public void RegisterMissingLastNameTest()
         {
             User u = new User();
             u.FirstName = "Matias";
@@ -37,7 +60,104 @@ namespace ServicesTests
             u.Password = "prueba1234";
             u.Email = "matigru@gmail.com";
             u.Username = "Mati";
-            UserService service = new UserService();
+            UserService service = getService();
+            service.Register(u);
+        }
+        //|| , refactoreo address
+
+        [ExpectedException(typeof(MissingUserDataException))]
+        [TestMethod]
+        public void RegisterMissingStreetTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.StreetNumber = "1921";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            UserService service = getService();
+            service.Register(u);
+        }
+
+        [ExpectedException(typeof(MissingUserDataException))]
+        [TestMethod]
+        public void RegisterMissingStreetNumberTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.Street = "Carlos Butler";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            UserService service = getService();
+            service.Register(u);
+        }
+
+        [ExpectedException(typeof(MissingUserDataException))]
+        [TestMethod]
+        public void RegisterMissingPhoneNumberTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.Street = "Carlos Butler";
+            u.StreetNumber = "1921";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            UserService service = getService();
+            service.Register(u);
+        }
+
+        [ExpectedException(typeof(MissingUserDataException))]
+        [TestMethod]
+        public void RegisterMissingPasswordTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.Street = "Carlos Butler";
+            u.StreetNumber = "1921";
+            u.PhoneNumber = "+59894606123";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            UserService service = getService();
+            service.Register(u);
+        }
+
+        [ExpectedException(typeof(MissingUserDataException))]
+        [TestMethod]
+        public void RegisterMissingEmailTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.Street = "Carlos Butler";
+            u.StreetNumber = "1921";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Username = "Mati";
+            UserService service = getService();
+            service.Register(u);
+        }
+
+        [ExpectedException(typeof(MissingUserDataException))]
+        [TestMethod]
+        public void RegisterMissingUsernameTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.Street = "Carlos Butler";
+            u.StreetNumber = "1921";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            UserService service = getService();
             service.Register(u);
         }
 
@@ -54,7 +174,7 @@ namespace ServicesTests
             u.Password = "prueba1234";
             u.Email = "matigru@gmail.com";
             u.Username = "Mati";
-            UserService service = new UserService();
+            UserService service = getService();
             service.Register(u);
         }
 
@@ -70,7 +190,7 @@ namespace ServicesTests
             u.Password = "prueba1234";
             u.Email = "matigru@gmail.com";
             u.Username = "Mati";
-            UserService service = new UserService();
+            UserService service = getService();
             service.Register(u);
             Assert.AreNotEqual(Guid.Empty, u.Id);
             Assert.AreEqual(u.PhoneNumber, "+59894606123");
@@ -89,7 +209,7 @@ namespace ServicesTests
             u.Password = "prueba1234";
             u.Email = "matigru";
             u.Username = "Mati";
-            UserService service = new UserService();
+            UserService service = getService();
             service.Register(u);
         }
 
@@ -117,7 +237,7 @@ namespace ServicesTests
             u2.Email = "juangru@gmail.com";
             u2.Username = "Mati";
 
-            UserService service = new UserService();
+            UserService service = getService();
             service.Register(u);
             service.Register(u2);
         }
@@ -146,7 +266,7 @@ namespace ServicesTests
             u2.Email = "matigru@gmail.com";
             u2.Username = "Juan";
 
-            UserService service = new UserService();
+            UserService service = getService();
             service.Register(u);
             service.Register(u2);
         }
@@ -165,8 +285,27 @@ namespace ServicesTests
             u.Email = "matigru@gmail.com";
             u.Username = "Mati";
            
-            UserService service = new UserService();
+            UserService service = getService();
             service.Register(u);
+        }
+
+        [TestMethod]
+        public void Md5Test() {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.Street = "Carlos Butler";
+            u.StreetNumber = "1921";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            UserService service = getService();
+            service.Register(u);
+            Assert.AreNotEqual(Guid.Empty, u.Id);
+            GenericRepository<User> ur = new GenericRepository<User>();
+            User savedUser = ur.Get(u.Id);
+            Assert.AreEqual(EncryptionHelper.GetMD5("prueba1234"), savedUser.Password);
         }
 
 

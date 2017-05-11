@@ -10,7 +10,7 @@ using System.Linq.Expressions;
 
 namespace Repository
 {
-    public class GenericRepository<TEntity> where TEntity : class
+    public class GenericRepository<TEntity>:IGenericRepository<TEntity> where TEntity : class
     {
         internal DbSet<TEntity> dbSet;
         internal MyContext context;
@@ -37,9 +37,6 @@ namespace Repository
         {
             var list = dbSet.ToList();
            return dbSet.ToList();
-         /*   var local = dbSet.Local;
-            var list = local.ToList();
-            return list;  */
         }
 
         public virtual TEntity Get(object id)

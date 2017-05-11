@@ -1,6 +1,19 @@
-﻿namespace Exceptions
+﻿using System;
+
+namespace Exceptions
 {
-    public class ExistingEmailException
+    public class ExistingEmailException: Exception
     {
+        public ExistingEmailException()
+        {
+        }
+
+        public ExistingEmailException(string message) : base(message)
+        {
+        }
+
+
+
+       
     }
 }
