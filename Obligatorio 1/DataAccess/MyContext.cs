@@ -14,13 +14,33 @@ namespace DataAccess
         public DbSet<Product> Products { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Address> Addresses { get; set; }
-
+        /*
+         protected override void OnModelCreating(DbModelBuilder modelBuilder)   
+{  
+    modelBuilder.Entity < Vendor > ()  
+        .HasMany(v = > v.VendorProducts)  
+        .WithMany(p = > p.ProductVendors)  
+        .Map(  
+    m = >  
+    {  
+        m.MapLeftKey("VendorId");  
+        m.MapRightKey("ProductId");  
+        m.ToTable("VendorProduct");  
+    });  
+} 
+             */
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             Database.SetInitializer<MyContext>(null);
             Database.SetInitializer<MyContext>(new DropCreateDatabaseIfModelChanges<MyContext>());
 
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+            modelBuilder.Entity<User>().HasMany(u => u.Addresses).WithMany(a => a.Users).Map(m =>
+            {
+                m.MapLeftKey("UserId");
+                m.MapRightKey("AddressId");
+                m.ToTable("UserAddresses");
+            });
             base.OnModelCreating(modelBuilder);
         }
 

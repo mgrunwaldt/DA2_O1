@@ -11,6 +11,7 @@ namespace Entities
         public User()
         {
             this.Id = Guid.NewGuid();
+            this.Addresses = new List<Address>();
         }
 
         public string Email { get; set; }
@@ -78,6 +79,6 @@ namespace Entities
         public string Password { get; set; }
         public string PhoneNumber { get; set; }
         public string Username { get; set; }
-        public List<Address> Addresses { get; set; }
+        public virtual ICollection<Address> Addresses { get; set; }
     }
 }

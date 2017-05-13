@@ -11,9 +11,5 @@ namespace Exceptions
         public ExistingEmailException(string message) : base(message)
         {
         }
-
-
-
-       
     }
 }

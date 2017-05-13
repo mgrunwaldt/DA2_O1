@@ -1,6 +1,16 @@
-﻿namespace Exceptions
+﻿using System;
+
+namespace Exceptions
 {
-    public class AddressWithoutPhoneNumberException
+
+    public class AddressWithoutPhoneNumberException : Exception
     {
+        public AddressWithoutPhoneNumberException()
+        {
+        }
+
+        public AddressWithoutPhoneNumberException(string message) : base(message)
+        {
+        }
     }
 }

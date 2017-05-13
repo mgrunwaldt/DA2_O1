@@ -70,9 +70,8 @@ namespace ServicesTests
             a.PhoneNumber = "26007263";
             service.Register(u, a);
         }
-        //|| , refactoreo address
 
-        [ExpectedException(typeof(MissingAddressDataException))]
+        [ExpectedException(typeof(AddressWithoutStreetException))]
         [TestMethod]
         public void RegisterMissingStreetTest()
         {
@@ -90,7 +89,7 @@ namespace ServicesTests
             service.Register(u, a);
         }
 
-        [ExpectedException(typeof(MissingAddressDataException))]
+        [ExpectedException(typeof(AddressWithoutStreetNumberException))]
         [TestMethod]
         public void RegisterMissingStreetNumberTest()
         {

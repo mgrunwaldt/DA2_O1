@@ -16,10 +16,12 @@ namespace Entities
         public String Street { get; set; }
         public String StreetNumber { get; set; }
         public String PhoneNumber { get; set; }
+        public virtual ICollection<User> Users { get; set; }
 
         public Address()
         {
             this.Id = Guid.NewGuid();
+            this.Users = new List<User>();
         }
 
         public void Validate() {
@@ -35,15 +37,15 @@ namespace Entities
         {
             if (Street == null || Street.Trim() == "")
             {
-                throw new MissingAddressDataException("No se puede dejar la calle vacía");
+                throw new AddressWithoutStreetException("No se puede dejar la calle vacía");
             }
             if (StreetNumber == null || StreetNumber.Trim() == "")
             {
-                throw new MissingAddressDataException("No se puede dejar el número de puerta vacío");
+                throw new AddressWithoutStreetNumberException("No se puede dejar el número de puerta vacío");
             }
             if (PhoneNumber == null || PhoneNumber.Trim() == "")
             {
-                throw new MissingAddressDataException("No se puede dejar el número de puerta vacío");
+                throw new AddressWithoutPhoneNumberException("No se puede dejar el teléfono vacío");
             }
         }
 
@@ -56,5 +58,7 @@ namespace Entities
             }
             return false;
         }
+
+
     }
 }
