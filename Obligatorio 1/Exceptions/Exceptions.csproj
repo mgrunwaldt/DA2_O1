@@ -45,6 +45,7 @@
     <Compile Include="ExistingUsernameException.cs" />
     <Compile Include="MissingCategoryDataException.cs" />
     <Compile Include="MissingUserDataException.cs" />
+    <Compile Include="NotExistingCategoryException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WrongEmailFormatException.cs" />
     <Compile Include="WrongNumberFormatException.cs" />

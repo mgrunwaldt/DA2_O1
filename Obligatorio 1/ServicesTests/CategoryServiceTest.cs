@@ -68,5 +68,48 @@ namespace ServicesTests
             service.Add(c2);
         }
 
+        [TestMethod]
+        public void DeleteCategoryOkTest()
+        {
+            Category c1 = new Category();
+            c1.Name = "Category";
+            c1.Description = "Desc.";
+            Category c2 = new Category();
+            c2.Name = "Category 2";
+            c2.Description = "Desc. Cat. 2";
+
+            CategoryService service = getService();
+
+            service.Add(c1);
+            service.Add(c2);
+            service.Delete(c1.Id);
+
+            List<Category> categories = service.GetAll();
+            Assert.Equals(categories.Count, 1);
+            Assert.Equals(categories[0], c2);
+        }
+
+        [ExpectedException(typeof(NotExistingCategoryException))]
+        [TestMethod]
+        public void DeleteNotExistingCategoryTest()
+        {
+            Category c1 = new Category();
+            c1.Name = "Category";
+            c1.Description = "Desc.";
+            Category c2 = new Category();
+            c2.Name = "Category 2";
+            c2.Description = "Desc. Cat. 2";
+
+            CategoryService service = getService();
+
+            service.Add(c1);
+            service.Add(c2);
+
+            byte[] bytes = new byte[16];
+            BitConverter.GetBytes(3).CopyTo(bytes, 0);
+            Guid idToDelete = new Guid(bytes);
+            service.Delete(idToDelete);
+        }
+
     }
 }

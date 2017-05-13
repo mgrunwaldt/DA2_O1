@@ -35,5 +35,14 @@ namespace Services.Implementations
                 throw new ExistingCategoryNameException("Ya existe un usuario con este email");
             }
         }
+
+        public void Delete(System.Guid id) {
+            throw new NotImplementedException();
+        }
+
+        public List<Category> GetAll()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
