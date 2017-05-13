@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Exceptions;
 using Repository;
 using Services.Interfaces;
 using System;
@@ -20,8 +21,19 @@ namespace Services.Implementations
 
         public void Add(Category c)
         {
-            throw new NotImplementedException();
+            c.Validate();
+            checkForExistingName(c);
+            categoryRepository.Add(c);
         }
 
+        private void checkForExistingName(Category c)
+        {
+            List<Category> allCategories = categoryRepository.GetAll();
+            var existingCategory = allCategories.Find(category => category.Name == c.Name);
+            if (existingCategory != null)
+            {
+                throw new ExistingCategoryNameException("Ya existe un usuario con este email");
+            }
+        }
     }
 }

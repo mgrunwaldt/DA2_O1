@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Data.Entity;
 using System.Threading.Tasks;
+using Exceptions;
 
 namespace Entities
 {
@@ -28,6 +29,28 @@ namespace Entities
                 return c.Id == this.Id && c.Name == this.Name && c.Description == this.Description;
             }
             return false;
+        }
+
+        public void Validate()
+        {
+            ValidateName();
+            ValidateDescription();
+        }
+
+        private void ValidateName()
+        {
+            if (Name == null || Name.Trim() == "")
+            {
+                throw new MissingCategoryDataException("No se puede dejar el nombre vacío");
+            }
+        }
+
+        private void ValidateDescription()
+        {
+            if (Description == null || Description.Trim() == "")
+            {
+                throw new MissingCategoryDataException("No se puede dejar la categoría vacía");
+            }
         }
 
     }
