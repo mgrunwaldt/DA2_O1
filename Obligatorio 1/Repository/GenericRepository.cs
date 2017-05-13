@@ -55,11 +55,19 @@ namespace Repository
             this.context.Empty();
         }
 
-        public virtual void Delete(object id)
+        public virtual bool Delete(object id)
         {
             TEntity entityToDelete = dbSet.Find(id);
-            Delete(entityToDelete);
-            this.context.SaveChanges();
+            if (entityToDelete != null) {
+                Delete(entityToDelete);
+                this.context.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false; 
+            }
+            
         }
 
         public virtual void Delete(TEntity entityToDelete)
@@ -76,7 +84,6 @@ namespace Repository
             dbSet.Attach(entityToUpdate);
             context.Entry(entityToUpdate).State = EntityState.Modified;
             this.context.SaveChanges();
-
         }
     }
 }

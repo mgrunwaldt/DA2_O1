@@ -37,10 +37,22 @@ namespace Services.Implementations
         }
 
         public void Delete(System.Guid id) {
-            throw new NotImplementedException();
+            bool deleted = categoryRepository.Delete(id);
+            if (!deleted) {
+                throw new NotExistingCategoryException();
+            }
         }
 
         public List<Category> GetAll()
+        {
+            return categoryRepository.GetAll();
+        }
+
+        public Category Get(Guid id) {
+            return categoryRepository.Get(id);
+        }
+
+        public void Modify(Category c)
         {
             throw new NotImplementedException();
         }

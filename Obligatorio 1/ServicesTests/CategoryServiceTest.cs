@@ -85,8 +85,10 @@ namespace ServicesTests
             service.Delete(c1.Id);
 
             List<Category> categories = service.GetAll();
-            Assert.Equals(categories.Count, 1);
-            Assert.Equals(categories[0], c2);
+            Assert.AreEqual(categories.Count, 1);
+            Assert.AreEqual(categories[0], c2);
+
+            //FALTA SETEARLE LA CATEGORIA A UN PRODUCTO Y CHEQUEAR QUE CUANDO LA BORRO SE LA SAQUE A LOS PRODUCTOS
         }
 
         [ExpectedException(typeof(NotExistingCategoryException))]
@@ -106,10 +108,73 @@ namespace ServicesTests
             service.Add(c2);
 
             byte[] bytes = new byte[16];
-            BitConverter.GetBytes(3).CopyTo(bytes, 0);
+            int originalIdToDelete = 3;
+            BitConverter.GetBytes(originalIdToDelete).CopyTo(bytes, 0);
             Guid idToDelete = new Guid(bytes);
             service.Delete(idToDelete);
         }
+
+        [TestMethod]
+        public void ModifyCategoryOkTest()
+        {
+            Category c = new Category();
+            c.Name = "Category";
+            c.Description = "Desc.";
+
+            CategoryService service = getService();
+            service.Add(c);
+
+            c.Name = "Category Modified";
+            service.Modify(c);
+            Category modifiedCat = service.Get(c.Id);
+            Assert.AreEqual(modifiedCat, c);
+        }
+
+        [ExpectedException(typeof(MissingCategoryDataException))]
+        [TestMethod]
+        public void ModifyMissingCategoryNameTest()
+        {
+            Category c = new Category();
+            c.Name = "Cat1";
+            c.Description = "Desc";
+            CategoryService service = getService();
+            service.Add(c);
+            c.Name = "";
+            service.Modify(c);
+        }
+
+        [ExpectedException(typeof(MissingCategoryDataException))]
+        [TestMethod]
+        public void ModifyMissingCategoryDescriptionTest()
+        {
+            Category c = new Category();
+            c.Name = "Cat1";
+            c.Description = "Desc";
+            CategoryService service = getService();
+            service.Add(c);
+            c.Description = "";
+            service.Modify(c);
+        }
+
+        [ExpectedException(typeof(ExistingCategoryNameException))]
+        [TestMethod]
+        public void ModifyExistingCategoryNameTest()
+        {
+            Category c = new Category();
+            c.Name = "Category1";
+            c.Description = "Desc.";
+
+            Category c2 = new Category();
+            c2.Name = "Category2";
+            c2.Description = "Desc.";
+
+            CategoryService service = getService();
+            service.Add(c);
+            service.Add(c2);
+            c.Name = "Category2";
+            service.Modify(c);
+        }
+
 
     }
 }
