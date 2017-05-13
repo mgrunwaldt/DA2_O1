@@ -59,8 +59,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="CategoryServiceTest.cs" />
+    <Compile Include="AttributeServiceTests.cs" />
+    <Compile Include="CategoryServiceTests.cs" />
     <Compile Include="AddresServiceTests.cs" />
+    <Compile Include="OrderServiceTests.cs" />
+    <Compile Include="ProductServiceTests.cs" />
+    <Compile Include="ReviewServiceTests.cs" />
     <Compile Include="UserServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

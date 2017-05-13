@@ -399,6 +399,40 @@ namespace ServicesTests
 
         }
 
+        //LOGIN
+        //Ok
+        //No existing username
+        //No existing email
+        //No match
+
+        //Logout
+        //Ok
+        //No user
+
+        //CHANGE USER ROLE
+        //Ok
+        //No User 1 (el que cambia)
+        //No user 2 (el cambiado)
+        //Wrong User Role (usuario que cambia debe ser superadmin)
+        //Wrong User Role (rol inexistente)
+
+        //Modify
+        //IDEM CREATE
+
+        //DELETE
+        //Ok usuario a si mismo
+        //Ok admin a usuario
+        //No user to delete
+        //No user deleting
+        //User deleting no es superadmin y quiere borrar a otro user
+
+        //CHANGE PASSWORD
+        //Ok
+        //Wrong Old Password
+        //Wrong New Password
+        //No User
+
+
 
     }
 }

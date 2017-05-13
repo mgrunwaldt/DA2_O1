@@ -6,7 +6,6 @@ using System.Text;
 using System.Data.Entity;
 using System.Threading.Tasks;
 using Exceptions;
-
 namespace Entities
 {
     public class Category
