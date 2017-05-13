@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace ServicesTests
 {
     [TestClass]
-    public class CategoryServiceTest
+    public class CategoryServiceTests
     {
         private CategoryService getService()
         {
