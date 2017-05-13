@@ -17,11 +17,21 @@ namespace Entities
         public String StreetNumber { get; set; }
         public String PhoneNumber { get; set; }
 
-        public void Validate() {
-            ValidateAddress();
+        public Address()
+        {
+            this.Id = Guid.NewGuid();
         }
 
-        private void ValidateAddress()
+        public void Validate() {
+            validateAddress();
+            
+        }
+
+        public void CheckForExisting() {
+            
+        }
+
+        private void validateAddress()
         {
             if (Street == null || Street.Trim() == "")
             {
