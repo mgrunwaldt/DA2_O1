@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using Entities;
 namespace Services
 {
-    public interface IUserService
+    public interface IAddressService
     {
-        void Register(User u, Address a);
+        void AddAddress(Address a, User u);
     }
 }

@@ -3,10 +3,6 @@ C:\Users\Mati\ORT WINDOWS\Obligatorio 1\Obligatorio 1\Tools\bin\Debug\Tools.pdb
 C:\Users\Mati\ORT WINDOWS\Obligatorio 1\Obligatorio 1\Tools\obj\Debug\Tools.csprojResolveAssemblyReference.cache
 C:\Users\Mati\ORT WINDOWS\Obligatorio 1\Obligatorio 1\Tools\obj\Debug\Tools.dll
 C:\Users\Mati\ORT WINDOWS\Obligatorio 1\Obligatorio 1\Tools\obj\Debug\Tools.pdb
-C:\Users\Martin\Documents\Visual Studio 2015\Obligatorio1DA2\Obligatorio 1\Tools\bin\Debug\Tools.dll
-C:\Users\Martin\Documents\Visual Studio 2015\Obligatorio1DA2\Obligatorio 1\Tools\bin\Debug\Tools.pdb
-C:\Users\Martin\Documents\Visual Studio 2015\Obligatorio1DA2\Obligatorio 1\Tools\bin\Debug\Exceptions.dll
-C:\Users\Martin\Documents\Visual Studio 2015\Obligatorio1DA2\Obligatorio 1\Tools\bin\Debug\Exceptions.pdb
-C:\Users\Martin\Documents\Visual Studio 2015\Obligatorio1DA2\Obligatorio 1\Tools\obj\Debug\Tools.csprojResolveAssemblyReference.cache
-C:\Users\Martin\Documents\Visual Studio 2015\Obligatorio1DA2\Obligatorio 1\Tools\obj\Debug\Tools.dll
-C:\Users\Martin\Documents\Visual Studio 2015\Obligatorio1DA2\Obligatorio 1\Tools\obj\Debug\Tools.pdb
+
+C:\Users\Mati\ORT WINDOWS\Obligatorio 1\Obligatorio 1\Tools\bin\Debug\Exceptions.dll
+C:\Users\Mati\ORT WINDOWS\Obligatorio 1\Obligatorio 1\Tools\bin\Debug\Exceptions.pdb
