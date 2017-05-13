@@ -88,7 +88,7 @@ namespace ServicesTests
             Assert.AreEqual(categories.Count, 1);
             Assert.AreEqual(categories[0], c2);
 
-            //FALTA SETEARLE LA CATEGORIA A UN PRODUCTO Y CHEQUEAR QUE CUANDO LA BORRO SE LA SAQUE A LOS PRODUCTOS
+            //FALTA SETEARLE LA CATEGORIA A UN PRODUCTO Y CHEQUEAR QUE CUANDO LA BORRO SE LA SAQUE A TODOS LOS PRODUCTOS
         }
 
         [ExpectedException(typeof(NotExistingCategoryException))]

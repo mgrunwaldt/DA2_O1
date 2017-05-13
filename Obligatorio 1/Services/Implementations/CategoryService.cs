@@ -40,7 +40,7 @@ namespace Services.Implementations
             bool deleted = categoryRepository.Delete(id);
             if (!deleted) {
                 throw new NotExistingCategoryException();
-            }
+            } 
         }
 
         public List<Category> GetAll()
