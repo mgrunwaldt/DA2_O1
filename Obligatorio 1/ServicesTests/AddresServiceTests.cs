@@ -1,7 +1,9 @@
 ﻿using Entities;
+using Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Repository;
 using Services;
+using Services.Implementations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -183,30 +185,7 @@ namespace ServicesTests
             Assert.IsTrue(userHasAddressOne);
         }
 
-        [TestMethod]
-        public void AddMultipleAddressesToOneUser()
-        {
-            Address a = new Address();
-            a.Street = "Cartagena";
-            a.StreetNumber = "1582";
-            a.PhoneNumber = "26003564";
-
-            Address a2 = new Address();
-            a2.Street = "Miami";
-            a2.StreetNumber = "2222";
-            a2.PhoneNumber = "26203564";
-
-            AddressService service = getService();
-            User u = getUser();
-            service.AddAddress(a, u);
-            service.AddAddress(a2, u);
-            List<Address> userOneAddresses = u.Addresses;
-            bool userHasAddressOne = userOneAddresses.Exists(address => address.Id == a.Id);
-            bool userHasAddressTwo = userOneAddresses.Exists(address => address.Id == a2.Id);
-
-            Assert.IsTrue(userHasAddressOne);
-            Assert.IsTrue(userHasAddressOne);
-        }
+        
 
         //Add Twice to User
         //Delete Ok
