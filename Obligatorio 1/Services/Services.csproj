@@ -49,6 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Implementations\CategoryService.cs" />
+    <Compile Include="Interfaces\ICategoryService.cs" />
     <Compile Include="Implementations\AddressService.cs" />
     <Compile Include="Interfaces\IAddressService.cs" />
     <Compile Include="Interfaces\IUserService.cs" />

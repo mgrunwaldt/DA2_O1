@@ -10,7 +10,7 @@ namespace Repository
     {
         List<TEntity> GetAll();
         void Add(TEntity entity);
-        void Delete(object id);
+        bool Delete(object id);
         void Update(TEntity entityToUpdate);
         TEntity Get(object id);
     }

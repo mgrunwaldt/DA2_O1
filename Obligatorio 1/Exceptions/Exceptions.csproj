@@ -44,7 +44,11 @@
     <Compile Include="AddressWithoutStreetException.cs" />
     <Compile Include="AddressWithoutStreetNumberException.cs" />
     <Compile Include="ExistingEmailException.cs" />
+    <Compile Include="ExistingCategoryNameException.cs" />
     <Compile Include="ExistingUsernameException.cs" />
+    <Compile Include="MissingCategoryDataException.cs" />
+    <Compile Include="MissingUserDataException.cs" />
+    <Compile Include="NotExistingCategoryException.cs" />
     <Compile Include="MissingAddressDataException.cs" />
     <Compile Include="MissingUserDataException.cs" />
     <Compile Include="NoUserForAddressException.cs" />

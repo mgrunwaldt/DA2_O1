@@ -13,6 +13,8 @@ namespace DataAccess
     {
         public DbSet<Product> Products { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Category> Categories { get; set; }
+
         public DbSet<Address> Addresses { get; set; }
         /*
          protected override void OnModelCreating(DbModelBuilder modelBuilder)   
@@ -52,6 +54,10 @@ namespace DataAccess
             foreach (User u in Users)
             {
                 this.Users.Remove(u);
+            }
+            foreach (Category c in Categories)
+            {
+                this.Categories.Remove(c);
             }
             foreach (Address a in Addresses) {
                 this.Addresses.Remove(a);
