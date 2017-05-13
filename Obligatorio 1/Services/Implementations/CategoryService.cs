@@ -22,17 +22,17 @@ namespace Services.Implementations
         public void Add(Category c)
         {
             c.Validate();
-            checkForExistingName(c);
+            checkForExistingName(c.Name);
             categoryRepository.Add(c);
         }
 
-        private void checkForExistingName(Category c)
+        private void checkForExistingName(string name)
         {
             List<Category> allCategories = categoryRepository.GetAll();
-            var existingCategory = allCategories.Find(category => category.Name == c.Name);
+            var existingCategory = allCategories.Find(category => category.Name == name);
             if (existingCategory != null)
             {
-                throw new ExistingCategoryNameException("Ya existe un usuario con este email");
+                throw new ExistingCategoryNameException("Ya existe una categoria con este nombre");
             }
         }
 
@@ -52,9 +52,13 @@ namespace Services.Implementations
             return categoryRepository.Get(id);
         }
 
-        public void Modify(Category c)
+        public void Modify(Category c, string name, string description)
         {
-            throw new NotImplementedException();
+            checkForExistingName(name);
+            c.Name = name;
+            c.Description = description;
+            c.Validate();
+            categoryRepository.Update(c);
         }
     }
 }

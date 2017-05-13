@@ -124,10 +124,9 @@ namespace ServicesTests
             CategoryService service = getService();
             service.Add(c);
 
-            c.Name = "Category Modified";
-            service.Modify(c);
+            service.Modify(c, "Category Mod", c.Description);
             Category modifiedCat = service.Get(c.Id);
-            Assert.AreEqual(modifiedCat, c);
+            Assert.AreEqual(modifiedCat.Name, "Category Mod");
         }
 
         [ExpectedException(typeof(MissingCategoryDataException))]
@@ -139,8 +138,8 @@ namespace ServicesTests
             c.Description = "Desc";
             CategoryService service = getService();
             service.Add(c);
-            c.Name = "";
-            service.Modify(c);
+            string modifiedName = "";
+            service.Modify(c, modifiedName, c.Description);
         }
 
         [ExpectedException(typeof(MissingCategoryDataException))]
@@ -152,8 +151,8 @@ namespace ServicesTests
             c.Description = "Desc";
             CategoryService service = getService();
             service.Add(c);
-            c.Description = "";
-            service.Modify(c);
+            string modifiedDescription = "";
+            service.Modify(c, c.Name, modifiedDescription);
         }
 
         [ExpectedException(typeof(ExistingCategoryNameException))]
@@ -171,8 +170,8 @@ namespace ServicesTests
             CategoryService service = getService();
             service.Add(c);
             service.Add(c2);
-            c.Name = "Category2";
-            service.Modify(c);
+            string modifiedName = "Category2";
+            service.Modify(c, modifiedName, c.Description);
         }
 
 

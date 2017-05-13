@@ -13,6 +13,6 @@ namespace Services.Interfaces
         void Delete(Guid id);
         List<Category> GetAll();
         Category Get(Guid id);
-        void Modify(Category c);
+        void Modify(Category c, string name, string description);
     }
 }
