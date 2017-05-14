@@ -92,7 +92,21 @@ namespace Services
         }
 
         public void ChangeUserRole(Guid id, int role){
-            throw new NotImplementedException();
+            User u = userRepository.Get(id);
+            if (u != null)
+            {
+                if (role == 2 || role == 3)
+                {
+                    u.Role = role;
+                }
+                else
+                {
+                    throw new NotExistingUserRoleException();
+                }
+            }
+            else {
+                throw new NotExistingUserException();
+            }
         }
 
         public List<User> GetAll()

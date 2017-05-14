@@ -586,7 +586,7 @@ namespace ServicesTests
 
         [ExpectedException(typeof(NotExistingUserException))]
         [TestMethod]
-        public void ChangeUserRolNoUserTest()
+        public void ChangeUserRoleNoUserTest()
         {
             User u = new User();
             u.FirstName = "Matias";
@@ -606,6 +606,28 @@ namespace ServicesTests
             Guid wrongGuid = Guid.NewGuid();
             service.ChangeUserRole(wrongGuid, newRole);
         }
+
+        [ExpectedException(typeof(NotExistingUserRoleException))]
+        [TestMethod]
+        public void ChangeUserRoleNoUserRoleTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            UserService service = getService();
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            service.Register(u, a);
+
+            int newRole = 5;
+            service.ChangeUserRole(u.Id, newRole);
+        }
         //LOGIN
         //Ok con username ----------
         //Ok con mail ----------
@@ -622,7 +644,7 @@ namespace ServicesTests
         //No User 1 (el que cambia) ----------NO VA!
         //No user 2 (el cambiado) ----------
         //Wrong User Role (usuario que cambia debe ser superadmin) ---------- NO VA!
-        //Wrong User Role (rol inexistente) ---------- NO VA!
+        //Wrong User Role (rol inexistente) ---------- 
 
         //Modify
         //IDEM CREATE
