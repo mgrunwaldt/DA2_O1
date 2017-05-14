@@ -83,5 +83,10 @@ namespace Services
             p.IsActive = false;
             repo.Update(p);
         }
+
+        public void ChangeCategory(Guid id, Category c2)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
