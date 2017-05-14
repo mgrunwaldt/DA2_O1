@@ -59,7 +59,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="AttributeServiceTests.cs" />
+    <Compile Include="FeatureServiceTests.cs" />
     <Compile Include="CategoryServiceTests.cs" />
     <Compile Include="AddresServiceTests.cs" />
     <Compile Include="OrderServiceTests.cs" />
