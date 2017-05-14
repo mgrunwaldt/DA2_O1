@@ -15,7 +15,7 @@ namespace DataAccess
         public DbSet<User> Users { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Feature> Features { get; set; }
-
+        public DbSet<ProductFeature> ProductFeatures { get; set; }
         public DbSet<Address> Addresses { get; set; }
         
       
@@ -35,6 +35,9 @@ namespace DataAccess
         }
 
         public void Empty() {
+            foreach (ProductFeature pf in ProductFeatures) {
+                this.ProductFeatures.Remove(pf);
+            }
             foreach(Product p in Products)
             {
                 this.Products.Remove(p);

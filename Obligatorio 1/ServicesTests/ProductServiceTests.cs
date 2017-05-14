@@ -18,7 +18,8 @@ namespace ServicesTests
     {
         private ProductService getService() {
             GenericRepository<Product> repoInstance = new GenericRepository<Product>(true);
-            return new ProductService(repoInstance);
+            GenericRepository<ProductFeature> productFeatureRepoInstance = new GenericRepository<ProductFeature>();
+            return new ProductService(repoInstance, productFeatureRepoInstance);
         }
 
         private CategoryService getCategoryService()
@@ -603,8 +604,8 @@ namespace ServicesTests
             service.Add(p);
 
             ProductFeature productFeature = new ProductFeature();
-            productFeature.Product = p;
-            productFeature.Feature = f;
+            productFeature.ProductId = p.Id;
+            productFeature.FeatureId = f.Id;
             productFeature.Value = "Rojo";
 
             service.AddProductFeature(productFeature);
@@ -636,8 +637,8 @@ namespace ServicesTests
             service.Add(p);
 
             ProductFeature productFeature = new ProductFeature();
-            productFeature.Product = p;
-            productFeature.Feature = f;
+            productFeature.ProductId = p.Id;
+            productFeature.FeatureId = f.Id;
             productFeature.Value = "11";
 
             service.AddProductFeature(productFeature);
@@ -669,8 +670,8 @@ namespace ServicesTests
             service.Add(p);
 
             ProductFeature productFeature = new ProductFeature();
-            productFeature.Product = p;
-            productFeature.Feature = f;
+            productFeature.ProductId = p.Id;
+            productFeature.FeatureId = f.Id;
             productFeature.Value = DateTime.Now.ToString();
 
             service.AddProductFeature(productFeature);
@@ -702,8 +703,8 @@ namespace ServicesTests
             service.Add(p);
 
             ProductFeature productFeature = new ProductFeature();
-            productFeature.Product = p;
-            productFeature.Feature = f;
+            productFeature.ProductId = p.Id;
+            productFeature.FeatureId = f.Id;
             productFeature.Value = "Rojo";
 
             service.AddProductFeature(productFeature);
@@ -732,8 +733,8 @@ namespace ServicesTests
             p.Category = cat;
 
             ProductFeature productFeature = new ProductFeature();
-            productFeature.Product = p;
-            productFeature.Feature = f;
+            productFeature.ProductId = p.Id;
+            productFeature.FeatureId = f.Id;
             productFeature.Value = "Rojo";
 
             service.AddProductFeature(productFeature);
@@ -765,8 +766,8 @@ namespace ServicesTests
             service.Add(p);
 
             ProductFeature productFeature = new ProductFeature();
-            productFeature.Product = p;
-            productFeature.Feature = f;
+            productFeature.ProductId = p.Id;
+            productFeature.FeatureId = f.Id;
             productFeature.Value = "10";
 
             service.AddProductFeature(productFeature);
@@ -795,8 +796,8 @@ namespace ServicesTests
             service.Add(p);
 
             ProductFeature productFeature = new ProductFeature();
-            productFeature.Product = p;
-            productFeature.Feature = f;
+            productFeature.ProductId = p.Id;
+            productFeature.FeatureId = f.Id;
             productFeature.Value = "Hola";
 
             service.AddProductFeature(productFeature);
@@ -827,8 +828,8 @@ namespace ServicesTests
             service.Add(p);
 
             ProductFeature productFeature = new ProductFeature();
-            productFeature.Product = p;
-            productFeature.Feature = f;
+            productFeature.ProductId = p.Id;
+            productFeature.FeatureId = f.Id;
             productFeature.Value = "Hola";
 
             service.AddProductFeature(productFeature);
@@ -836,7 +837,7 @@ namespace ServicesTests
 
         [ExpectedException(typeof(ProductFeatureNoValueException))]
         [TestMethod]
-        public void ProductAddFeatureIntOkTest()
+        public void ProductAddFeatureNoValueTest()
         {
             ProductService service = getService();
             FeatureService featureService = getFeatureService();
@@ -857,8 +858,8 @@ namespace ServicesTests
             service.Add(p);
 
             ProductFeature productFeature = new ProductFeature();
-            productFeature.Product = p;
-            productFeature.Feature = f;
+            productFeature.ProductId = p.Id;
+            productFeature.FeatureId = f.Id;
 
             service.AddProductFeature(productFeature);           
 
@@ -886,13 +887,13 @@ namespace ServicesTests
             service.Add(p);
 
             ProductFeature productFeature = new ProductFeature();
-            productFeature.Product = p;
-            productFeature.Feature = f;
+            productFeature.ProductId = p.Id;
+            productFeature.FeatureId = f.Id;
             productFeature.Value = "Rojo";
 
             ProductFeature productFeature2 = new ProductFeature();
-            productFeature2.Product = p;
-            productFeature2.Feature = f;
+            productFeature2.ProductId = p.Id;
+            productFeature2.FeatureId = f.Id;
             productFeature2.Value = "Azul";
 
             service.AddProductFeature(productFeature);
@@ -900,7 +901,6 @@ namespace ServicesTests
 
         }
 
-        //ADD ATTRIBUTE
 
         //CHANGE ATTRIBUTE
 

@@ -64,11 +64,15 @@
     <Compile Include="FeatureWrongTypeException.cs" />
     <Compile Include="MissingCategoryDataException.cs" />
     <Compile Include="MissingUserDataException.cs" />
+    <Compile Include="NoFeatureException.cs" />
     <Compile Include="NotExistingCategoryException.cs" />
     <Compile Include="MissingAddressDataException.cs" />
     <Compile Include="NoUserForAddressException.cs" />
     <Compile Include="ProductChangeCategoryException.cs" />
     <Compile Include="ProductDuplicateException.cs" />
+    <Compile Include="ProductFeatureDuplicateFeature.cs" />
+    <Compile Include="ProductFeatureNoValueException.cs" />
+    <Compile Include="ProductFeatureWrongValueException.cs" />
     <Compile Include="ProductMissingDataException.cs" />
     <Compile Include="ProductModifyNotExistingException.cs" />
     <Compile Include="ProductNotExistingException.cs" />

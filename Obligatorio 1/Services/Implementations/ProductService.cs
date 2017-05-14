@@ -12,12 +12,14 @@ namespace Services
     public class ProductService:IProductService
     {
         private GenericRepository<Product> repo;
+        private GenericRepository<ProductFeature> productFeatureRepo;
 
-
-        public ProductService(GenericRepository<Product> repoInstance)
+        public ProductService(GenericRepository<Product> repoInstance, GenericRepository<ProductFeature> productFeatureRepoInstance)
         {
             this.repo = repoInstance;
+            this.productFeatureRepo = productFeatureRepoInstance;
         }
+
 
         public void Add(Product p)
         {
@@ -26,6 +28,67 @@ namespace Services
             setCategory(p);
             repo.Add(p);
         }
+
+        public void Delete(Product p)
+        {
+            Get(p.Id);
+            p.IsActive = false;
+            repo.Update(p);
+        }
+
+        public void Modify(Product p)
+        {
+            checkIfProductExists(p);
+            p.Validate();
+            checkForExistingProduct(p);
+            setCategory(p);
+            repo.Update(p);
+        }
+
+        public Product Get(Guid id)
+        {
+            List<Product> allProducts = repo.GetAll();
+            Product existing = allProducts.Find(prod => prod.Id == id && prod.IsActive == true);
+            if (existing == null)
+            {
+                throw new ProductNotExistingException("No hay producto activo con este id");
+            }
+            return existing;
+        }
+
+        public void ChangeCategory(Guid id, Category c2)
+        {
+            Product p = Get(id);
+            MyContext context = repo.GetContext();
+            if (c2 != null)
+            {
+                Category c = context.Categories.Where(ca => ca.Id == c2.Id).FirstOrDefault();
+                if (c == null)
+                {
+                    throw new ProductChangeCategoryException("La categoría nueva no existe");
+                }
+                if (c2.Equals(p.Category))
+                    throw new ProductChangeCategoryException("El producto ya tiene esta categoría");
+                p.Category = c;
+            }
+            else p.Category = null;
+            repo.Update(p);
+        }
+
+        public void AddProductFeature(ProductFeature productFeature)
+        {
+            this.productFeatureRepo.Add(productFeature);
+        }
+
+        public List<ProductFeature> GetAllProductFeaturesFromProduct(Product p)
+        {
+            List<ProductFeature> allProductFeatures = productFeatureRepo.GetAll();
+            List<ProductFeature> productFeatures = allProductFeatures.FindAll(pf => pf.ProductId == p.Id);
+            return productFeatures;
+        }
+
+
+
 
         private void checkForExistingProduct(Product p)
         {
@@ -48,14 +111,7 @@ namespace Services
             }
         }
 
-        public void Modify(Product p)
-        {
-            checkIfProductExists(p);
-            p.Validate();
-            checkForExistingProduct(p);
-            setCategory(p);
-            repo.Update(p);
-        }
+       
 
         private void checkIfProductExists(Product p)
         {
@@ -67,44 +123,6 @@ namespace Services
             }
         }
 
-        public Product Get(Guid id)
-        {
-            List<Product> allProducts = repo.GetAll();
-            Product existing = allProducts.Find(prod => prod.Id == id && prod.IsActive == true);
-            if (existing == null) {
-                throw new ProductNotExistingException("No hay producto activo con este id");
-            }
-            return existing;
-        }
-
-        public void Delete(Product p)
-        {
-            Get(p.Id);
-            p.IsActive = false;
-            repo.Update(p);
-        }
-
-        public void ChangeCategory(Guid id, Category c2)
-        {
-            Product p = Get(id);
-            
-            MyContext context = repo.GetContext();
-            if (c2 != null)
-            {
-                Category c = context.Categories.Where(ca => ca.Id == c2.Id).FirstOrDefault();
-                if (c == null)
-                {
-                    throw new ProductChangeCategoryException("La categoría nueva no existe");
-                }
-                if (c2.Equals(p.Category))
-                    throw new ProductChangeCategoryException("El producto ya tiene esta categoría");
-                p.Category = c;
-                
-            }
-            else p.Category = null;
-            
-
-            repo.Update(p);
-        }
+        
     }
 }
