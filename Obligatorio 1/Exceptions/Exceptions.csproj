@@ -67,7 +67,6 @@
     <Compile Include="NotExistingCategoryException.cs" />
     <Compile Include="MissingAddressDataException.cs" />
     <Compile Include="NoUserForAddressException.cs" />
-    <Compile Include="ProductDeleteNotExistingException.cs" />
     <Compile Include="ProductDuplicateException.cs" />
     <Compile Include="ProductMissingDataException.cs" />
     <Compile Include="ProductModifyNotExistingException.cs" />

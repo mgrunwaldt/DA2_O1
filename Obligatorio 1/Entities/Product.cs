@@ -11,14 +11,24 @@ namespace Entities
 {
     public class Product
     {
-        public string Code { get; set; }
-        public string Description { get; set; }
 
         [Key]
         public Guid Id { get; set; }
 
+        public string Code { get; set; }
+        public string Description { get; set; }
+        public bool IsActive { get; set; }
         public string Manufacturer { get; set; }
         public string Name { get; set; }
+        public int Price { get; set; }
+        public virtual Category Category { get; set; }
+
+        public Product()
+        {
+            this.Id = Guid.NewGuid();
+            this.IsActive = true;
+        }
+
 
         public void Validate()
         {
@@ -61,12 +71,9 @@ namespace Entities
                 throw new ProductMissingDataException("No se puede crear un producto sin código");
         }
 
-        public int Price { get; set; }
-        public virtual Category Category { get; set; }
 
-        public Product() {
-            this.Id = Guid.NewGuid();
-        }
+
+       
 
         public override bool Equals(object obj)
         {
@@ -76,5 +83,6 @@ namespace Entities
             }
             return false;
         }
+
     }
 }

@@ -30,7 +30,7 @@ namespace Services
         private void checkForExistingProduct(Product p)
         {
             List<Product> allProducts = repo.GetAll();
-            Product existing = allProducts.Find(prod => prod.Equals(p) && prod.Id != p.Id);
+            Product existing = allProducts.Find(prod => prod.Equals(p) && prod.Id != p.Id && prod.IsActive == true);
             if (existing != null) {
                 throw new ProductDuplicateException("Ya existe un producto con este nombre y/o código");
             }
@@ -60,7 +60,7 @@ namespace Services
         private void checkIfProductExists(Product p)
         {
             List<Product> allProducts = repo.GetAll();
-            Product existing = allProducts.Find(prod => prod.Id == p.Id);
+            Product existing = allProducts.Find(prod => prod.Id == p.Id && prod.IsActive == true);
             if (existing == null)
             {
                 throw new ProductModifyNotExistingException("No se puede modificar un producto que no está en el sistema");
@@ -69,12 +69,19 @@ namespace Services
 
         public Product Get(Guid id)
         {
-            return repo.Get(id);
+            List<Product> allProducts = repo.GetAll();
+            Product existing = allProducts.Find(prod => prod.Id == id && prod.IsActive == true);
+            if (existing == null) {
+                throw new ProductNotExistingException("No hay producto activo con este id");
+            }
+            return existing;
         }
 
         public void Delete(Product p)
         {
-            throw new NotImplementedException();
+            Get(p.Id);
+            p.IsActive = false;
+            repo.Update(p);
         }
     }
 }

@@ -467,7 +467,7 @@ namespace ServicesTests
             Product savedProduct = service.Get(p.Id);
          }
 
-        [ExpectedException(typeof(ProductDeleteNotExistingException))]
+        [ExpectedException(typeof(ProductNotExistingException))]
         [TestMethod]
         public void ProductDeleteNotExistingTest()
         {
