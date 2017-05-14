@@ -86,7 +86,25 @@ namespace Services
 
         public void ChangeCategory(Guid id, Category c2)
         {
-            throw new NotImplementedException();
+            Product p = Get(id);
+            
+            MyContext context = repo.GetContext();
+            if (c2 != null)
+            {
+                Category c = context.Categories.Where(ca => ca.Id == c2.Id).FirstOrDefault();
+                if (c == null)
+                {
+                    throw new ProductChangeCategoryException("La categoría nueva no existe");
+                }
+                if (c2.Equals(p.Category))
+                    throw new ProductChangeCategoryException("El producto ya tiene esta categoría");
+                p.Category = c;
+                
+            }
+            else p.Category = null;
+            
+
+            repo.Update(p);
         }
     }
 }
