@@ -791,6 +791,257 @@ namespace ServicesTests
             Guid wrongId = Guid.NewGuid();
             service.ChangePassword(wrongId, oldPassword, newPassword);
         }
+
+        [TestMethod]
+        public void ModifyUserOkTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            UserService service = getService();
+            service.Register(u, a);
+
+            u.FirstName = "Modificado";
+            service.Modify(u);
+            User savedUser = service.Get(u.Id);
+
+            Assert.IsNotNull(savedUser);
+            Assert.AreEqual("Modificado", savedUser.FirstName);
+        }
+
+        [ExpectedException(typeof(MissingUserDataException))]
+        [TestMethod]
+        public void ModifyUserMissingFirstNameTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            UserService service = getService();
+            service.Register(u, a);
+
+            u.FirstName = null;
+            service.Modify(u);
+        }
+
+        [ExpectedException(typeof(MissingUserDataException))]
+        [TestMethod]
+        public void ModifyUserMissingLastNameTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            UserService service = getService();
+            service.Register(u, a);
+
+            u.LastName = null;
+            service.Modify(u);
+        }
+
+        [ExpectedException(typeof(MissingUserDataException))]
+        [TestMethod]
+        public void ModifyUserMissingPhoneNumberTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            UserService service = getService();
+            service.Register(u, a);
+
+            u.PhoneNumber = null;
+            service.Modify(u);
+        }
+
+        [ExpectedException(typeof(MissingUserDataException))]
+        [TestMethod]
+        public void ModifyUserMissingEmailTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            UserService service = getService();
+            service.Register(u, a);
+
+            u.Email = null;
+            service.Modify(u);
+        }
+
+        [ExpectedException(typeof(MissingUserDataException))]
+        [TestMethod]
+        public void ModifyUserMissingUsernameTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            UserService service = getService();
+            service.Register(u, a);
+
+            u.Username = null;
+            service.Modify(u);
+        }
+
+        [ExpectedException(typeof(WrongNumberFormatException))]
+        [TestMethod]
+        public void ModifyUserWrongPhoneNumberTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            UserService service = getService();
+            service.Register(u, a);
+
+            u.PhoneNumber = "0993";
+            service.Modify(u);
+        }
+
+        [ExpectedException(typeof(WrongEmailFormatException))]
+        [TestMethod]
+        public void ModifyUserWrongEmailTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            UserService service = getService();
+            service.Register(u, a);
+
+            u.Email = "matigmail.com";
+            service.Modify(u);
+        }
+
+        [ExpectedException(typeof(ExistingUsernameException))]
+        [TestMethod]
+        public void ModifyUserExistingUsernameTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+
+            User u2 = new User();
+            u2.FirstName = "Martin";
+            u2.LastName = "Musetti";
+            u2.PhoneNumber = "+59899211266";
+            u2.Password = "prueba1234";
+            u2.Email = "martin@gmail.com";
+            u2.Username = "Martin";
+            Address a2 = new Address();
+            a2.Street = "Miami";
+            a2.StreetNumber = "1766";
+            a2.PhoneNumber = "099211266";
+
+            UserService service = getService();
+            service.Register(u, a);
+            service.Register(u2, a2);
+
+            u2.Username = "Mati";
+            service.Modify(u2);
+        }
+
+        [ExpectedException(typeof(ExistingUsernameException))]
+        [TestMethod]
+        public void ModifyUserExistingEmailTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+
+            User u2 = new User();
+            u2.FirstName = "Martin";
+            u2.LastName = "Musetti";
+            u2.PhoneNumber = "+59899211266";
+            u2.Password = "prueba1234";
+            u2.Email = "martin@gmail.com";
+            u2.Username = "Martin";
+            Address a2 = new Address();
+            a2.Street = "Miami";
+            a2.StreetNumber = "1766";
+            a2.PhoneNumber = "099211266";
+
+            UserService service = getService();
+            service.Register(u, a);
+            service.Register(u2, a2);
+
+            u2.Email = "matigru@gmail.com";
+            service.Modify(u2);
+        }
         //LOGIN
         //Ok con username ----------
         //Ok con mail ----------

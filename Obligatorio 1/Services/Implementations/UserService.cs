@@ -93,7 +93,15 @@ namespace Services
 
         public void Logout(Guid id)
         {
-            throw new NotImplementedException();
+            User u = userRepository.Get(id);
+            if (u != null)
+            {
+                u.Token = "";
+                userRepository.Update(u);
+            }else
+            {
+                throw new NotExistingUserException();
+            }
         }
 
         public void ChangeUserRole(Guid id, int role){
@@ -144,6 +152,11 @@ namespace Services
             {
                 throw new NotExistingUserException();
             }
+        }
+
+        public void Modify(User user)
+        {
+            throw new NotImplementedException();
         }
 
         public List<User> GetAll()

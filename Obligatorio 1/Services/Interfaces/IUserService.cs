@@ -16,5 +16,6 @@ namespace Services
         void Delete(Guid id);
         void ChangePassword(Guid id, string oldPassword, string newPassword);
         void Logout(Guid id);
+        void Modify(User user);
     }
 }
