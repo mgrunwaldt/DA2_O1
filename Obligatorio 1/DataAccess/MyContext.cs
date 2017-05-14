@@ -14,23 +14,11 @@ namespace DataAccess
         public DbSet<Product> Products { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Category> Categories { get; set; }
-
+        public DbSet<Feature> Features { get; set; }
+        public DbSet<ProductFeature> ProductFeatures { get; set; }
         public DbSet<Address> Addresses { get; set; }
-        /*
-         protected override void OnModelCreating(DbModelBuilder modelBuilder)   
-{  
-    modelBuilder.Entity < Vendor > ()  
-        .HasMany(v = > v.VendorProducts)  
-        .WithMany(p = > p.ProductVendors)  
-        .Map(  
-    m = >  
-    {  
-        m.MapLeftKey("VendorId");  
-        m.MapRightKey("ProductId");  
-        m.ToTable("VendorProduct");  
-    });  
-} 
-             */
+        
+      
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             Database.SetInitializer<MyContext>(null);
@@ -47,6 +35,9 @@ namespace DataAccess
         }
 
         public void Empty() {
+            foreach (ProductFeature pf in ProductFeatures) {
+                this.ProductFeatures.Remove(pf);
+            }
             foreach(Product p in Products)
             {
                 this.Products.Remove(p);
@@ -61,6 +52,10 @@ namespace DataAccess
             }
             foreach (Address a in Addresses) {
                 this.Addresses.Remove(a);
+            }
+            foreach (Feature f in Features)
+            {
+                this.Features.Remove(f);
             }
             this.SaveChanges();
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Entities;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,33 @@ namespace ServicesTests
     [TestClass]
     public class ReviewServiceTests
     {
+       /* private ReviewService getService()
+        {
+            GenericRepository<Review> repoInstance = new GenericRepository<Review>(true);
+            return new ReviewService(repoInstance);
+        }
+
+        private Product getProduct() {
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc1";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            
+        }
+
+        private Order getOrder() {
+
+        }
+
+        [TestMethod]
+        public void ReviewOkTest() {
+            ReviewService service = getService();
+
+
+        }*/
+        //produxt id order id texto
         //EVALUATE PRODUCT
         //OK
         //No user

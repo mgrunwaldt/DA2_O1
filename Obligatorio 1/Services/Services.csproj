@@ -49,15 +49,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FeatureService.cs" />
     <Compile Include="Implementations\CategoryService.cs" />
     <Compile Include="Interfaces\ICategoryService.cs" />
     <Compile Include="Implementations\AddressService.cs" />
     <Compile Include="Interfaces\IAddressService.cs" />
+    <Compile Include="Interfaces\IProductService.cs" />
     <Compile Include="Interfaces\IUserService.cs" />
+    <Compile Include="Implementations\ProductService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Implementations\UserService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DataAccess\DataAccess.csproj">
+      <Project>{6E65EDF5-7B22-4CE8-A034-179205774C84}</Project>
+      <Name>DataAccess</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Entities\Entities.csproj">
       <Project>{a745634b-78da-4125-a399-55c3a5f388f3}</Project>
       <Name>Entities</Name>

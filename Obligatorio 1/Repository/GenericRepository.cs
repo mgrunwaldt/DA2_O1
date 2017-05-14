@@ -15,6 +15,11 @@ namespace Repository
         internal DbSet<TEntity> dbSet;
         internal MyContext context;
 
+        public MyContext GetContext()
+        {
+            return context;
+        }
+
         public GenericRepository(bool forTest = false)
         {
             Initialize();
