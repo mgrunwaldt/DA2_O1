@@ -55,6 +55,8 @@
     <Compile Include="AddressWithoutPhoneNumberException.cs" />
     <Compile Include="AddressWithoutStreetException.cs" />
     <Compile Include="AddressWithoutStreetNumberException.cs" />
+    <Compile Include="NoLoginDataMatchException.cs" />
+    <Compile Include="NotExistingUserException.cs" />
     <Compile Include="ExistingEmailException.cs" />
     <Compile Include="ExistingCategoryNameException.cs" />
     <Compile Include="ExistingUsernameException.cs" />
@@ -67,6 +69,7 @@
     <Compile Include="NoFeatureException.cs" />
     <Compile Include="NotExistingCategoryException.cs" />
     <Compile Include="MissingAddressDataException.cs" />
+    <Compile Include="NotExistingUserRoleException.cs" />
     <Compile Include="NoUserForAddressException.cs" />
     <Compile Include="ProductChangeCategoryException.cs" />
     <Compile Include="ProductDuplicateException.cs" />

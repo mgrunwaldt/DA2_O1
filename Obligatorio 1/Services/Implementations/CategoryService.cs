@@ -54,7 +54,9 @@ namespace Services.Implementations
 
         public void Modify(Category c, string name, string description)
         {
-            checkForExistingName(name);
+            if (c.Name != name) {
+                checkForExistingName(name);
+            }
             c.Name = name;
             c.Description = description;
             c.Validate();

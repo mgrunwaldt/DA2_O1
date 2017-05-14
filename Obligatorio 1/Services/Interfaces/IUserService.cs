@@ -9,5 +9,13 @@ namespace Services
     public interface IUserService
     {
         void Register(User u, Address a);
+        string Login(string identifier, string password);
+        List<User> GetAll();
+        User Get(Guid id);
+        void ChangeUserRole(Guid id, int role);
+        void Delete(Guid id);
+        void ChangePassword(Guid id, string oldPassword, string newPassword);
+        void Logout(Guid id);
+        void Modify(User user);
     }
 }

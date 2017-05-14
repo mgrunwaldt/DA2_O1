@@ -15,6 +15,7 @@ namespace Entities
         }
 
         public string Email { get; set; }
+        public string Token { get; set; }
         public string FirstName { get; set; }
         public virtual Address Address {get;set;}
         [Key]
@@ -79,6 +80,7 @@ namespace Entities
         public string Password { get; set; }
         public string PhoneNumber { get; set; }
         public string Username { get; set; }
+        public int Role { get; set; }
         public virtual ICollection<Address> Addresses { get; set; }
     }
 }
