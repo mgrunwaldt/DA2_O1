@@ -1,15 +1,54 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Entities;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Repository;
+using Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Entities.Statuses_And_Roles;
 
 namespace ServicesTests
 {
     [TestClass]
     class OrderServiceTests
     {
+        private UserService getUserService()
+        {
+            GenericRepository<User> repo = new GenericRepository<User>();
+            return new UserService(repo);
+        }
+
+        private OrderService getOrderService()
+        {
+            GenericRepository<Order> repo = new GenericRepository<Order>(true);
+            return new OrderService(repo);
+        }
+
+        [TestMethod]
+        public void RegisterUserCreateOrderOkTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            OrderService orderService = getOrderService();
+            UserService userService = getUserService();
+            
+            userService.Register(u, a);
+
+            Order order = orderService.GetActiveOrderFromUser(u);
+            Assert.IsNotNull(order);
+            Assert.AreEqual(OrderStatuses.WAITING_FOR_ADDRESS, order.Status);
+        }
         //Create User, new empty order
 
         //ADD PRODUCT:
