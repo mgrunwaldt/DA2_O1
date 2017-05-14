@@ -997,7 +997,7 @@ namespace ServicesTests
             Address a2 = new Address();
             a2.Street = "Miami";
             a2.StreetNumber = "1766";
-            a2.PhoneNumber = "099211266";
+            a2.PhoneNumber = "26002540";
 
             UserService service = getService();
             service.Register(u, a);
@@ -1007,7 +1007,7 @@ namespace ServicesTests
             service.Modify(u2);
         }
 
-        [ExpectedException(typeof(ExistingUsernameException))]
+        [ExpectedException(typeof(ExistingEmailException))]
         [TestMethod]
         public void ModifyUserExistingEmailTest()
         {
@@ -1033,7 +1033,7 @@ namespace ServicesTests
             Address a2 = new Address();
             a2.Street = "Miami";
             a2.StreetNumber = "1766";
-            a2.PhoneNumber = "099211266";
+            a2.PhoneNumber = "26002540";
 
             UserService service = getService();
             service.Register(u, a);

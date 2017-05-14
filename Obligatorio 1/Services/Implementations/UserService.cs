@@ -17,8 +17,8 @@ namespace Services
         public void Register(User u, Address a)
         {
             u.Validate();
-            checkForExistingEmail(u.Email);
-            checkForExistingUsername(u.Username);
+            checkForExistingEmail(u, u.Email);
+            checkForExistingUsername(u, u.Username);
             checkPasswordFormat(u.Password);
             u.Password = EncryptionHelper.GetMD5(u.Password);
             u.PhoneNumber = PhoneHelper.GetPhoneWithCorrectFormat(u.PhoneNumber);
@@ -35,19 +35,19 @@ namespace Services
             }
         }
 
-        private void checkForExistingEmail(String email) {
+        private void checkForExistingEmail(User u, String email) {
             List<User> allUsers = userRepository.GetAll();
-            var existingUser = allUsers.Find(user => user.Email == email);
+            var existingUser = allUsers.Find(user => user.Email == email && user.Id != u.Id);
             if (existingUser != null) {
-                throw new ExistingEmailException("Ya existe un usuario con este email");
+                    throw new ExistingEmailException("Ya existe un usuario con este email");
             }
         }
 
-        private void checkForExistingUsername(String username) {
+        private void checkForExistingUsername(User u, String username) {
             List<User> allUsers = userRepository.GetAll();
-            var existingUser = allUsers.Find(user => user.Username == username);
+            var existingUser = allUsers.Find(user => user.Username == username && user.Id != u.Id);
             if (existingUser != null) {
-                throw new ExistingUsernameException("Ya existe un usuario con este nombre de usuario");
+                    throw new ExistingUsernameException("Ya existe un usuario con este nombre de usuario");
             }
         }
 
@@ -156,7 +156,13 @@ namespace Services
 
         public void Modify(User user)
         {
-            throw new NotImplementedException();
+            List<User> all = userRepository.GetAll();
+            user.Validate();
+            checkForExistingEmail(user, user.Email);
+            checkForExistingUsername(user, user.Username);
+            user.PhoneNumber = PhoneHelper.GetPhoneWithCorrectFormat(user.PhoneNumber);
+            EmailHelper.CheckEmailFormat(user.Email);
+            userRepository.Update(user);
         }
 
         public List<User> GetAll()
