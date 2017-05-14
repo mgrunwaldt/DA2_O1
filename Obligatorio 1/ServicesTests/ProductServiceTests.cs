@@ -49,8 +49,8 @@ namespace ServicesTests
             p.Price = 100;
             p.Category = getCategory();
             service.Add(p);
-            GenericRepository<Product> repo = new GenericRepository<Product>();
-            Product savedProduct = repo.Get(p.Id);
+            Product savedProduct = service.Get(p.Id);
+
             Assert.IsNotNull(savedProduct);
         }
 
@@ -65,8 +65,8 @@ namespace ServicesTests
             p.Name = "Name";
             p.Price = 100;
             service.Add(p);
-            GenericRepository<Product> repo = new GenericRepository<Product>();
-            Product savedProduct = repo.Get(p.Id);
+            Product savedProduct = service.Get(p.Id);
+
             Assert.IsNotNull(savedProduct);
         }
 
@@ -234,8 +234,8 @@ namespace ServicesTests
             service.Add(p);
             p.Name = "Cambiado";
             service.Modify(p);
-            GenericRepository<Product> repo = new GenericRepository<Product>();
-            Product savedProduct = repo.Get(p.Id);
+            Product savedProduct = service.Get(p.Id);
+
             Assert.IsNotNull(savedProduct);
             Assert.AreEqual("Cambiado",savedProduct.Name);
         }
@@ -254,8 +254,8 @@ namespace ServicesTests
             service.Add(p);
             p.Category = null;
             service.Modify(p);
-            GenericRepository<Product> repo = new GenericRepository<Product>();
-            Product savedProduct = repo.Get(p.Id);
+            Product savedProduct = service.Get(p.Id);
+
             Assert.IsNotNull(savedProduct);
             Assert.IsNull(savedProduct.Category);
         }
@@ -450,12 +450,40 @@ namespace ServicesTests
             ProductService service = getService();
             service.Modify(p);
         }
-      
+
+        [ExpectedException (typeof(ProductNotExistingException))]
+        [TestMethod]
+        public void ProductDeleteOkTest() {//FALTA BORRAR ORDER PRODUCTS DE ORDENES WAITING FOR SHIPPING, NO LLAMO A DELETE, CAMBIO ACTIVE A 0, ESO CAMBIA LOS GET!!!!
+            ProductService service = getService();
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            p.Category = getCategory();
+            service.Add(p);
+            service.Delete(p);
+            Product savedProduct = service.Get(p.Id);
+         }
+
+        [ExpectedException(typeof(ProductDeleteNotExistingException))]
+        [TestMethod]
+        public void ProductDeleteNotExistingTest()
+        {
+            ProductService service = getService();
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            p.Category = getCategory();
+            service.Delete(p);
+        }
+
 
         //DELETE
-        //OK
-        //NO Product
-        //Wrong User Role
         //Delete con ordenes con este producto (borro order products de ordenes haciendose), cambio active a 0
 
         //Change Category
