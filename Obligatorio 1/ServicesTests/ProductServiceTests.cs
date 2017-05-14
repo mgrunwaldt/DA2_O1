@@ -172,7 +172,7 @@ namespace ServicesTests
 
         [ExpectedException(typeof(ProductDuplicateException))]
         [TestMethod]
-        public void ProductCreateDuplicateNamePriceTest()
+        public void ProductCreateDuplicateNameTest()
         {
             ProductService service = getService();
             Product p = new Product();
@@ -181,7 +181,8 @@ namespace ServicesTests
             p.Manufacturer = "Manu";
             p.Name = "nombre";
             p.Price = 100;
-            p.Category = getCategory();
+            Category cat = getCategory();
+            p.Category = cat;
             service.Add(p);
 
             Product p2 = new Product();
@@ -190,13 +191,13 @@ namespace ServicesTests
             p2.Manufacturer = "Manu";
             p2.Name = "nombre";
             p2.Price = 100;
-            p2.Category = getCategory();
+            p2.Category = cat;
             service.Add(p2);
         }
 
         [ExpectedException(typeof(ProductDuplicateException))]
         [TestMethod]
-        public void ProductCreateDuplicateCodePriceTest()
+        public void ProductCreateDuplicateCodeTest()
         {
             ProductService service = getService();
             Product p = new Product();
@@ -205,7 +206,9 @@ namespace ServicesTests
             p.Manufacturer = "Manu";
             p.Name = "nombre";
             p.Price = 100;
-            p.Category = getCategory();
+            Category cat = getCategory();
+
+            p.Category = cat;
             service.Add(p);
 
             Product p2 = new Product();
@@ -214,7 +217,7 @@ namespace ServicesTests
             p2.Manufacturer = "Manu";
             p2.Name = "Hola";
             p2.Price = 100;
-            p2.Category = getCategory();
+            p2.Category = cat;
             service.Add(p2);
         }
 
@@ -388,7 +391,9 @@ namespace ServicesTests
             p.Manufacturer = "Manu";
             p.Name = "Name";
             p.Price = 100;
-            p.Category = getCategory();
+            Category cat = getCategory();
+
+            p.Category = cat;
             service.Add(p);
 
             Product p2 = new Product();
@@ -397,7 +402,7 @@ namespace ServicesTests
             p2.Manufacturer = "Manu";
             p2.Name = "Nombre";
             p2.Price = 100;
-            p2.Category = getCategory();
+            p2.Category = cat;
             service.Add(p2);
 
             p2.Name = "Name";
@@ -416,7 +421,8 @@ namespace ServicesTests
             p.Manufacturer = "Manu";
             p.Name = "Name";
             p.Price = 100;
-            p.Category = getCategory();
+            Category cat = getCategory();
+            p.Category = cat;
             service.Add(p);
 
             Product p2 = new Product();
@@ -425,7 +431,7 @@ namespace ServicesTests
             p2.Manufacturer = "Manu";
             p2.Name = "Nombre";
             p2.Price = 100;
-            p2.Category = getCategory();
+            p2.Category = cat;
             service.Add(p2);
 
             p2.Code = "1234";

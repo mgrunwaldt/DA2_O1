@@ -30,7 +30,7 @@ namespace Services
         private void checkForExistingProduct(Product p)
         {
             List<Product> allProducts = repo.GetAll();
-            Product existing = allProducts.Find(prod => prod == p);
+            Product existing = allProducts.Find(prod => prod.Equals(p) && prod.Id != p.Id);
             if (existing != null) {
                 throw new ProductDuplicateException("Ya existe un producto con este nombre y/o código");
             }
@@ -45,6 +45,25 @@ namespace Services
                 if (c == null)
                     throw new NotExistingCategoryException("La categoría asignada a este producto no existe");
                 p.Category = c;
+            }
+        }
+
+        public void Modify(Product p)
+        {
+            checkIfProductExists(p);
+            p.Validate();
+            checkForExistingProduct(p);
+            setCategory(p);
+            repo.Update(p);
+        }
+
+        private void checkIfProductExists(Product p)
+        {
+            List<Product> allProducts = repo.GetAll();
+            Product existing = allProducts.Find(prod => prod.Id == p.Id);
+            if (existing == null)
+            {
+                throw new ProductModifyNotExistingException("No se puede modificar un producto que no está en el sistema");
             }
         }
     }
