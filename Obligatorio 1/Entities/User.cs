@@ -15,6 +15,7 @@ namespace Entities
         }
 
         public string Email { get; set; }
+        public string Token { get; set; }
         public string FirstName { get; set; }
         public virtual Address Address {get;set;}
         [Key]

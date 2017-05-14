@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Tools;
 namespace Services
 {
-    public class UserService:IUserService
+    public class UserService : IUserService
     {
 
         private IGenericRepository<User> userRepository;
@@ -49,6 +49,10 @@ namespace Services
                 throw new ExistingUsernameException("Ya existe un usuario con este nombre de usuario");
             }
         }
+
+        public string Login(string identifier, string password) {
+            throw new NotImplementedException();
+        } 
        
     }
 }

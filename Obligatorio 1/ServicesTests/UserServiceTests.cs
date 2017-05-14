@@ -399,11 +399,105 @@ namespace ServicesTests
 
         }
 
+        [TestMethod]
+        public void LoginWithUsernameOkTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            UserService service = getService();
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            service.Register(u, a);
+
+            string userUsername = "Mati";
+            string hashedPass = EncryptionHelper.GetMD5("prueba1234");
+            string token = service.Login(userUsername, hashedPass);
+            Assert.AreEqual(token.Length, 32);
+        }
+
+        [TestMethod]
+        public void LoginWithEmailOkTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            UserService service = getService();
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            service.Register(u, a);
+
+            string userEmail = "matigru@gmail.com";
+            string hashedPass = EncryptionHelper.GetMD5("prueba1234");
+            string token = service.Login(userEmail, hashedPass);
+            Assert.AreEqual(token.Length, 32);
+        }
+
+        [ExpectedException(typeof(NotExistingUsernameException))]
+        [TestMethod]
+        public void LoginNotExistingUsernameTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            UserService service = getService();
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            service.Register(u, a);
+
+            string userUsername = "Matias4";
+            string hashedPass = EncryptionHelper.GetMD5("prueba1234");
+            string token = service.Login(userUsername, hashedPass);
+        }
+
+        [ExpectedException(typeof(NotExistingEmailException))]
+        [TestMethod]
+        public void LoginNotExistingEmailTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            UserService service = getService();
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            service.Register(u, a);
+
+            string userEmail = "matigru@gmail.com";
+            string hashedPass = EncryptionHelper.GetMD5("prueba442");
+            string token = service.Login(userEmail, hashedPass);
+        }
+
+
         //LOGIN
-        //Ok
-        //No existing username
-        //No existing email
-        //No match
+        //Ok con username ----------
+        //Ok con mail ----------
+        //No existing username ----------
+        //No existing email ----------
+        //No match ----------
 
         //Logout
         //Ok

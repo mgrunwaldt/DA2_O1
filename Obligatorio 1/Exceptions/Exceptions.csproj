@@ -52,6 +52,9 @@
     <Compile Include="AddressWithoutPhoneNumberException.cs" />
     <Compile Include="AddressWithoutStreetException.cs" />
     <Compile Include="AddressWithoutStreetNumberException.cs" />
+    <Compile Include="NoLoginDataMatchException.cs" />
+    <Compile Include="NotExistingEmailException.cs" />
+    <Compile Include="NotExistingUsernameException.cs" />
     <Compile Include="ExistingEmailException.cs" />
     <Compile Include="ExistingCategoryNameException.cs" />
     <Compile Include="ExistingUsernameException.cs" />
