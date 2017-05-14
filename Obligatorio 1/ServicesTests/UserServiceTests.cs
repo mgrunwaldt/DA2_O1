@@ -486,7 +486,7 @@ namespace ServicesTests
             a.PhoneNumber = "26007263";
             service.Register(u, a);
 
-            string userEmail = "matigru@gmail.com";
+            string userEmail = "matias@gmail.com";
             string hashedPass = EncryptionHelper.GetMD5("prueba442");
             string token = service.Login(userEmail, hashedPass);
         }

@@ -51,7 +51,43 @@ namespace Services
         }
 
         public string Login(string identifier, string password) {
-            throw new NotImplementedException();
+            List<User> users = userRepository.GetAll();
+            if (identifier.Contains("@"))
+            {
+                foreach (var user in users) {
+                    if (user.Email == identifier) {
+                        if (user.Password == password)
+                        {
+                            string token = TokenHelper.CreateToken();
+                            user.Token = token;
+                            return token;
+                        }
+                        else {
+                            throw new WrongPasswordException("Contraseña incorrecta para ese usuario");
+                        }
+                    }
+                }
+                throw new NotExistingEmailException("No existe el email especificado");      
+            }
+            else {
+                foreach (var user in users)
+                {
+                    if (user.Username == identifier)
+                    {
+                        if (user.Password == password)
+                        {
+                            string token = TokenHelper.CreateToken();
+                            user.Token = token;
+                            return token;
+                        }
+                        else
+                        {
+                            throw new WrongPasswordException("Contraseña incorrecta para ese usuario");
+                        }
+                    }
+                }
+                throw new NotExistingUsernameException("No existe el nombre de usuario especificado");
+            }
         } 
        
     }
