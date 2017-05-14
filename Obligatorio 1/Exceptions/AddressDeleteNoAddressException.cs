@@ -1,6 +1,14 @@
 ﻿namespace Exceptions
 {
-    public class AddressDeleteNoAddressException
+
+    public class AddressDeleteNoAddressException : System.Exception
     {
+        public AddressDeleteNoAddressException()
+        {
+        }
+
+        public AddressDeleteNoAddressException(string message) : base(message)
+        {
+        }
     }
 }
