@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Entities;
 using Repository;
-
+using Exceptions;
 namespace Services
 {
     public class FeatureService
@@ -16,12 +16,23 @@ namespace Services
 
         public void Add(Feature feature)
         {
-            throw new NotImplementedException();
+            feature.Validate();
+            checkForExistingFeature(feature);
+            repo.Add(feature);
+        }
+
+        private void checkForExistingFeature(Feature f)
+        {
+            List < Feature > allFeatures = repo.GetAll();
+            Feature existing = allFeatures.Find(feature => feature.Name == f.Name && feature.Type == f.Type);
+            if (existing != null) {
+                throw new FeatureExistingCombinationException("No se puede tener dos atributos del mismo tipo y mismo nombre");
+            }
         }
 
         public List<Feature> GetAll()
         {
-            throw new NotImplementedException();
+            return repo.GetAll();
         }
     }
 }

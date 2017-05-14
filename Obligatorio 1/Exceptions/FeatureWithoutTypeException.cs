@@ -1,6 +1,15 @@
-﻿namespace Exceptions
+﻿using System;
+
+namespace Exceptions
 {
-    public class FeatureWithoutTypeException
+      public class FeatureWithoutTypeException : Exception
     {
+        public FeatureWithoutTypeException()
+        {
+        }
+
+        public FeatureWithoutTypeException(string message) : base(message)
+        {
+        }
     }
 }

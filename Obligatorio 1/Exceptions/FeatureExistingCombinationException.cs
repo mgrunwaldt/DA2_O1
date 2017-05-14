@@ -1,6 +1,16 @@
-﻿namespace Exceptions
+﻿using System;
+
+namespace Exceptions
 {
-    public class FeatureExistingCombinationException
+    
+    public class FeatureExistingCombinationException : Exception
     {
+        public FeatureExistingCombinationException()
+        {
+        }
+
+        public FeatureExistingCombinationException(string message) : base(message)
+        {
+        }
     }
 }

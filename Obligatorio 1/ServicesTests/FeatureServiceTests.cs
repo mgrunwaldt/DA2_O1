@@ -15,17 +15,11 @@ namespace ServicesTests
     [TestClass]
     public class FeatureServiceTests
     {
-        GenericRepository<Feature> repo {
-            get
-            {
-                if (repo == null)
-                    return new GenericRepository<Feature>(true);
-                return repo;
-            }
-        } 
+       
         private FeatureService getService()
         {
-            return new FeatureService(repo);
+            GenericRepository<Feature>  repoInstance = new GenericRepository<Feature>(true);
+            return new FeatureService(repoInstance);
         }
 
         [TestMethod]
@@ -35,6 +29,8 @@ namespace ServicesTests
             feature.Type = FeatureTypes.STRING;
             feature.Name = "Color";
             service.Add(feature);
+
+            GenericRepository<Feature> repo = new GenericRepository<Feature>();
 
             Feature savedFeature = repo.Get(feature.Id);
             Assert.IsNotNull(savedFeature);
@@ -49,6 +45,8 @@ namespace ServicesTests
             feature.Name = "Peso";
             service.Add(feature);
 
+            GenericRepository<Feature> repo = new GenericRepository<Feature>();
+
             Feature savedFeature = repo.Get(feature.Id);
             Assert.IsNotNull(savedFeature);
 
@@ -62,6 +60,7 @@ namespace ServicesTests
             feature.Type = FeatureTypes.DATE;
             feature.Name = "Vencimiento";
             service.Add(feature);
+            GenericRepository<Feature> repo = new GenericRepository<Feature>();
 
             Feature savedFeature = repo.Get(feature.Id);
             Assert.IsNotNull(savedFeature);
@@ -116,6 +115,7 @@ namespace ServicesTests
             service.Add(feature2);
         }
 
+        [TestMethod]
         public void AttributeGetAllTest() {
             FeatureService service = getService();
             Feature feature = new Feature();
@@ -126,14 +126,13 @@ namespace ServicesTests
             Feature feature2 = new Feature();
             feature2.Type = FeatureTypes.STRING;
             feature2.Name = "Talle";
-            service.Add(feature);
             service.Add(feature2);
 
             List<Feature> allFeatures = service.GetAll();
-            Assert.AreEqual(2, allFeatures.Count);
-            Feature savedFeature = repo.Get(feature.Id);
+            Assert.AreEqual(2, allFeatures.Count());
+            Feature savedFeature = allFeatures.Find(ft => ft.Id == feature.Id);
             Assert.IsNotNull(savedFeature);
-            Feature savedFeature2 = repo.Get(feature2.Id);
+            Feature savedFeature2 = allFeatures.Find(ft => ft.Id == feature2.Id);
             Assert.IsNotNull(savedFeature2);
         }
 

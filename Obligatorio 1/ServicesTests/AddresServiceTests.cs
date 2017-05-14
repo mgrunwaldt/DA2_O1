@@ -164,7 +164,7 @@ namespace ServicesTests
             service.AddAddress(a, u);
         }
 
-        [TestMethod]
+/*        [TestMethod]
         public void AddExistingAddressToDifferentUserTest()
         {
             Address a = new Address();
@@ -198,7 +198,7 @@ namespace ServicesTests
             Assert.IsTrue(userTwoHasAddress);
             Assert.AreEqual(a.Id, a2.Id);
         }
-
+        */
         [TestMethod]
         public void AddMultipleAddressesToOneUser()
         {

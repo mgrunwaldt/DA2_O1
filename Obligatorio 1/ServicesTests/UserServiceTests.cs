@@ -364,7 +364,7 @@ namespace ServicesTests
             Assert.AreNotEqual(Guid.Empty, u.Address.Id);
         }
 
-        [TestMethod]
+     /*   [TestMethod]
         public void TwoUsersOneAddressTest()
         {
             User u = new User();
@@ -397,7 +397,7 @@ namespace ServicesTests
 
             Assert.AreEqual(u.Address.Id, u2.Address.Id);
 
-        }
+        }*/
 
         //LOGIN
         //Ok
