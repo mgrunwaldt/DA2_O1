@@ -66,5 +66,15 @@ namespace Services
                 throw new ProductModifyNotExistingException("No se puede modificar un producto que no está en el sistema");
             }
         }
+
+        public Product Get(Guid id)
+        {
+            return repo.Get(id);
+        }
+
+        public void Delete(Product p)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
