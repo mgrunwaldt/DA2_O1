@@ -36,7 +36,17 @@ namespace ServicesTests
             return c;
         }
 
-        
+        private Category getOtherCategory()
+        {
+            Category c = new Category();
+            c.Name = "Nombre Cat 2";
+            c.Description = "Description Cat 2";
+            CategoryService service = getCategoryService();
+            service.Add(c);
+            return c;
+        }
+
+
         [TestMethod]
         public void ProductCreateOkTest()
         {
@@ -482,16 +492,89 @@ namespace ServicesTests
             service.Delete(p);
         }
 
-
-        //DELETE
         //Delete con ordenes con este producto (borro order products de ordenes haciendose), cambio active a 0
 
-        //Change Category
-        //Ok
-        //Wrong Category
-        //No category
-        //No Product
-        //Wrong User Role
+        [TestMethod]
+        public void ProductChangeCategoryOkTest() {
+            ProductService service = getService();
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            p.Category = getCategory();
+            service.Add(p);
+
+            Category c2 = getOtherCategory();
+            service.ChangeCategory(p.Id, c2);
+
+            Product savedProduct = service.Get(p.Id);
+            Assert.AreEqual(c2.Id, savedProduct.Category.Id);
+        }
+
+        [TestMethod]
+        public void ProductChangeCategoryNoCategoryOkTest()
+        {
+            ProductService service = getService();
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            p.Category = getCategory();
+            service.Add(p);
+
+            service.ChangeCategory(p.Id, null);
+
+            Product savedProduct = service.Get(p.Id);
+            Assert.AreEqual(null, savedProduct.Category);
+        }
+
+        [ExpectedException (typeof(ProductChangeCategoryException))]
+        [TestMethod]
+        public void ProductChangeCategorySameCategoryTest()
+        {
+            ProductService service = getService();
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            Category cat = getCategory();
+            p.Category = cat;
+            service.Add(p);
+            service.ChangeCategory(p.Id, cat);
+        }
+
+        [ExpectedException(typeof(ProductChangeCategoryException))]
+        [TestMethod]
+        public void ProductChangeCategoryWrongCategoryTest()
+        {
+            ProductService service = getService();
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            Category cat = getCategory();
+            p.Category = cat;
+            service.Add(p);
+            service.ChangeCategory(p.Id, new Category());
+        }
+
+        [ExpectedException(typeof(ProductNotExistingException))]
+        [TestMethod]
+        public void ProductChangeCategoryNoProductTest() {
+            ProductService service = getService();
+            Product p = new Product();
+            Category cat = getCategory();
+            service.ChangeCategory(p.Id, cat);
+        }
+
 
         //ADD ATTRIBUTE
         //Ok
