@@ -218,24 +218,233 @@ namespace ServicesTests
             service.Add(p2);
         }
 
+        [TestMethod]
+        public void ProductModifyOkTest() {
+            ProductService service = getService();
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            p.Category = getCategory();
+            service.Add(p);
+            p.Name = "Cambiado";
+            service.Modify(p);
+            GenericRepository<Product> repo = new GenericRepository<Product>();
+            Product savedProduct = repo.Get(p.Id);
+            Assert.IsNotNull(savedProduct);
+            Assert.AreEqual("Cambiado",savedProduct.Name);
+        }
 
-        //MODIFY
-        //OK
-        //No category(bien)
-        // Wrong Category
-        //Product no User
-        //No Name
-        //No Code
-        //No Description
-        //No manufacturer
-        //No Price
-        //Negative Price
-        //Existing Name
-        //Existing Code
-        //Wrong User Role
-        //Not Existing Product
-        //Existing Name
-        //Existing Code
+        [TestMethod]
+        public void ProductModifyNoCategoryOkTest()
+        {
+            ProductService service = getService();
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            p.Category = getCategory();
+            service.Add(p);
+            p.Category = null;
+            service.Modify(p);
+            GenericRepository<Product> repo = new GenericRepository<Product>();
+            Product savedProduct = repo.Get(p.Id);
+            Assert.IsNotNull(savedProduct);
+            Assert.IsNull(savedProduct.Category);
+        }
+
+        [ExpectedException(typeof(NotExistingCategoryException))]
+        [TestMethod]
+        public void ProductModifyWrongCategoryTest()
+        {
+            ProductService service = getService();
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            p.Category = getCategory();
+            service.Add(p);
+            p.Category = new Category();
+            service.Modify(p);
+        }
+
+        [ExpectedException(typeof(ProductMissingDataException))]
+        [TestMethod]
+        public void ProductModifyNoNameTest()
+        {
+            ProductService service = getService();
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            p.Category = getCategory();
+            service.Add(p);
+            p.Name = "";
+            service.Modify(p);
+        }
+
+        [ExpectedException(typeof(ProductMissingDataException))]
+        [TestMethod]
+        public void ProductModifyNoCodeTest()
+        {
+            ProductService service = getService();
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            p.Category = getCategory();
+            service.Add(p);
+            p.Code = "";
+            service.Modify(p);
+        }
+
+        [ExpectedException(typeof(ProductMissingDataException))]
+        [TestMethod]
+        public void ProductModifyNoDescriptionTest()
+        {
+            ProductService service = getService();
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            p.Category = getCategory();
+            service.Add(p);
+            p.Description = "";
+            service.Modify(p);
+        }
+
+        [ExpectedException(typeof(ProductMissingDataException))]
+        [TestMethod]
+        public void ProductModifyNoManufacturerTest()
+        {
+            ProductService service = getService();
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            p.Category = getCategory();
+            service.Add(p);
+            p.Manufacturer = "";
+            service.Modify(p);
+        }
+
+        [ExpectedException(typeof(ProductMissingDataException))]
+        [TestMethod]
+        public void ProductModifyNoPriceTest()
+        {
+            ProductService service = getService();
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            p.Category = getCategory();
+            service.Add(p);
+            p.Price = 0;
+            service.Modify(p);
+        }
+
+        [ExpectedException(typeof(ProductWrongPriceException))]
+        [TestMethod]
+        public void ProductModifyNegativePriceTest()
+        {
+            ProductService service = getService();
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            p.Category = getCategory();
+            service.Add(p);
+            p.Price = -10;
+            service.Modify(p);
+        }
+
+        [ExpectedException(typeof(ProductDuplicateException))]
+        [TestMethod]
+        public void ProductModifyDuplicateNameTest()
+        {
+            ProductService service = getService();
+
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            p.Category = getCategory();
+            service.Add(p);
+
+            Product p2 = new Product();
+            p2.Code = "12345";
+            p2.Description = "Desc";
+            p2.Manufacturer = "Manu";
+            p2.Name = "Nombre";
+            p2.Price = 100;
+            p2.Category = getCategory();
+            service.Add(p2);
+
+            p2.Name = "Name";
+            service.Modify(p2);
+        }
+
+        [ExpectedException(typeof(ProductDuplicateException))]
+        [TestMethod]
+        public void ProductModifyDuplicateCodeTest()
+        {
+            ProductService service = getService();
+
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            p.Category = getCategory();
+            service.Add(p);
+
+            Product p2 = new Product();
+            p2.Code = "12345";
+            p2.Description = "Desc";
+            p2.Manufacturer = "Manu";
+            p2.Name = "Nombre";
+            p2.Price = 100;
+            p2.Category = getCategory();
+            service.Add(p2);
+
+            p2.Code = "1234";
+            service.Modify(p2);
+        }
+
+        [ExpectedException(typeof(ProductModifyNotExistingException))]
+        [TestMethod]
+        public void ProductModifyNotExistingTest() {
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            ProductService service = getService();
+            service.Modify(p);
+        }
+      
 
         //DELETE
         //OK
