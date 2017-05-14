@@ -9,5 +9,9 @@ namespace Services
     public interface IUserService
     {
         void Register(User u, Address a);
+        string Login(string identifier, string password);
+        List<User> GetAll();
+        User Get(Guid id);
+        void ChangeUserRole(Guid id, int role);
     }
 }

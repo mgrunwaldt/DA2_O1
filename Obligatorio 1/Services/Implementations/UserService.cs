@@ -25,6 +25,7 @@ namespace Services
             EmailHelper.CheckEmailFormat(u.Email);
             a.Validate();
             u.Address = a;
+            u.Role = 1;
             userRepository.Add(u);
         }
 
@@ -63,11 +64,11 @@ namespace Services
                             return token;
                         }
                         else {
-                            throw new WrongPasswordException("Contraseña incorrecta para ese usuario");
+                            throw new NoLoginDataMatchException("Contraseña incorrecta para ese usuario");
                         }
                     }
                 }
-                throw new NotExistingEmailException("No existe el email especificado");      
+                throw new NotExistingUserException("No existe el email especificado");
             }
             else {
                 foreach (var user in users)
@@ -82,13 +83,28 @@ namespace Services
                         }
                         else
                         {
-                            throw new WrongPasswordException("Contraseña incorrecta para ese usuario");
+                            throw new NoLoginDataMatchException("Contraseña incorrecta para ese usuario");
                         }
                     }
                 }
-                throw new NotExistingUsernameException("No existe el nombre de usuario especificado");
+                throw new NotExistingUserException("No existe el nombre de usuario especificado");
             }
-        } 
-       
+        }
+
+        public void ChangeUserRole(Guid id, int role){
+            throw new NotImplementedException();
+        }
+
+        public List<User> GetAll()
+        {
+            return userRepository.GetAll();
+        }
+
+        public User Get(Guid id)
+        {
+            return userRepository.Get(id);
+        }
+
+
     }
 }
