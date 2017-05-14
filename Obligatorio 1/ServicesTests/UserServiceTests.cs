@@ -628,6 +628,75 @@ namespace ServicesTests
             int newRole = 5;
             service.ChangeUserRole(u.Id, newRole);
         }
+
+        [TestMethod]
+        public void DeleteUserOkTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            UserService service = getService();
+            service.Register(u, a);
+
+            User u2 = new User();
+            u2.FirstName = "Martin";
+            u2.LastName = "Musetti";
+            u2.PhoneNumber = "+59899211266";
+            u2.Password = "prueba12345";
+            u2.Email = "martinmusetti@gmail.com";
+            u2.Username = "Martin";
+            Address a2 = new Address();
+            a2.Street = "Miami";
+            a2.StreetNumber = "1766";
+            a2.PhoneNumber = "26002540";
+            service.Register(u2, a2);
+
+            service.Delete(u2.Id);
+            Assert.AreEqual(service.GetAll(), 1);
+        }
+
+        [ExpectedException(typeof(NotExistingUserException))]
+        [TestMethod]
+        public void DeleteNoUserTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            UserService service = getService();
+            service.Register(u, a);
+
+            User u2 = new User();
+            u2.FirstName = "Martin";
+            u2.LastName = "Musetti";
+            u2.PhoneNumber = "+59899211266";
+            u2.Password = "prueba12345";
+            u2.Email = "martinmusetti@gmail.com";
+            u2.Username = "Martin";
+            Address a2 = new Address();
+            a2.Street = "Miami";
+            a2.StreetNumber = "1766";
+            a2.PhoneNumber = "26002540";
+            service.Register(u2, a2);
+
+            Guid wrongId = Guid.NewGuid();
+            service.Delete(wrongId);
+        }
         //LOGIN
         //Ok con username ----------
         //Ok con mail ----------
@@ -653,8 +722,8 @@ namespace ServicesTests
         //Ok usuario a si mismo
         //Ok admin a usuario
         //No user to delete
-        //No user deleting
-        //User deleting no es superadmin y quiere borrar a otro user
+        //No user deleting ---------NO VA!
+        //User deleting no es superadmin y quiere borrar a otro user ---------NO VA!
 
         //CHANGE PASSWORD
         //Ok

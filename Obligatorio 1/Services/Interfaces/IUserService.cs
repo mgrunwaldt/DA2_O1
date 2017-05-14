@@ -13,5 +13,6 @@ namespace Services
         List<User> GetAll();
         User Get(Guid id);
         void ChangeUserRole(Guid id, int role);
+        void Delete(Guid id);
     }
 }

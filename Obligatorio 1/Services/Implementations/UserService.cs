@@ -109,6 +109,10 @@ namespace Services
             }
         }
 
+        public void Delete(Guid id) {
+            throw new NotImplementedException();
+        }
+
         public List<User> GetAll()
         {
             return userRepository.GetAll();
