@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FeatureService.cs" />
     <Compile Include="Implementations\CategoryService.cs" />
     <Compile Include="Interfaces\ICategoryService.cs" />
     <Compile Include="Implementations\AddressService.cs" />

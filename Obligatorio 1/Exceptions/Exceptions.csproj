@@ -55,6 +55,10 @@
     <Compile Include="ExistingEmailException.cs" />
     <Compile Include="ExistingCategoryNameException.cs" />
     <Compile Include="ExistingUsernameException.cs" />
+    <Compile Include="FeatureExistingCombinationException.cs" />
+    <Compile Include="FeatureNoNameException.cs" />
+    <Compile Include="FeatureWithoutTypeException.cs" />
+    <Compile Include="FeatureWrongTypeException.cs" />
     <Compile Include="MissingCategoryDataException.cs" />
     <Compile Include="MissingUserDataException.cs" />
     <Compile Include="NotExistingCategoryException.cs" />

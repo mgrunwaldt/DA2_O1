@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Entities;
 using Entities.Statuses_And_Roles;
 using Repository;
+using Services;
+using Exceptions;
 
 namespace ServicesTests
 {
@@ -78,7 +80,7 @@ namespace ServicesTests
 
         [ExpectedException(typeof(FeatureWrongTypeException))]
         [TestMethod]
-        public void AttributeCreateNoTypeTest()
+        public void AttributeCreateWrongTypeTest()
         {
             FeatureService service = getService();
             Feature feature = new Feature();
@@ -134,9 +136,6 @@ namespace ServicesTests
             Feature savedFeature2 = repo.Get(feature2.Id);
             Assert.IsNotNull(savedFeature2);
         }
-
-        //Get All Ok
-        //Get All Wrong User Role
 
     }
 }
