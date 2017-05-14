@@ -9,5 +9,7 @@ namespace Services
     public interface IAddressService
     {
         void AddAddress(Address a, User u);
+        void RemoveAddress(Address a2, User u);
+        List<Address> GetAllAddresses(User u);
     }
 }
