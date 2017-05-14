@@ -697,6 +697,98 @@ namespace ServicesTests
             Guid wrongId = Guid.NewGuid();
             service.Delete(wrongId);
         }
+
+        [TestMethod]
+        public void ChangePasswordOkTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            UserService service = getService();
+            service.Register(u, a);
+
+            string oldPassword = u.Password;
+            string newPassword = "pruebaNueva123";
+            service.ChangePassword(u.Id, oldPassword, newPassword);
+        }
+
+        [ExpectedException(typeof(WrongPasswordException))]
+        [TestMethod]
+        public void ChangePasswordWrongOldPasswordTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            UserService service = getService();
+            service.Register(u, a);
+
+            string oldPassword = "prueba433";
+            string newPassword = "pruebaNueva123";
+            service.ChangePassword(u.Id, oldPassword, newPassword);
+        }
+
+        [ExpectedException(typeof(WrongPasswordException))]
+        [TestMethod]
+        public void ChangePasswordWrongNewPasswordTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            UserService service = getService();
+            service.Register(u, a);
+
+            string oldPassword = u.Password;
+            string newPassword = "p";
+            service.ChangePassword(u.Id, oldPassword, newPassword);
+        }
+
+        [ExpectedException(typeof(NotExistingUserException))]
+        [TestMethod]
+        public void ChangePasswordNoUserTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            UserService service = getService();
+            service.Register(u, a);
+
+            string oldPassword = u.Password;
+            string newPassword = "pruebA123";
+            Guid wrongId = Guid.NewGuid();
+            service.ChangePassword(wrongId, oldPassword, newPassword);
+        }
         //LOGIN
         //Ok con username ----------
         //Ok con mail ----------
@@ -719,9 +811,9 @@ namespace ServicesTests
         //IDEM CREATE
 
         //DELETE
-        //Ok usuario a si mismo
-        //Ok admin a usuario
-        //No user to delete
+        //Ok usuario a si mismo ---------- HICE DOS-
+        //Ok admin a usuario -----------
+        //No user to delete ----------
         //No user deleting ---------NO VA!
         //User deleting no es superadmin y quiere borrar a otro user ---------NO VA!
 

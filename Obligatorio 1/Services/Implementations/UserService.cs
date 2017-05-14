@@ -119,6 +119,10 @@ namespace Services
             }
         }
 
+        public void ChangePassword(Guid id, string oldPassword, string newPassword) {
+            throw new NotImplementedException();
+        }
+
         public List<User> GetAll()
         {
             return userRepository.GetAll();
