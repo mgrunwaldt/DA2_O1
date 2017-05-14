@@ -110,7 +110,13 @@ namespace Services
         }
 
         public void Delete(Guid id) {
-            throw new NotImplementedException();
+            User u = userRepository.Get(id);
+            if (u != null) {
+                userRepository.Delete(id);
+            }else
+            {
+                throw new NotExistingUserException();
+            }
         }
 
         public List<User> GetAll()

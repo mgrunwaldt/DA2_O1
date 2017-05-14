@@ -660,7 +660,7 @@ namespace ServicesTests
             service.Register(u2, a2);
 
             service.Delete(u2.Id);
-            Assert.AreEqual(service.GetAll(), 1);
+            Assert.AreEqual(service.GetAll().Count, 1);
         }
 
         [ExpectedException(typeof(NotExistingUserException))]
