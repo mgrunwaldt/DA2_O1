@@ -56,5 +56,15 @@ namespace Services.Implementations
             userRepository.Add(u);
              */
         }
+
+        public void RemoveAddress(Address a2, User u)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Address> GetAllAddresses(User u)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

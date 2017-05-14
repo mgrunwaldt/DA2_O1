@@ -300,7 +300,7 @@ namespace ServicesTests
             service.RemoveAddress(u.Address, u);
         }
 
-        [ExpectedException typeof(AddressDeleteNoAddressException)]
+        [ExpectedException (typeof(AddressDeleteNoAddressException))]
         [TestMethod]
         public void AddressDeleteNoUserTest() {
             AddressService service = getService();
@@ -312,7 +312,7 @@ namespace ServicesTests
             service.RemoveAddress(a, u);
         }
 
-        [ExpectedException typeof(AddressDeleteUserDoesntHaveException)]
+        [ExpectedException (typeof(AddressDeleteUserDoesntHaveException))]
         [TestMethod]
         public void AddressDeleteUserDoesntHaveTest()
         {
