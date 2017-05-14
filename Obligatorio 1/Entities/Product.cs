@@ -19,6 +19,7 @@ namespace Entities
         public string Manufacturer { get; set; }
         public string Name { get; set; }
         public int Price { get; set; }
+        public virtual Category Category { get; set; }
 
         public Product() {
             this.Id = Guid.NewGuid();

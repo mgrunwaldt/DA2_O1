@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Exceptions;
+using Services;
 
 namespace ServicesTests
 {
@@ -84,7 +85,7 @@ namespace ServicesTests
             service.Add(p);
         }
 
-        [ExpectedException(typeof(ProductWithoutNameException))]
+        [ExpectedException(typeof(ProductMissingDataException))]
         [TestMethod]
         public void ProductCreateNoNameTest()
         {
@@ -98,7 +99,7 @@ namespace ServicesTests
             service.Add(p);
         }
 
-        [ExpectedException(typeof(ProductWithoutCodeException))]
+        [ExpectedException(typeof(ProductMissingDataException))]
         [TestMethod]
         public void ProductCreateNoCodeTest()
         {
@@ -112,7 +113,7 @@ namespace ServicesTests
             service.Add(p);
         }
 
-        [ExpectedException(typeof(ProductWithoutDescriptionException))]
+        [ExpectedException(typeof(ProductMissingDataException))]
         [TestMethod]
         public void ProductCreateNoDescriptionTest()
         {
@@ -126,7 +127,7 @@ namespace ServicesTests
             service.Add(p);
         }
 
-        [ExpectedException(typeof(ProductWithoutManufacturerException))]
+        [ExpectedException(typeof(ProductMissingDataException))]
         [TestMethod]
         public void ProductCreateNoManufacturerTest()
         {
@@ -140,7 +141,7 @@ namespace ServicesTests
             service.Add(p);
         }
 
-        [ExpectedException(typeof(ProductWithoutPriceException))]
+        [ExpectedException(typeof(ProductMissingDataException))]
         [TestMethod]
         public void ProductCreateNoPriceTest()
         {
@@ -183,14 +184,14 @@ namespace ServicesTests
             p.Category = getCategory();
             service.Add(p);
 
-            Product p = new Product();
-            p.Code = "3333";
-            p.Description = "Desc";
-            p.Manufacturer = "Manu";
-            p.Name = "nombre";
-            p.Price = 100;
-            p.Category = getCategory();
-            service.Add(p);
+            Product p2 = new Product();
+            p2.Code = "3333";
+            p2.Description = "Desc";
+            p2.Manufacturer = "Manu";
+            p2.Name = "nombre";
+            p2.Price = 100;
+            p2.Category = getCategory();
+            service.Add(p2);
         }
 
         [ExpectedException(typeof(ProductDuplicateException))]
@@ -207,14 +208,14 @@ namespace ServicesTests
             p.Category = getCategory();
             service.Add(p);
 
-            Product p = new Product();
-            p.Code = "3333";
-            p.Description = "Desc";
-            p.Manufacturer = "Manu";
-            p.Name = "Hola";
-            p.Price = 100;
-            p.Category = getCategory();
-            service.Add(p);
+            Product p2 = new Product();
+            p2.Code = "3333";
+            p2.Description = "Desc";
+            p2.Manufacturer = "Manu";
+            p2.Name = "Hola";
+            p2.Price = 100;
+            p2.Category = getCategory();
+            service.Add(p2);
         }
 
 
