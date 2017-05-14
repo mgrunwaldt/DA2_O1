@@ -91,6 +91,11 @@ namespace Services
             }
         }
 
+        public void Logout(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
         public void ChangeUserRole(Guid id, int role){
             User u = userRepository.Get(id);
             if (u != null)
@@ -98,6 +103,7 @@ namespace Services
                 if (role == 2 || role == 3)
                 {
                     u.Role = role;
+                    userRepository.Update(u);
                 }
                 else
                 {
@@ -120,7 +126,24 @@ namespace Services
         }
 
         public void ChangePassword(Guid id, string oldPassword, string newPassword) {
-            throw new NotImplementedException();
+            User u = userRepository.Get(id);
+            if (u != null)
+            {
+                string oldPasswordHash = EncryptionHelper.GetMD5(oldPassword);
+                if (oldPasswordHash == u.Password)
+                {
+                    checkPasswordFormat(newPassword);
+                    string newPasswordHash = EncryptionHelper.GetMD5(newPassword);
+                    u.Password = newPasswordHash;
+                    userRepository.Update(u);
+                }else
+                {
+                    throw new WrongPasswordException();
+                }
+            }else
+            {
+                throw new NotExistingUserException();
+            }
         }
 
         public List<User> GetAll()

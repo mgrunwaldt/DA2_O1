@@ -517,7 +517,7 @@ namespace ServicesTests
         [TestMethod]
         public void LogoutOkTest()
         {
-            /*User u = new User();
+            User u = new User();
             u.FirstName = "Matias";
             u.LastName = "Grunwaldt";
             u.PhoneNumber = "+59894606123";
@@ -531,17 +531,17 @@ namespace ServicesTests
             a.PhoneNumber = "26007263";
             service.Register(u, a);
 
-            string userUsername = "Mati";
-            string token = service.Login(userUsername, hashedPass);
-            Assert.AreEqual(token.Length, 32);*/
-            throw new NotImplementedException();
+            service.Logout(u.Id);
+            User user = service.Get(u.Id);
+            string token = u.Token;
+            Assert.AreEqual(token, "");
         }
 
         [ExpectedException(typeof(NotExistingUserException))]
         [TestMethod]
         public void LogoutNoUserTest()
         {
-            /*User u = new User();
+            User u = new User();
             u.FirstName = "Matias";
             u.LastName = "Grunwaldt";
             u.PhoneNumber = "+59894606123";
@@ -555,10 +555,8 @@ namespace ServicesTests
             a.PhoneNumber = "26007263";
             service.Register(u, a);
 
-            string userUsername = "Mati";
-            string token = service.Login(userUsername, hashedPass);
-            Assert.AreEqual(token.Length, 32);*/
-            throw new NotImplementedException();
+            Guid wrongId = Guid.NewGuid();
+            service.Logout(wrongId);
         }
 
         [TestMethod]
@@ -715,9 +713,13 @@ namespace ServicesTests
             UserService service = getService();
             service.Register(u, a);
 
-            string oldPassword = u.Password;
+            string oldPassword = "prueba1234";
             string newPassword = "pruebaNueva123";
             service.ChangePassword(u.Id, oldPassword, newPassword);
+            User updatedUser = service.Get(u.Id);
+            string updatedPassword = updatedUser.Password;
+            string newPasswordHashed = EncryptionHelper.GetMD5(newPassword);
+            Assert.AreEqual(updatedPassword, newPasswordHashed);
         }
 
         [ExpectedException(typeof(WrongPasswordException))]
@@ -818,10 +820,10 @@ namespace ServicesTests
         //User deleting no es superadmin y quiere borrar a otro user ---------NO VA!
 
         //CHANGE PASSWORD
-        //Ok
-        //Wrong Old Password
-        //Wrong New Password
-        //No User
+        //Ok ----------
+        //Wrong Old Password ----------
+        //Wrong New Password ----------
+        //No User ----------
 
 
 
