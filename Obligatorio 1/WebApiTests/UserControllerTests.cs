@@ -352,6 +352,7 @@ namespace WebApiTests
         {
             var mockUserService = new Mock<IUserService>();
             User u = getFakeUser();
+            u.Role = UserRoles.SUPERADMIN;
             mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Returns(u);
             mockUserService.Setup(service => service.ChangeUserRole(u.Id,UserRoles.ADMIN));
 
@@ -365,6 +366,7 @@ namespace WebApiTests
 
             dynamic parameters = new JObject();
             parameters.UserRole = "2";
+            parameters.Id = u.Id.ToString();
 
 
             IHttpActionResult obtainedResult = controller.ChangeUserRole(parameters);
@@ -376,6 +378,118 @@ namespace WebApiTests
 
         }
 
+
+        [TestMethod]
+        public void ChangeUserRoleNoUserLoggedInTest()
+        {
+            var mockUserService = new Mock<IUserService>();
+            User u = getFakeUser();
+            u.Role = UserRoles.SUPERADMIN;
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Throws(new NoUserWithTokenException());
+            
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+
+            dynamic parameters = new JObject();
+            parameters.UserRole = "2";
+            parameters.Id = u.Id.ToString();
+
+
+            IHttpActionResult obtainedResult = controller.ChangeUserRole(parameters);
+            var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+
+        }
+
+        [TestMethod]
+        public void ChangeUserRoleNotSuperadminTest()
+        {
+            var mockUserService = new Mock<IUserService>();
+            User u = getFakeUser();
+            u.Role = UserRoles.ADMIN;
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Returns(u);
+
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+
+            dynamic parameters = new JObject();
+            parameters.UserRole = "2";
+            parameters.Id = u.Id.ToString();
+
+
+            IHttpActionResult obtainedResult = controller.ChangeUserRole(parameters);
+            var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+
+        }
+
+        [TestMethod]
+        public void ChangeUserRoleNoUserTest()
+        {
+            var mockUserService = new Mock<IUserService>();
+            User u = getFakeUser();
+            u.Role = UserRoles.SUPERADMIN;
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Returns(u);
+            mockUserService.Setup(service => service.ChangeUserRole(u.Id, UserRoles.ADMIN)).Throws(new NotExistingUserException());
+
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+
+            dynamic parameters = new JObject();
+            parameters.UserRole = "2";
+            parameters.Id = u.Id.ToString();
+
+
+            IHttpActionResult obtainedResult = controller.ChangeUserRole(parameters);
+            var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+
+        }
+
+        //CASOS: NO DATA, GUID CONSTRUCTOR FAILS NotExistingUserRoleException
+        [TestMethod]
+        public void ChangeUserRoleNoDataInTest()
+        {
+            var mockUserService = new Mock<IUserService>();
+            User u = getFakeUser();
+            u.Role = UserRoles.SUPERADMIN;
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Throws(new NoUserWithTokenException());
+
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+            IHttpActionResult obtainedResult = controller.ChangeUserRole(null);
+            var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+
+        }
 
     }
 }
