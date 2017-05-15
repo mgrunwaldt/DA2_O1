@@ -312,7 +312,11 @@ namespace WebApiTests
             User u = getFakeUser();
 
             var controller = new UsersController(mockUserService.Object);
-           
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
             IHttpActionResult obtainedResult = controller.Logout();
             var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
 
@@ -326,8 +330,7 @@ namespace WebApiTests
         {
             var mockUserService = new Mock<IUserService>();
             User u = getFakeUser();
-            mockUserService.Setup(service => service.GetFromToken("token")).Throws(new NoUserWithTokenException());
-            mockUserService.Setup(service => service.Logout(u.Id));
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Throws(new NoUserWithTokenException());
 
             var controller = new UsersController(mockUserService.Object);
             var controllerContext = new HttpControllerContext();

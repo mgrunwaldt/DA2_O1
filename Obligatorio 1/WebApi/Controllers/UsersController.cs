@@ -109,18 +109,25 @@ namespace WebApi.Controllers
         [HttpPost]
         public IHttpActionResult Logout()
         {
-            var re = Request;
-            var headers = re.Headers;
-
-            if (headers.Contains("Token"))
+            try
             {
-                string token = headers.GetValues("Token").First();
-                User u = _userService.GetFromToken(token);
-                _userService.Logout(u.Id);
-                return Ok("Desloggueado con éxito");
+                var re = Request;
+                var headers = re.Headers;
 
+                if (headers.Contains("Token"))
+                {
+                    string token = headers.GetValues("Token").First();
+                    User u = _userService.GetFromToken(token);
+                    _userService.Logout(u.Id);
+                    return Ok("Desloggueado con éxito");
+
+                }
+                return BadRequest("Debes mandar un el Token de sesión en los headers");
             }
-            return BadRequest("Debes mandar un el Token de sesión en los headers");
+            catch (NoUserWithTokenException ex) {
+                return BadRequest(ex.Message);
+            }
+            
         }
     }
 }
