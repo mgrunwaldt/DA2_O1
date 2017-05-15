@@ -34,13 +34,8 @@ namespace WebApi.Controllers
         {
             try
             {
-                if (user != null)
-                {
-                    _userService.Register(user, user.Address);
-                    return CreatedAtRoute("Register", new { id = user.Id }, user);
-                }
-                return BadRequest("Debes enviar todos los datos");
-
+                _userService.Register(user, user.Address);
+                return CreatedAtRoute("Register", new { id = user.Id }, user);
             }
             catch (MissingUserDataException ex)
             {
@@ -62,8 +57,11 @@ namespace WebApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch (ArgumentNullException ex) {
+            catch (MissingAddressDataException ex) {
                 return BadRequest(ex.Message);
+            }
+            catch (NullReferenceException ex) {
+                return BadRequest("Debes enviar todos los datos");
             }
         }
         /*

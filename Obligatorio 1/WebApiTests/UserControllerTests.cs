@@ -158,10 +158,9 @@ namespace WebApiTests
         [TestMethod]
         public void RegisterNullTest()
         {
-            User fakeUser = null;
-            fakeUser.Address = null;
+            User fakeUser = new User();
             var mockUserService = new Mock<IUserService>();
-            mockUserService.Setup(service => service.Register(fakeUser, fakeUser.Address)).Throws(new ArgumentNullException());
+            mockUserService.Setup(service => service.Register(fakeUser, fakeUser.Address)).Throws(new NullReferenceException());
 
             var controller = new UsersController(mockUserService.Object);
 
