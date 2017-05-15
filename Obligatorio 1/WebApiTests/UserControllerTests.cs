@@ -605,6 +605,30 @@ namespace WebApiTests
             mockUserService.VerifyAll();
             Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
 
+        }
+
+        [TestMethod]
+        public void ModifyUserOkTest() {
+            var mockUserService = new Mock<IUserService>();
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+            User u = getFakeUser();
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Returns(u);
+            u.FirstName = "Hola";
+            mockUserService.Setup(service => service.Modify(u));
+
+            IHttpActionResult obtainedResult = controller.Put(u.Id,u);
+            var createdResult = obtainedResult as CreatedAtRouteNegotiatedContentResult<User>;
+
+            mockUserService.VerifyAll();
+            Assert.IsNotNull(createdResult);
+            Assert.AreEqual(u.Id, createdResult.RouteValues["id"]);
+            Assert.AreEqual(u, createdResult.Content);
 
         }
 
