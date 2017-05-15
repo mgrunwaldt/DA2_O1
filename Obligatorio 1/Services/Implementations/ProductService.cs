@@ -86,6 +86,16 @@ namespace Services
             this.productFeatureRepo.Add(productFeature);
         }
 
+        public void ModifyProductFeatureValue(Guid id, string val)
+        {
+            ProductFeature productFeature = productFeatureRepo.Get(id);
+            productFeature.Value = val;
+            productFeature.Validate();
+            Feature feature = getFeature(productFeature.FeatureId);
+            productFeature.CheckIfValueCorrespondsToType(feature);
+            productFeatureRepo.Update(productFeature);
+        }
+
         private void checkIfProductAlreadyHasFeature(Guid featureId,Guid productId)
         {
             List<ProductFeature> allProductFeatures = productFeatureRepo.GetAll();
@@ -151,9 +161,6 @@ namespace Services
             }
         }
 
-        public void ModifyProductFeatureValue(Guid id, string v)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }
