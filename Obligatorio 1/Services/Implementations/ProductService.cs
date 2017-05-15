@@ -161,6 +161,9 @@ namespace Services
             }
         }
 
-       
+        public void RemoveFeatureFromProduct(Product p, Feature f)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

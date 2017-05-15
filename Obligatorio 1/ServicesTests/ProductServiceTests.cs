@@ -1156,7 +1156,7 @@ namespace ServicesTests
 
         [ExpectedException(typeof(NoFeatureException))]
         [TestMethod]
-        public void ProductDeleteFeatureNoProduct()
+        public void ProductDeleteFeatureNoFeature()
         {
             ProductService service = getService();
             FeatureService featureService = getFeatureService();
@@ -1178,7 +1178,7 @@ namespace ServicesTests
             service.RemoveFeatureFromProduct(p, f);
         }
 
-        [ExpectedException(typeof(ProductWithouthFeatureException))]
+        [ExpectedException(typeof(ProductWithoutFeatureException))]
         [TestMethod]
         public void ProductDeleteFeatureNoProductFeature()
         {
@@ -1203,11 +1203,6 @@ namespace ServicesTests
             service.RemoveFeatureFromProduct(p, f);
         }
 
-        //Delete ProductFeature
-        //OK
-        //No Product
-        //No Feature
-        //No ProductFeature
 
 
         /*  [TestMethod]
