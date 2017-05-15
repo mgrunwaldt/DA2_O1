@@ -22,14 +22,10 @@ namespace WebApi.Controllers
      
     public class UsersController : ApiController
     {
-        private IGenericRepository<User> _userRepository;
-        private IGenericRepository<Address> _addressRepository;
-
         private IUserService _userService;
-        public UsersController(IGenericRepository<User> userRepo,IGenericRepository<Address> addressRepo) {
-            _userRepository = userRepo;
-            _addressRepository = addressRepo;
-            _userService = new UserService(_userRepository, _addressRepository);
+
+        public UsersController(IUserService service) {
+            _userService = service;
         }
 
         [Route("api/Users/Register", Name = "Register")]
@@ -41,7 +37,7 @@ namespace WebApi.Controllers
                 if (user != null)
                 {
                     _userService.Register(user, user.Address);
-                    return Ok("Usuario Registrado con éxito");
+                    return CreatedAtRoute("Register", new { id = user.Id }, user);
                 }
                 return BadRequest("Debes enviar todos los datos");
 

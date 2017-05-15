@@ -6,6 +6,7 @@ using System.Web.Http;
 using Repository;
 using Entities;
 using DataAccess;
+using Services;
 
 namespace WebApi
 {
@@ -19,9 +20,8 @@ namespace WebApi
             MyContext context = new MyContext();
             GenericRepository<User> userRepo = new GenericRepository<User>(context);
             GenericRepository<Address> addressRepo = new GenericRepository<Address>(context);
-            container.RegisterType<IGenericRepository<User>, GenericRepository<User>>(new HierarchicalLifetimeManager());
-            container.RegisterInstance<GenericRepository<User>>(userRepo);
-            container.RegisterInstance<GenericRepository<Address>>(addressRepo);
+            UserService userService = new UserService(userRepo, addressRepo);
+            container.RegisterInstance<IUserService>(userService);
             config.DependencyResolver = new UnityResolver(container);
 
 
