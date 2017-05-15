@@ -9,6 +9,10 @@ using System.Web.Http.Results;
 using Exceptions;
 using Newtonsoft.Json.Linq;
 using Microsoft.CSharp.RuntimeBinder;
+using System.Web;
+using System.Collections.Specialized;
+using System.Web.Http.Controllers;
+using System.Net.Http;
 
 namespace WebApiTests
 {
@@ -179,9 +183,9 @@ namespace WebApiTests
         {
             dynamic parameters = new JObject();
             parameters.Email = "matigru@gmail.com";
-            parameters.Password = "miPass";
+            parameters.Password = "ASDF";
             var mockUserService = new Mock<IUserService>();
-            mockUserService.Setup(service => service.Login("matigru@gmail.com", "miPass")).Returns("tokenNuevo");
+            mockUserService.Setup(service => service.Login("matigru@gmail.com", "ASDF")).Returns("tokenNuevo");
 
             var controller = new UsersController(mockUserService.Object);
 
@@ -198,9 +202,9 @@ namespace WebApiTests
         {
             dynamic parameters = new JObject();
             parameters.Username = "matigru";
-            parameters.Password = "miPass";
+            parameters.Password = "ASDF";
             var mockUserService = new Mock<IUserService>();
-            mockUserService.Setup(service => service.Login("matigru", "miPass")).Returns("tokenNuevo");
+            mockUserService.Setup(service => service.Login("matigru", "ASDF")).Returns("tokenNuevo");
 
             var controller = new UsersController(mockUserService.Object);
 
@@ -217,9 +221,9 @@ namespace WebApiTests
         {
             dynamic parameters = new JObject();
             parameters.Username = "matigru";
-            parameters.Password = "miPass";
+            parameters.Password = "ASDF";
             var mockUserService = new Mock<IUserService>();
-            mockUserService.Setup(service => service.Login("matigru", "miPass")).Throws(new NoLoginDataMatchException());
+            mockUserService.Setup(service => service.Login("matigru", "ASDF")).Throws(new NoLoginDataMatchException());
 
             var controller = new UsersController(mockUserService.Object);
 
@@ -235,9 +239,9 @@ namespace WebApiTests
         {
             dynamic parameters = new JObject();
             parameters.Username = "matigru";
-            parameters.Password = "miPass";
+            parameters.Password = "ASDF";
             var mockUserService = new Mock<IUserService>();
-            mockUserService.Setup(service => service.Login("matigru", "miPass")).Throws(new NotExistingUserException());
+            mockUserService.Setup(service => service.Login("matigru", "ASDF")).Throws(new NotExistingUserException());
 
             var controller = new UsersController(mockUserService.Object);
 
@@ -275,10 +279,34 @@ namespace WebApiTests
             IHttpActionResult obtainedResult = controller.Login(parameters);
             var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
 
-            mockUserService.VerifyAll();
             Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
         }
 
+        [TestMethod]
+        public void LogoutTest() {
+            var mockUserService = new Mock<IUserService>();
+            User u = getFakeUser();
+            mockUserService.Setup(service => service.GetFromToken("token")).Returns(getFakeUser());
+            mockUserService.Setup(service => service.Logout(u.Id));
+
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+            IHttpActionResult obtainedResult = controller.Logout();
+            var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
+
+            mockUserService.VerifyAll();
+            Assert.IsNotNull(createdResult);
+            Assert.AreEqual("Desloggueado con éxito", createdResult.Content);
+
+
+        }
+
+     
 
     }
 }

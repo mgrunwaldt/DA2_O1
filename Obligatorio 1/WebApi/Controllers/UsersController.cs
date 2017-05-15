@@ -81,7 +81,9 @@ namespace WebApi.Controllers
                 else if (json.Username != null)
                     identifier = json.Username;
 
-                string token = _userService.Login(identifier, password);
+                string uppercasePass = password.ToUpper();
+
+                string token = _userService.Login(identifier, uppercasePass);
                 return Ok("Loggueado con éxito, el token de seguridad es " + token);
             }
             

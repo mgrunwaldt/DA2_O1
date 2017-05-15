@@ -76,6 +76,7 @@ namespace Services
                         {
                             string token = TokenHelper.CreateToken();
                             user.Token = token;
+                            userRepository.Update(user);
                             return token;
                         }
                         else {
@@ -94,6 +95,7 @@ namespace Services
                         {
                             string token = TokenHelper.CreateToken();
                             user.Token = token;
+                            userRepository.Update(user);
                             return token;
                         }
                         else
@@ -104,6 +106,20 @@ namespace Services
                 }
                 throw new NotExistingUserException("No existe el nombre de usuario especificado");
             }
+        }
+
+        public User GetFromToken(string token) {
+            if (token != null) {
+                List<User> allUsers = userRepository.GetAll();
+                User u = allUsers.Find(user => user.Token == token);
+                if (u != null) {
+                    return u;
+                }
+                throw new NoUserWithTokenException("No hay usuario con este token, por favor inicie sesión");
+            }
+            throw new NoTokenException("Debes mandar el token de sesión en los headers como 'Token'");
+            
+
         }
 
         public void Logout(Guid id)

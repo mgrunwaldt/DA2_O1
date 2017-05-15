@@ -1070,6 +1070,84 @@ namespace ServicesTests
             u2.Email = "matigru@gmail.com";
             service.Modify(u2);
         }
+
+        [TestMethod]
+        public void GetUserFromTokenOkTest() {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            UserService service = getService();
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            service.Register(u, a);
+
+            string userUsername = "Mati";
+            string hashedPass = EncryptionHelper.GetMD5("prueba1234");
+            string token = service.Login(userUsername, hashedPass);
+
+            User loggedUser = service.GetFromToken(token);
+            Assert.IsNotNull(loggedUser);
+            Assert.AreEqual(loggedUser.Id, u.Id);
+        }
+
+        [ExpectedException(typeof(NoUserWithTokenException))]
+        [TestMethod]
+        public void GetUserFromTokenWrongTokenTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            UserService service = getService();
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            service.Register(u, a);
+
+            string userUsername = "Mati";
+            string hashedPass = EncryptionHelper.GetMD5("prueba1234");
+            string token = service.Login(userUsername, hashedPass);
+
+            User loggedUser = service.GetFromToken("token");
+
+        }
+
+        [ExpectedException(typeof(NoTokenException))]
+        [TestMethod]
+        public void GetUserFromTokenNoTokenTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            UserService service = getService();
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            service.Register(u, a);
+
+            string userUsername = "Mati";
+            string hashedPass = EncryptionHelper.GetMD5("prueba1234");
+            string token = service.Login(userUsername, hashedPass);
+
+            User loggedUser = service.GetFromToken(null);
+
+        }
+
         //LOGIN
         //Ok con username ----------
         //Ok con mail ----------
