@@ -4,17 +4,23 @@ using Repository;
 using Exceptions;
 using System.Collections.Generic;
 using Tools;
+using Entities.Statuses_And_Roles;
+using Services.Interfaces;
+
 namespace Services
 {
     public class UserService : IUserService
     {
 
         private IGenericRepository<User> userRepository;
+        private IGenericRepository<Order> orderRepository;
         private IGenericRepository<Address> addressRepository;
 
 
-        public UserService(IGenericRepository<User> repo, IGenericRepository<Address> addressRepo) {
+
+        public UserService(IGenericRepository<User> repo, IGenericRepository<Order> orderRepo, IGenericRepository<Address> addressRepo) {
             userRepository = repo;
+            orderRepository = orderRepo;
             addressRepository = addressRepo;
         }
         public void Register(User u, Address a)
@@ -30,7 +36,11 @@ namespace Services
             Address userAddress = getEqualAddress(a);
             u.Address = userAddress;
             u.Role = 1;
+            Order order = new Order();
+            order.Status = OrderStatuses.WAITING_FOR_ADDRESS;
+            order.UserId = u.Id;
             userRepository.Add(u);
+            orderRepository.Add(order);
         }
 
         private Address getEqualAddress(Address a)

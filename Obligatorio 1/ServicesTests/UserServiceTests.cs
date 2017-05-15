@@ -20,9 +20,9 @@ namespace ServicesTests
         }
         private UserService getService() {
             GenericRepository<User> repo = new GenericRepository<User>(getContext(),true);
+            GenericRepository<Order> orderRepo = new GenericRepository<Order>(getContext());
             GenericRepository<Address> addressRepo = new GenericRepository<Address>(getContext());
-
-            return new UserService(repo,addressRepo);
+            return new UserService(repo, orderRepo,addressRepo);
         }
 
         [TestMethod]

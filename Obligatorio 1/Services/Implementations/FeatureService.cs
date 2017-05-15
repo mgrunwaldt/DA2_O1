@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using Entities;
 using Repository;
 using Exceptions;
+using Services.Interfaces;
+
 namespace Services
 {
-    public class FeatureService
+    public class FeatureService: IFeatureService
     {
         private GenericRepository<Feature> repo;
 

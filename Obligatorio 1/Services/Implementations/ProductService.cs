@@ -162,6 +162,10 @@ namespace Services
             }
         }
 
+        public List<Product> GetAllFromOrder(Order order)
+        {
+            throw new NotImplementedException();
+        }
         public void RemoveFeatureFromProduct(Product p, Feature f)
         {
             checkIfProductExists(p.Id);

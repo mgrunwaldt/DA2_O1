@@ -52,7 +52,13 @@
     <Compile Include="AddressDeleteDefaultNoReplacementException.cs" />
     <Compile Include="AddressDeleteNoAddressException.cs" />
     <Compile Include="AddressDeleteUserDoesntHaveException.cs" />
+    <Compile Include="InactiveProductException.cs" />
+    <Compile Include="IncorrectOrderStatusException.cs" />
     <Compile Include="NoLoginDataMatchException.cs" />
+    <Compile Include="NotExistingOrderException.cs" />
+    <Compile Include="NotExistingOrderWithCorrectStatusException.cs" />
+    <Compile Include="NotExistingProductException.cs" />
+    <Compile Include="NotExistingProductInOrderException.cs" />
     <Compile Include="NotExistingUserException.cs" />
     <Compile Include="ExistingCategoryNameException.cs" />
     <Compile Include="ExistingUserException.cs" />
@@ -81,9 +87,11 @@
     <Compile Include="ProductWrongPriceException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserAlreadyHasAddressException.cs" />
+    <Compile Include="UserWithoutActiveOrderException.cs" />
     <Compile Include="WrongEmailFormatException.cs" />
     <Compile Include="WrongNumberFormatException.cs" />
     <Compile Include="WrongPasswordException.cs" />
+    <Compile Include="WrongProductQuantityException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

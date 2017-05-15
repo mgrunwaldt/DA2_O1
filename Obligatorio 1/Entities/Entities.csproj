@@ -70,6 +70,7 @@
     <Compile Include="Category.cs" />
     <Compile Include="Address.cs" />
     <Compile Include="Feature.cs" />
+    <Compile Include="Order.cs" />
     <Compile Include="Product.cs" />
     <Compile Include="ProductFeature.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
