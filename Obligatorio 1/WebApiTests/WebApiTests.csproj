@@ -92,6 +92,10 @@
       <Project>{a745634b-78da-4125-a399-55c3a5f388f3}</Project>
       <Name>Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Exceptions\Exceptions.csproj">
+      <Project>{59a18583-a480-40cf-9929-e38ae9e68c02}</Project>
+      <Name>Exceptions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Services\Services.csproj">
       <Project>{390f5bc8-881c-458c-b96b-ca04f75cf5f3}</Project>
       <Name>Services</Name>

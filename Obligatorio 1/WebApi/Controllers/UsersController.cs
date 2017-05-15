@@ -62,7 +62,7 @@ namespace WebApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch (Exception ex) {
+            catch (ArgumentNullException ex) {
                 return BadRequest(ex.Message);
             }
         }

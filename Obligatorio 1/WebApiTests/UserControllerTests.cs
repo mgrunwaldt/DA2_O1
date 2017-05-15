@@ -6,6 +6,7 @@ using Services;
 using WebApi.Controllers;
 using System.Web.Http;
 using System.Web.Http.Results;
+using Exceptions;
 
 namespace WebApiTests
 {
@@ -47,36 +48,129 @@ namespace WebApiTests
 
             mockUserService.VerifyAll();
             Assert.IsNotNull(createdResult);
-            Assert.AreEqual("api", createdResult.RouteName);
+            Assert.AreEqual("Register", createdResult.RouteName);
             Assert.AreEqual(fakeUser.Id, createdResult.RouteValues["id"]);
             Assert.AreEqual(fakeUser, createdResult.Content);
-
         }
-        /*
-         [TestMethod]
-public void CreateNewBreedTest()
-{
-    //Arrange
-    var fakeBreed = GetAFakeBreed();
 
-    var mockBreedsBusinessLogic = new Mock<IBreedsBusinessLogic>();
-    mockBreedsBusinessLogic
-        .Setup(bl => bl.Add(fakeBreed))
-        .Returns(fakeBreed.Id);
+        [TestMethod]
+        public void RegisterMissingDataTest()
+        {
+            User fakeUser = new User();
+            fakeUser.Address = getFakeAddress();
+            var mockUserService = new Mock<IUserService>();
+            mockUserService.Setup(service => service.Register(fakeUser, fakeUser.Address)).Throws(new MissingUserDataException());
 
-    var controller = new BreedsController(mockBreedsBusinessLogic.Object);
+            var controller = new UsersController(mockUserService.Object);
 
-    //Act
-    IHttpActionResult obtainedResult = controller.Post(fakeBreed);
-    var createdResult = obtainedResult as CreatedAtRouteNegotiatedContentResult<Breed>;
+            IHttpActionResult obtainedResult = controller.Register(fakeUser);
+            var createdResult = obtainedResult as CreatedAtRouteNegotiatedContentResult<User>;
 
-    //Assert
-    mockBreedsBusinessLogic.VerifyAll();
-    Assert.IsNotNull(createdResult);
-    Assert.AreEqual("DefaultApi", createdResult.RouteName);
-    Assert.AreEqual(fakeBreed.Id, createdResult.RouteValues["id"]);
-    Assert.AreEqual(fakeBreed, createdResult.Content);
-}
-         */
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+        }
+
+        [TestMethod]
+        public void RegisterWrongEmailTest()
+        {
+            User fakeUser = new User();
+            fakeUser.Address = getFakeAddress();
+            var mockUserService = new Mock<IUserService>();
+            mockUserService.Setup(service => service.Register(fakeUser, fakeUser.Address)).Throws(new WrongEmailFormatException());
+
+            var controller = new UsersController(mockUserService.Object);
+
+            IHttpActionResult obtainedResult = controller.Register(fakeUser);
+            var createdResult = obtainedResult as CreatedAtRouteNegotiatedContentResult<User>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+        }
+
+        [TestMethod]
+        public void RegisterExistingUserTest()
+        {
+            User fakeUser = new User();
+            fakeUser.Address = getFakeAddress();
+            var mockUserService = new Mock<IUserService>();
+            mockUserService.Setup(service => service.Register(fakeUser, fakeUser.Address)).Throws(new ExistingUserException());
+
+            var controller = new UsersController(mockUserService.Object);
+
+            IHttpActionResult obtainedResult = controller.Register(fakeUser);
+            var createdResult = obtainedResult as CreatedAtRouteNegotiatedContentResult<User>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+        }
+
+        [TestMethod]
+        public void RegisterWrongPasswordTest()
+        {
+            User fakeUser = new User();
+            fakeUser.Address = getFakeAddress();
+            var mockUserService = new Mock<IUserService>();
+            mockUserService.Setup(service => service.Register(fakeUser, fakeUser.Address)).Throws(new WrongPasswordException());
+
+            var controller = new UsersController(mockUserService.Object);
+
+            IHttpActionResult obtainedResult = controller.Register(fakeUser);
+            var createdResult = obtainedResult as CreatedAtRouteNegotiatedContentResult<User>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+        }
+
+        [TestMethod]
+        public void RegisterWrongNumberFormatTest()
+        {
+            User fakeUser = new User();
+            fakeUser.Address = getFakeAddress();
+            var mockUserService = new Mock<IUserService>();
+            mockUserService.Setup(service => service.Register(fakeUser, fakeUser.Address)).Throws(new WrongNumberFormatException());
+
+            var controller = new UsersController(mockUserService.Object);
+
+            IHttpActionResult obtainedResult = controller.Register(fakeUser);
+            var createdResult = obtainedResult as CreatedAtRouteNegotiatedContentResult<User>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+        }
+
+        [TestMethod]
+        public void RegisterWrongAddressTest()
+        {
+            User fakeUser = new User();
+            fakeUser.Address = new Address();
+            var mockUserService = new Mock<IUserService>();
+            mockUserService.Setup(service => service.Register(fakeUser, fakeUser.Address)).Throws(new MissingAddressDataException());
+
+            var controller = new UsersController(mockUserService.Object);
+
+            IHttpActionResult obtainedResult = controller.Register(fakeUser);
+            var createdResult = obtainedResult as CreatedAtRouteNegotiatedContentResult<User>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+        }
+
+        [TestMethod]
+        public void RegisterNullTest()
+        {
+            User fakeUser = null;
+            fakeUser.Address = null;
+            var mockUserService = new Mock<IUserService>();
+            mockUserService.Setup(service => service.Register(fakeUser, fakeUser.Address)).Throws(new ArgumentNullException());
+
+            var controller = new UsersController(mockUserService.Object);
+
+            IHttpActionResult obtainedResult = controller.Register(fakeUser);
+            var createdResult = obtainedResult as CreatedAtRouteNegotiatedContentResult<User>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+        }
+        
     }
 }
