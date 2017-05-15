@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using Exceptions;
+using Newtonsoft.Json.Linq;
 
 namespace WebApi.Controllers
 {
@@ -64,6 +65,21 @@ namespace WebApi.Controllers
                 return BadRequest("Debes enviar todos los datos");
             }
         }
-     
+
+        [Route("api/Users/Login", Name = "Login")]
+        [HttpPost]
+        public IHttpActionResult Login(JObject parameters)
+        {
+            string identifier = null;
+            dynamic json = parameters;
+            string password = json.Password;
+            if (json.Email != null)
+                identifier = json.Email;
+            else if (json.Username != null)
+                identifier = json.Username;
+
+            string token = _userService.Login(identifier, password);
+            return Ok("Loggueado con éxito, el token de seguridad es " + token);
+        }
     }
 }

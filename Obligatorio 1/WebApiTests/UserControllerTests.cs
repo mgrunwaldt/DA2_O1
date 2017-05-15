@@ -179,19 +179,17 @@ namespace WebApiTests
             dynamic parameters = new JObject();
             parameters.Email = "matigru@gmail.com";
             parameters.Password = "miPass";
-            User fakeUser = getFakeUser();
             var mockUserService = new Mock<IUserService>();
-            mockUserService.Setup(service => service.Login(fakeUser.Email,fakeUser.Password)).Returns("tokenNuevo");
+            mockUserService.Setup(service => service.Login("matigru@gmail.com", "miPass")).Returns("tokenNuevo");
 
             var controller = new UsersController(mockUserService.Object);
 
             IHttpActionResult obtainedResult = controller.Login(parameters);
-            var createdResult = obtainedResult as CreatedAtRouteNegotiatedContentResult<String>;
+            var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
 
             mockUserService.VerifyAll();
             Assert.IsNotNull(createdResult);
-            Assert.AreEqual("Login", createdResult.RouteName);
-            Assert.AreEqual("tokenNuevo", createdResult.Content);
+            Assert.AreEqual("Loggueado con éxito, el token de seguridad es tokenNuevo", createdResult.Content);
         }
     }
 }
