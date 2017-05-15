@@ -2,7 +2,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Entities;
 using Moq;
-using Services;
+using Services.Interfaces;
+using Services.Implementations;
 using WebApi.Controllers;
 using System.Web.Http;
 using System.Web.Http.Results;

@@ -10,22 +10,31 @@ using System.Threading.Tasks;
 using Entities.Statuses_And_Roles;
 using Services.Implementations;
 using Exceptions;
+using DataAccess;
 
 namespace ServicesTests
 {
     [TestClass]
     public class OrderServiceTests
     {
+        private MyContext context;
+        private MyContext getContext()
+        {
+            if (context == null)
+                context = new MyContext();
+            return context;
+        }
         private UserService getUserService()
         {
-            GenericRepository<User> repo = new GenericRepository<User>();
-            GenericRepository<Order> orderRepo = new GenericRepository<Order>();
-            return new UserService(repo, orderRepo);
+            GenericRepository<User> repo = new GenericRepository<User>(getContext());
+            GenericRepository<Order> orderRepo = new GenericRepository<Order>(getContext());
+            GenericRepository<Address> addressRepo = new GenericRepository<Address>(getContext());
+            return new UserService(repo, orderRepo,addressRepo);
         }
 
         private OrderService getOrderService()
         {
-            GenericRepository<Order> repo = new GenericRepository<Order>(true);
+            GenericRepository<Order> repo = new GenericRepository<Order>(getContext(),true);
             return new OrderService(repo);
         }
 
@@ -49,13 +58,15 @@ namespace ServicesTests
 
         private ProductService getProductService()
         {
-            GenericRepository<Product> repoInstance = new GenericRepository<Product>();
-            GenericRepository<ProductFeature> productFeatureRepoInstance = new GenericRepository<ProductFeature>();
-            return new ProductService(repoInstance, productFeatureRepoInstance);
+            GenericRepository<Product> repoInstance = new GenericRepository<Product>(getContext());
+            GenericRepository<ProductFeature> productFeatureRepoInstance = new GenericRepository<ProductFeature>(getContext());
+            GenericRepository<Feature> featureRepoInstance = new GenericRepository<Feature>(getContext());
+
+            return new ProductService(repoInstance, productFeatureRepoInstance,featureRepoInstance);
         }
         private CategoryService getCategoryService()
         {
-            GenericRepository<Category> repoInstance = new GenericRepository<Category>();
+            GenericRepository<Category> repoInstance = new GenericRepository<Category>(getContext());
             return new CategoryService(repoInstance);
         }
         private Category getCategory()
