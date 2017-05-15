@@ -303,10 +303,47 @@ namespace WebApiTests
             Assert.IsNotNull(createdResult);
             Assert.AreEqual("Desloggueado con éxito", createdResult.Content);
 
+        }
+
+        [TestMethod]
+        public void LogoutTestNoToken()
+        {
+            var mockUserService = new Mock<IUserService>();
+            User u = getFakeUser();
+
+            var controller = new UsersController(mockUserService.Object);
+           
+            IHttpActionResult obtainedResult = controller.Logout();
+            var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
 
         }
 
-     
+        [TestMethod]
+        public void LogoutTestWrongToken()
+        {
+            var mockUserService = new Mock<IUserService>();
+            User u = getFakeUser();
+            mockUserService.Setup(service => service.GetFromToken("token")).Throws(new NoUserWithTokenException());
+            mockUserService.Setup(service => service.Logout(u.Id));
+
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+            IHttpActionResult obtainedResult = controller.Logout();
+            var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+
+        }
+
 
     }
 }
