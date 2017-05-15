@@ -903,8 +903,209 @@ namespace ServicesTests
 
         }
 
+        [TestMethod]
+        public void ProductModifyStringFeatureOkTest() {
+            ProductService service = getService();
+            FeatureService featureService = getFeatureService();
 
-        //CHANGE ATTRIBUTE
+            Feature f = new Feature();
+            f.Name = "Color";
+            f.Type = FeatureTypes.STRING;
+            featureService.Add(f);
+
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            Category cat = getCategory();
+            p.Category = cat;
+            service.Add(p);
+
+            ProductFeature productFeature = new ProductFeature();
+            productFeature.ProductId = p.Id;
+            productFeature.FeatureId = f.Id;
+            productFeature.Value = "Rojo";
+
+            service.AddProductFeature(productFeature);
+
+            service.ModifyProductFeatureValue(productFeature.Id, "Verde");
+            List<ProductFeature> productFeatures = service.GetAllProductFeaturesFromProduct(p);
+            Assert.AreEqual("Verde", productFeatures.First().Value);
+        }
+
+        [TestMethod]
+        public void ProductModifyIntFeatureOkTest()
+        {
+            ProductService service = getService();
+            FeatureService featureService = getFeatureService();
+
+            Feature f = new Feature();
+            f.Name = "Peso";
+            f.Type = FeatureTypes.INT;
+            featureService.Add(f);
+
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            Category cat = getCategory();
+            p.Category = cat;
+            service.Add(p);
+
+            ProductFeature productFeature = new ProductFeature();
+            productFeature.ProductId = p.Id;
+            productFeature.FeatureId = f.Id;
+            productFeature.Value = "10";
+
+            service.AddProductFeature(productFeature);
+
+            service.ModifyProductFeatureValue(productFeature.Id, "20");
+            List<ProductFeature> productFeatures = service.GetAllProductFeaturesFromProduct(p);
+            Assert.AreEqual("20", productFeatures.First().Value);
+        }
+
+
+        [TestMethod]
+        public void ProductModifyDateFeatureOkTest()
+        {
+            ProductService service = getService();
+            FeatureService featureService = getFeatureService();
+
+            Feature f = new Feature();
+            f.Name = "Color";
+            f.Type = FeatureTypes.DATE;
+            featureService.Add(f);
+
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            Category cat = getCategory();
+            p.Category = cat;
+            service.Add(p);
+
+            ProductFeature productFeature = new ProductFeature();
+            productFeature.ProductId = p.Id;
+            productFeature.FeatureId = f.Id;
+            productFeature.Value = DateTime.Now.ToString();
+
+            service.AddProductFeature(productFeature);
+
+            service.ModifyProductFeatureValue(productFeature.Id, "01/25/1993 17:00:00");
+            List<ProductFeature> productFeatures = service.GetAllProductFeaturesFromProduct(p);
+            Assert.AreEqual("01/25/1993 17:00:00", productFeatures.First().Value);
+        }
+
+        [ExpectedException(typeof(ProductFeatureWrongValueException))]
+        [TestMethod]
+        public void ProductModifyStringFeatureWrongValueTest()
+        {
+            ProductService service = getService();
+            FeatureService featureService = getFeatureService();
+
+            Feature f = new Feature();
+            f.Name = "Color";
+            f.Type = FeatureTypes.STRING;
+            featureService.Add(f);
+
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            Category cat = getCategory();
+            p.Category = cat;
+            service.Add(p);
+
+            ProductFeature productFeature = new ProductFeature();
+            productFeature.ProductId = p.Id;
+            productFeature.FeatureId = f.Id;
+            productFeature.Value = "Rojo";
+
+            service.AddProductFeature(productFeature);
+
+            service.ModifyProductFeatureValue(productFeature.Id, "10");
+        }
+
+        [ExpectedException(typeof(ProductFeatureWrongValueException))]
+        [TestMethod]
+        public void ProductModifyIntFeatureWrongValueTest()
+        {
+            ProductService service = getService();
+            FeatureService featureService = getFeatureService();
+
+            Feature f = new Feature();
+            f.Name = "Color";
+            f.Type = FeatureTypes.INT;
+            featureService.Add(f);
+
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            Category cat = getCategory();
+            p.Category = cat;
+            service.Add(p);
+
+            ProductFeature productFeature = new ProductFeature();
+            productFeature.ProductId = p.Id;
+            productFeature.FeatureId = f.Id;
+            productFeature.Value = "10";
+
+            service.AddProductFeature(productFeature);
+
+            service.ModifyProductFeatureValue(productFeature.Id, "hola");
+        }
+
+        [ExpectedException(typeof(ProductFeatureWrongValueException))]
+        [TestMethod]
+        public void ProductModifyDateFeatureWrongValueTest()
+        {
+            ProductService service = getService();
+            FeatureService featureService = getFeatureService();
+
+            Feature f = new Feature();
+            f.Name = "Color";
+            f.Type = FeatureTypes.DATE;
+            featureService.Add(f);
+
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            Category cat = getCategory();
+            p.Category = cat;
+            service.Add(p);
+
+            ProductFeature productFeature = new ProductFeature();
+            productFeature.ProductId = p.Id;
+            productFeature.FeatureId = f.Id;
+            productFeature.Value = DateTime.Now.ToString();
+
+            service.AddProductFeature(productFeature);
+
+            service.ModifyProductFeatureValue(productFeature.Id, "10");
+        }
+
+        
+
+
+        //Delete ProductFeature
+        //OK
+        //No Product
+        //No Feature
+        //No ProductFeature
 
 
         /*  [TestMethod]
