@@ -122,12 +122,37 @@ namespace WebApi.Controllers
                     return Ok("Desloggueado con éxito");
 
                 }
-                return BadRequest("Debes mandar un el Token de sesión en los headers");
+                return BadRequest("Debes mandar el Token de sesión en los headers");
             }
             catch (NoUserWithTokenException ex) {
                 return BadRequest(ex.Message);
             }
             
+        }
+
+        [Route("api/Users/ChangeRole", Name = "ChangeRole")]
+        [HttpPost]
+        public IHttpActionResult ChangeUserRole(JObject parameters)
+        {
+            var re = Request;
+            var headers = re.Headers;
+
+            if (headers.Contains("Token"))
+            {
+                string token = headers.GetValues("Token").First();
+                User u = _userService.GetFromToken(token);
+                dynamic json = parameters;
+                string role = json.UserRole;
+                int intVal;
+                if (Int32.TryParse(role, out intVal)) {
+                    _userService.ChangeUserRole(u.Id,intVal);
+                    return Ok("Rol cambiado con éxito");
+                }
+                return BadRequest("El Rol debe ser numérico");
+
+
+            }
+            return BadRequest("Debes mandar el Token de sesión en los headers");
         }
     }
 }
