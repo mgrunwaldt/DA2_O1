@@ -1,4 +1,5 @@
-﻿using Entities;
+﻿using DataAccess;
+using Entities;
 using Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Repository;
@@ -19,9 +20,16 @@ namespace ServicesTests
         private GenericRepository<Address> addressRepo;
         private GenericRepository<User> userRepo;
 
+        private MyContext context;
+        private MyContext getContext() {
+            if (context == null)
+                context = new MyContext();
+            return context;
+        }
+
         private GenericRepository<User> getUserRepo() {
             if (userRepo == null) {
-                GenericRepository<User> newUserRepo = new GenericRepository<User>();
+                GenericRepository<User> newUserRepo = new GenericRepository<User>(getContext());
                 userRepo = newUserRepo;
                 return newUserRepo;
             }
@@ -32,7 +40,7 @@ namespace ServicesTests
         {
             if (addressRepo == null)
             {
-                GenericRepository<Address> newAddressRepo = new GenericRepository<Address>(true);
+                GenericRepository<Address> newAddressRepo = new GenericRepository<Address>(getContext(),true);
                 addressRepo = newAddressRepo;
                 return newAddressRepo;
             }
@@ -49,7 +57,7 @@ namespace ServicesTests
         private UserService getUserService()
         {
             GenericRepository<Order> repo = new GenericRepository<Order>();
-            return new UserService(getUserRepo(), repo);
+            return new UserService(getUserRepo(),repo,getAddressRepo());
         }
 
         private User getUser() {
@@ -119,7 +127,7 @@ namespace ServicesTests
             service.AddAddress(a, u);
         }
 
-        [ExpectedException(typeof(AddressWithoutStreetException))]
+        [ExpectedException(typeof(MissingAddressDataException))]
         [TestMethod]
         public void AddressCreateNoStreetTest()
         {
@@ -131,7 +139,7 @@ namespace ServicesTests
             service.AddAddress(a, u);
         }
 
-        [ExpectedException(typeof(AddressWithoutStreetNumberException))]
+        [ExpectedException(typeof(MissingAddressDataException))]
         [TestMethod]
         public void AddressCreateNoStreetNumberTest()
         {
@@ -143,7 +151,7 @@ namespace ServicesTests
             service.AddAddress(a, u);
         }
 
-        [ExpectedException(typeof(AddressWithoutPhoneNumberException))]
+        [ExpectedException(typeof(MissingAddressDataException))]
         [TestMethod]
         public void AddressCreateNoPhoneNumberTest()
         {
@@ -155,41 +163,40 @@ namespace ServicesTests
             service.AddAddress(a, u);
         }
 
-        /*        [TestMethod]
-                public void AddExistingAddressToDifferentUserTest()
-                {
-                    Address a = new Address();
-                    a.Street = "Cartagena";
-                    a.StreetNumber = "1582";
-                    a.PhoneNumber = "26003564";
+        [TestMethod]
+        public void AddExistingAddressToDifferentUserTest()
+        {
+            Address a = new Address();
+            a.Street = "Cartagena";
+            a.StreetNumber = "1582";
+            a.PhoneNumber = "26003564";
 
-                    Address a2 = new Address();
-                    a2.Street = "Cartagena";
-                    a2.StreetNumber = "1582";
-                    a2.PhoneNumber = "26003564";
-                    AddressService service = getService();
-                    User u = getUser();
-                    User u2 = getOtherUser();
-                    service.AddAddress(a, u);
-                    service.AddAddress(a2, u2);
+            Address a2 = new Address();
+            a2.Street = "Cartagena";
+            a2.StreetNumber = "1582";
+            a2.PhoneNumber = "26003564";
+            AddressService service = getService();
+            User u = getUser();
+            User u2 = getOtherUser();
+            service.AddAddress(a, u);
+            service.AddAddress(a2, u2);
 
-                    GenericRepository<User> ur = getUserRepo();
-                    User savedUserOne = ur.Get(u.Id);
-                    User savedUserTwo = ur.Get(u2.Id);
-
-
-                    List<Address> userOneAddresses = savedUserOne.Addresses.ToList();
-                    List<Address> userTwoAddresses = savedUserTwo.Addresses.ToList();
+            GenericRepository<User> ur = getUserRepo();
+            User savedUserOne = ur.Get(u.Id);
+            User savedUserTwo = ur.Get(u2.Id);
 
 
-                    bool userOneHasAddress = userOneAddresses.Exists(address => address.Id == a.Id);
-                    bool userTwoHasAddress = userTwoAddresses.Exists(address => address.Id == a2.Id);
+            List<Address> userOneAddresses = savedUserOne.Addresses.ToList();
+            List<Address> userTwoAddresses = savedUserTwo.Addresses.ToList();
 
-                    Assert.IsTrue(userOneHasAddress);
-                    Assert.IsTrue(userTwoHasAddress);
-                    Assert.AreEqual(a.Id, a2.Id);
-                }
-                */
+
+            bool userOneHasAddress = userOneAddresses.Exists(address => address.Id == a.Id);
+            bool userTwoHasAddress = userTwoAddresses.Exists(address => address.Id == a.Id);
+
+            Assert.IsTrue(userOneHasAddress);
+            Assert.IsTrue(userTwoHasAddress);
+        }
+                
         [TestMethod]
         public void AddressAddMultipleToOneUserTest()
         {

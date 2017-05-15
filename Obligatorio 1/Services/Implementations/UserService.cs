@@ -14,10 +14,14 @@ namespace Services
 
         private IGenericRepository<User> userRepository;
         private IGenericRepository<Order> orderRepository;
+        private IGenericRepository<Address> addressRepository;
 
-        public UserService(IGenericRepository<User> repo, IGenericRepository<Order> orderRepo) {
+
+
+        public UserService(IGenericRepository<User> repo, IGenericRepository<Order> orderRepo, IGenericRepository<Address> addressRepo) {
             userRepository = repo;
             orderRepository = orderRepo;
+            addressRepository = addressRepo;
         }
         public void Register(User u, Address a)
         {
@@ -29,13 +33,23 @@ namespace Services
             u.PhoneNumber = PhoneHelper.GetPhoneWithCorrectFormat(u.PhoneNumber);
             EmailHelper.CheckEmailFormat(u.Email);
             a.Validate();
-            u.Address = a;
+            Address userAddress = getEqualAddress(a);
+            u.Address = userAddress;
             u.Role = 1;
             Order order = new Order();
             order.Status = OrderStatuses.WAITING_FOR_ADDRESS;
             order.UserId = u.Id;
             userRepository.Add(u);
             orderRepository.Add(order);
+        }
+
+        private Address getEqualAddress(Address a)
+        {
+            List<Address> allAddresses = addressRepository.GetAll();
+            Address existing = allAddresses.Find(address => a.Street == address.Street && a.PhoneNumber == address.PhoneNumber && a.StreetNumber == address.StreetNumber);
+            if (existing != null)
+                return existing;
+            return a;
         }
 
         private void checkPasswordFormat(String password) {
@@ -48,7 +62,7 @@ namespace Services
             List<User> allUsers = userRepository.GetAll();
             var existingUser = allUsers.Find(user => user.Email == email && user.Id != u.Id);
             if (existingUser != null) {
-                    throw new ExistingEmailException("Ya existe un usuario con este email");
+                    throw new ExistingUserException("Ya existe un usuario con este email");
             }
         }
 
@@ -56,9 +70,11 @@ namespace Services
             List<User> allUsers = userRepository.GetAll();
             var existingUser = allUsers.Find(user => user.Username == username && user.Id != u.Id);
             if (existingUser != null) {
-                    throw new ExistingUsernameException("Ya existe un usuario con este nombre de usuario");
+                    throw new ExistingUserException("Ya existe un usuario con este nombre de usuario");
             }
         }
+
+        
 
         public string Login(string identifier, string password) {
             List<User> users = userRepository.GetAll();
@@ -70,6 +86,7 @@ namespace Services
                         {
                             string token = TokenHelper.CreateToken();
                             user.Token = token;
+                            userRepository.Update(user);
                             return token;
                         }
                         else {
@@ -88,6 +105,7 @@ namespace Services
                         {
                             string token = TokenHelper.CreateToken();
                             user.Token = token;
+                            userRepository.Update(user);
                             return token;
                         }
                         else
@@ -98,6 +116,20 @@ namespace Services
                 }
                 throw new NotExistingUserException("No existe el nombre de usuario especificado");
             }
+        }
+
+        public User GetFromToken(string token) {
+            if (token != null) {
+                List<User> allUsers = userRepository.GetAll();
+                User u = allUsers.Find(user => user.Token == token);
+                if (u != null) {
+                    return u;
+                }
+                throw new NoUserWithTokenException("No hay usuario con este token, por favor inicie sesión");
+            }
+            throw new NoTokenException("Debes mandar el token de sesión en los headers como 'Token'");
+            
+
         }
 
         public void Logout(Guid id)
@@ -117,7 +149,7 @@ namespace Services
             User u = userRepository.Get(id);
             if (u != null)
             {
-                if (role == 2 || role == 3)
+                if (role == 1 || role == 2 || role == 3)
                 {
                     u.Role = role;
                     userRepository.Update(u);

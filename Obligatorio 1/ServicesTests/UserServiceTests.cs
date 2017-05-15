@@ -5,15 +5,24 @@ using Services;
 using Exceptions;
 using Repository;
 using Tools;
+using DataAccess;
 namespace ServicesTests
 {
     [TestClass]
     public class UserServiceTests
     {
+        private MyContext context;
+        private MyContext getContext()
+        {
+            if (context == null)
+                context = new MyContext();
+            return context;
+        }
         private UserService getService() {
-            GenericRepository<User> repo = new GenericRepository<User>(true);
-            GenericRepository<Order> orderRepo = new GenericRepository<Order>(true);
-            return new UserService(repo, orderRepo);
+            GenericRepository<User> repo = new GenericRepository<User>(getContext(),true);
+            GenericRepository<Order> orderRepo = new GenericRepository<Order>(getContext());
+            GenericRepository<Address> addressRepo = new GenericRepository<Address>(getContext());
+            return new UserService(repo, orderRepo,addressRepo);
         }
 
         [TestMethod]
@@ -72,7 +81,7 @@ namespace ServicesTests
             service.Register(u, a);
         }
 
-        [ExpectedException(typeof(AddressWithoutStreetException))]
+        [ExpectedException(typeof(MissingAddressDataException))]
         [TestMethod]
         public void RegisterMissingStreetTest()
         {
@@ -90,7 +99,7 @@ namespace ServicesTests
             service.Register(u, a);
         }
 
-        [ExpectedException(typeof(AddressWithoutStreetNumberException))]
+        [ExpectedException(typeof(MissingAddressDataException))]
         [TestMethod]
         public void RegisterMissingStreetNumberTest()
         {
@@ -107,7 +116,25 @@ namespace ServicesTests
             a.PhoneNumber = "26007263";
             service.Register(u, a);
         }
-        //falta missing address phone
+
+        [ExpectedException(typeof(MissingAddressDataException))]
+        [TestMethod]
+        public void RegisterMissingAddressPhoneNumberTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            UserService service = getService();
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "2222";
+            service.Register(u, a);
+        }
+
         [ExpectedException(typeof(MissingUserDataException))]
         [TestMethod]
         public void RegisterMissingPhoneNumberTest()
@@ -238,7 +265,7 @@ namespace ServicesTests
             service.Register(u, a);
         }
 
-        [ExpectedException(typeof(ExistingUsernameException))]
+        [ExpectedException(typeof(ExistingUserException))]
         [TestMethod]
         public void ExistingUsernameTest()
         {
@@ -271,7 +298,7 @@ namespace ServicesTests
             service.Register(u2,a2);
         }
 
-        [ExpectedException(typeof(ExistingEmailException))]
+        [ExpectedException(typeof(ExistingUserException))]
         [TestMethod]
         public void ExistingEmailTest()
         {
@@ -340,7 +367,7 @@ namespace ServicesTests
             a.PhoneNumber = "26007263";
             service.Register(u, a);
             Assert.AreNotEqual(Guid.Empty, u.Id);
-            GenericRepository<User> ur = new GenericRepository<User>();
+            GenericRepository<User> ur = new GenericRepository<User>(getContext());
             User savedUser = ur.Get(u.Id);
             Assert.AreEqual(EncryptionHelper.GetMD5("prueba1234"), savedUser.Password);
         }
@@ -365,7 +392,7 @@ namespace ServicesTests
             Assert.AreNotEqual(Guid.Empty, u.Address.Id);
         }
 
-     /*   [TestMethod]
+        [TestMethod]
         public void TwoUsersOneAddressTest()
         {
             User u = new User();
@@ -398,7 +425,7 @@ namespace ServicesTests
 
             Assert.AreEqual(u.Address.Id, u2.Address.Id);
 
-        }*/
+        }
 
         [TestMethod]
         public void LoginWithUsernameOkTest()
@@ -972,7 +999,7 @@ namespace ServicesTests
             service.Modify(u);
         }
 
-        [ExpectedException(typeof(ExistingUsernameException))]
+        [ExpectedException(typeof(ExistingUserException))]
         [TestMethod]
         public void ModifyUserExistingUsernameTest()
         {
@@ -1008,7 +1035,7 @@ namespace ServicesTests
             service.Modify(u2);
         }
 
-        [ExpectedException(typeof(ExistingEmailException))]
+        [ExpectedException(typeof(ExistingUserException))]
         [TestMethod]
         public void ModifyUserExistingEmailTest()
         {
@@ -1043,6 +1070,84 @@ namespace ServicesTests
             u2.Email = "matigru@gmail.com";
             service.Modify(u2);
         }
+
+        [TestMethod]
+        public void GetUserFromTokenOkTest() {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            UserService service = getService();
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            service.Register(u, a);
+
+            string userUsername = "Mati";
+            string hashedPass = EncryptionHelper.GetMD5("prueba1234");
+            string token = service.Login(userUsername, hashedPass);
+
+            User loggedUser = service.GetFromToken(token);
+            Assert.IsNotNull(loggedUser);
+            Assert.AreEqual(loggedUser.Id, u.Id);
+        }
+
+        [ExpectedException(typeof(NoUserWithTokenException))]
+        [TestMethod]
+        public void GetUserFromTokenWrongTokenTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            UserService service = getService();
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            service.Register(u, a);
+
+            string userUsername = "Mati";
+            string hashedPass = EncryptionHelper.GetMD5("prueba1234");
+            string token = service.Login(userUsername, hashedPass);
+
+            User loggedUser = service.GetFromToken("token");
+
+        }
+
+        [ExpectedException(typeof(NoTokenException))]
+        [TestMethod]
+        public void GetUserFromTokenNoTokenTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            UserService service = getService();
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            service.Register(u, a);
+
+            string userUsername = "Mati";
+            string hashedPass = EncryptionHelper.GetMD5("prueba1234");
+            string token = service.Login(userUsername, hashedPass);
+
+            User loggedUser = service.GetFromToken(null);
+
+        }
+
         //LOGIN
         //Ok con username ----------
         //Ok con mail ----------

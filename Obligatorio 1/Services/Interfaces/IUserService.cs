@@ -17,5 +17,6 @@ namespace Services.Interfaces
         void ChangePassword(Guid id, string oldPassword, string newPassword);
         void Logout(Guid id);
         void Modify(User user);
+        User GetFromToken(string token);
     }
 }

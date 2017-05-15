@@ -52,9 +52,6 @@
     <Compile Include="AddressDeleteDefaultNoReplacementException.cs" />
     <Compile Include="AddressDeleteNoAddressException.cs" />
     <Compile Include="AddressDeleteUserDoesntHaveException.cs" />
-    <Compile Include="AddressWithoutPhoneNumberException.cs" />
-    <Compile Include="AddressWithoutStreetException.cs" />
-    <Compile Include="AddressWithoutStreetNumberException.cs" />
     <Compile Include="InactiveProductException.cs" />
     <Compile Include="IncorrectOrderStatusException.cs" />
     <Compile Include="NoLoginDataMatchException.cs" />
@@ -63,9 +60,8 @@
     <Compile Include="NotExistingProductException.cs" />
     <Compile Include="NotExistingProductInOrderException.cs" />
     <Compile Include="NotExistingUserException.cs" />
-    <Compile Include="ExistingEmailException.cs" />
     <Compile Include="ExistingCategoryNameException.cs" />
-    <Compile Include="ExistingUsernameException.cs" />
+    <Compile Include="ExistingUserException.cs" />
     <Compile Include="FeatureExistingCombinationException.cs" />
     <Compile Include="FeatureNoNameException.cs" />
     <Compile Include="FeatureWithoutTypeException.cs" />
@@ -76,7 +72,9 @@
     <Compile Include="NotExistingCategoryException.cs" />
     <Compile Include="MissingAddressDataException.cs" />
     <Compile Include="NotExistingUserRoleException.cs" />
+    <Compile Include="NoTokenException.cs" />
     <Compile Include="NoUserForAddressException.cs" />
+    <Compile Include="NoUserWithTokenException.cs" />
     <Compile Include="ProductChangeCategoryException.cs" />
     <Compile Include="ProductDuplicateException.cs" />
     <Compile Include="ProductFeatureDuplicateFeature.cs" />
@@ -85,6 +83,7 @@
     <Compile Include="ProductMissingDataException.cs" />
     <Compile Include="ProductModifyNotExistingException.cs" />
     <Compile Include="ProductNotExistingException.cs" />
+    <Compile Include="ProductWithoutFeatureException.cs" />
     <Compile Include="ProductWrongPriceException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserAlreadyHasAddressException.cs" />
