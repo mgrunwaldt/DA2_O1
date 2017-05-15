@@ -13,7 +13,7 @@ using System.Web;
 using System.Collections.Specialized;
 using System.Web.Http.Controllers;
 using System.Net.Http;
-
+using Entities.Statuses_And_Roles;
 namespace WebApiTests
 {
     [TestClass]
@@ -344,6 +344,35 @@ namespace WebApiTests
 
             mockUserService.VerifyAll();
             Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+
+        }
+
+        [TestMethod]
+        public void ChangeUserRoleTest()
+        {
+            var mockUserService = new Mock<IUserService>();
+            User u = getFakeUser();
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Returns(u);
+            mockUserService.Setup(service => service.ChangeUserRole(u.Id,UserRoles.ADMIN));
+
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+
+            dynamic parameters = new JObject();
+            parameters.UserRole = "2";
+
+
+            IHttpActionResult obtainedResult = controller.ChangeUserRole(parameters);
+            var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
+
+            mockUserService.VerifyAll();
+            Assert.IsNotNull(createdResult);
+            Assert.AreEqual("Rol cambiado con éxito", createdResult.Content);
 
         }
 
