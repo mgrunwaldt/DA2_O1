@@ -467,14 +467,13 @@ namespace WebApiTests
 
         }
 
-        //CASOS: NO DATA, GUID CONSTRUCTOR FAILS NotExistingUserRoleException
         [TestMethod]
-        public void ChangeUserRoleNoDataInTest()
+        public void ChangeUserRoleNoDataTest()
         {
             var mockUserService = new Mock<IUserService>();
             User u = getFakeUser();
             u.Role = UserRoles.SUPERADMIN;
-            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Throws(new NoUserWithTokenException());
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Returns(u);
 
             var controller = new UsersController(mockUserService.Object);
             var controllerContext = new HttpControllerContext();
@@ -490,6 +489,36 @@ namespace WebApiTests
             Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
 
         }
+
+        [TestMethod]
+        public void ChangeUserRoleWrongDataTest()
+        {
+            var mockUserService = new Mock<IUserService>();
+            User u = getFakeUser();
+            u.Role = UserRoles.SUPERADMIN;
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Returns(u);
+
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+            dynamic parameters = new JObject();
+            parameters.UserRole = null;
+            parameters.Id = null;
+
+
+            IHttpActionResult obtainedResult = controller.ChangeUserRole(parameters);
+            var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+
+        }
+
+        //CASOS: NO DATA, GUID CONSTRUCTOR FAILS NotExistingUserRoleException
 
     }
 }

@@ -145,7 +145,8 @@ namespace WebApi.Controllers
                 {
                     string token = headers.GetValues("Token").First();
                     User admin = _userService.GetFromToken(token);
-                    if (admin.Role == UserRoles.SUPERADMIN) {
+                    if (admin.Role == UserRoles.SUPERADMIN)
+                    {
                         dynamic json = parameters;
                         string role = json.UserRole;
                         string id = json.Id;
@@ -162,7 +163,8 @@ namespace WebApi.Controllers
                 }
                 return BadRequest("Debes mandar el Token de sesión en los headers");
             }
-            catch (NoUserWithTokenException ex) {
+            catch (NoUserWithTokenException ex)
+            {
                 return BadRequest(ex.Message);
             }
             catch (NotExistingUserException ex)
@@ -179,6 +181,9 @@ namespace WebApi.Controllers
             }
             catch (RuntimeBinderException ex)
             {
+                return BadRequest("Debes enviar todos los datos");
+            }
+            catch (ArgumentNullException ex) {
                 return BadRequest("Debes enviar todos los datos");
             }
 
