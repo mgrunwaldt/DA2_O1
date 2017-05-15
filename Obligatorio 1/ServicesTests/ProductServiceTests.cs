@@ -1203,6 +1203,83 @@ namespace ServicesTests
             service.RemoveFeatureFromProduct(p, f);
         }
 
+        [TestMethod]
+        public void ProductGetOk()
+        {
+            ProductService service = getService();
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            p.Category = getCategory();
+            service.Add(p);
+            Product savedProduct = service.Get(p.Id);
+            Assert.IsNotNull(savedProduct);
+        }
+
+        [TestMethod]
+        public void ProductGetCheckFeaturesOk()
+        {
+            ProductService service = getService();
+            FeatureService featureService = getFeatureService();
+
+            Feature f = new Feature();
+            f.Name = "Color";
+            f.Type = FeatureTypes.STRING;
+            featureService.Add(f);
+
+            Feature f2 = new Feature();
+            f2.Name = "Peso";
+            f2.Type = FeatureTypes.INT;
+            featureService.Add(f2);
+
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            Category cat = getCategory();
+            p.Category = cat;
+            service.Add(p);
+
+            ProductFeature productFeature = new ProductFeature();
+            productFeature.ProductId = p.Id;
+            productFeature.FeatureId = f.Id;
+            productFeature.Value = "Rojo";
+
+            service.AddProductFeature(productFeature);
+
+            ProductFeature productFeature2 = new ProductFeature();
+            productFeature2.ProductId = p.Id;
+            productFeature2.FeatureId = f2.Id;
+            productFeature2.Value = "100";
+
+            service.AddProductFeature(productFeature2);
+
+            Product savedProduct = service.Get(p.Id);
+            Assert.AreEqual(2, savedProduct.ProductFeatures.Count());
+        }
+
+        [ExpectedException(typeof(ProductNotExistingException))]
+        [TestMethod]
+        public void ProductGetNotExistingTest() {
+            ProductService service = getService();
+
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            Category cat = getCategory();
+            p.Category = cat;
+
+            Product savedProduct = service.Get(p.Id);
+
+        }
 
 
         /*  [TestMethod]
@@ -1243,10 +1320,7 @@ namespace ServicesTests
         //Wrong User (Idem no user)
 
 
-        //GET - tambien devuelve attributtes
-        //OK
-        //Check attributes
-        //No Product
+
 
 
 
