@@ -8,15 +8,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using DataAccess;
 namespace ServicesTests
 {
     [TestClass]
     public class CategoryServiceTests
     {
+        private MyContext context;
+        private MyContext getContext()
+        {
+            if (context == null)
+                context = new MyContext();
+            return context;
+        }
         private CategoryService getService()
         {
-            GenericRepository<Category> repo = new GenericRepository<Category>(true);
+            GenericRepository<Category> repo = new GenericRepository<Category>(getContext(),true);
             return new CategoryService(repo);
         }
 

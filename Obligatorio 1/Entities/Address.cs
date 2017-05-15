@@ -37,15 +37,15 @@ namespace Entities
         {
             if (Street == null || Street.Trim() == "")
             {
-                throw new AddressWithoutStreetException("No se puede dejar la calle vacía");
+                throw new MissingAddressDataException("No se puede dejar la calle vacía");
             }
             if (StreetNumber == null || StreetNumber.Trim() == "")
             {
-                throw new AddressWithoutStreetNumberException("No se puede dejar el número de puerta vacío");
+                throw new MissingAddressDataException("No se puede dejar el número de puerta vacío");
             }
             if (PhoneNumber == null || PhoneNumber.Trim() == "")
             {
-                throw new AddressWithoutPhoneNumberException("No se puede dejar el teléfono vacío");
+                throw new MissingAddressDataException("No se puede dejar el teléfono vacío");
             }
         }
 

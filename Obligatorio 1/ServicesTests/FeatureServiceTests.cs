@@ -9,16 +9,24 @@ using Entities.Statuses_And_Roles;
 using Repository;
 using Services;
 using Exceptions;
+using DataAccess;
 
 namespace ServicesTests
 {
     [TestClass]
     public class FeatureServiceTests
     {
-       
+        private MyContext context;
+        private MyContext getContext()
+        {
+            if (context == null)
+                context = new MyContext();
+            return context;
+        }
+
         private FeatureService getService()
         {
-            GenericRepository<Feature>  repoInstance = new GenericRepository<Feature>(true);
+            GenericRepository<Feature>  repoInstance = new GenericRepository<Feature>(getContext(),true);
             return new FeatureService(repoInstance);
         }
 
@@ -30,7 +38,7 @@ namespace ServicesTests
             feature.Name = "Color";
             service.Add(feature);
 
-            GenericRepository<Feature> repo = new GenericRepository<Feature>();
+            GenericRepository<Feature> repo = new GenericRepository<Feature>(getContext());
 
             Feature savedFeature = repo.Get(feature.Id);
             Assert.IsNotNull(savedFeature);
@@ -45,7 +53,7 @@ namespace ServicesTests
             feature.Name = "Peso";
             service.Add(feature);
 
-            GenericRepository<Feature> repo = new GenericRepository<Feature>();
+            GenericRepository<Feature> repo = new GenericRepository<Feature>(getContext());
 
             Feature savedFeature = repo.Get(feature.Id);
             Assert.IsNotNull(savedFeature);
@@ -60,7 +68,7 @@ namespace ServicesTests
             feature.Type = FeatureTypes.DATE;
             feature.Name = "Vencimiento";
             service.Add(feature);
-            GenericRepository<Feature> repo = new GenericRepository<Feature>();
+            GenericRepository<Feature> repo = new GenericRepository<Feature>(getContext());
 
             Feature savedFeature = repo.Get(feature.Id);
             Assert.IsNotNull(savedFeature);

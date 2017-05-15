@@ -20,22 +20,16 @@ namespace Repository
             return context;
         }
 
-        public GenericRepository(bool forTest = false)
+        public GenericRepository(MyContext contextParam,bool forTest = false)
         {
-            Initialize();
+            this.context = contextParam;
+            this.dbSet = this.context.Set<TEntity>();
+
             if (forTest)
             {
                 EmptyDatabase();
             }
         }
-
-        private void Initialize() {
-            if (this.context == null) {
-                this.context = new MyContext();
-            }
-            this.dbSet = this.context.Set<TEntity>();
-        }
-
 
 
         public virtual List<TEntity> GetAll()

@@ -10,9 +10,12 @@ namespace Services
     {
 
         private IGenericRepository<User> userRepository;
+        private IGenericRepository<Address> addressRepository;
 
-        public UserService(IGenericRepository<User> repo) {
+
+        public UserService(IGenericRepository<User> repo, IGenericRepository<Address> addressRepo) {
             userRepository = repo;
+            addressRepository = addressRepo;
         }
         public void Register(User u, Address a)
         {
@@ -24,9 +27,19 @@ namespace Services
             u.PhoneNumber = PhoneHelper.GetPhoneWithCorrectFormat(u.PhoneNumber);
             EmailHelper.CheckEmailFormat(u.Email);
             a.Validate();
-            u.Address = a;
+            Address userAddress = getEqualAddress(a);
+            u.Address = userAddress;
             u.Role = 1;
             userRepository.Add(u);
+        }
+
+        private Address getEqualAddress(Address a)
+        {
+            List<Address> allAddresses = addressRepository.GetAll();
+            Address existing = allAddresses.Find(address => a.Street == address.Street && a.PhoneNumber == address.PhoneNumber && a.StreetNumber == address.StreetNumber);
+            if (existing != null)
+                return existing;
+            return a;
         }
 
         private void checkPasswordFormat(String password) {
@@ -39,7 +52,7 @@ namespace Services
             List<User> allUsers = userRepository.GetAll();
             var existingUser = allUsers.Find(user => user.Email == email && user.Id != u.Id);
             if (existingUser != null) {
-                    throw new ExistingEmailException("Ya existe un usuario con este email");
+                    throw new ExistingUserException("Ya existe un usuario con este email");
             }
         }
 
@@ -47,7 +60,7 @@ namespace Services
             List<User> allUsers = userRepository.GetAll();
             var existingUser = allUsers.Find(user => user.Username == username && user.Id != u.Id);
             if (existingUser != null) {
-                    throw new ExistingUsernameException("Ya existe un usuario con este nombre de usuario");
+                    throw new ExistingUserException("Ya existe un usuario con este nombre de usuario");
             }
         }
 

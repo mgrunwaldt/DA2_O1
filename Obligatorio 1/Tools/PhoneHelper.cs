@@ -13,7 +13,7 @@ namespace Tools
         {
             bool error = true;
             if (string.IsNullOrEmpty(phone))
-                throw new Exception("El teléfono no puede estar vacío");
+                throw new MissingUserDataException("El teléfono no puede estar vacío");
             var newNumber = "005989";
             var numArr = phone.ToCharArray();
             if (numArr.Length == 9)

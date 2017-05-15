@@ -5,14 +5,24 @@ using Services;
 using Exceptions;
 using Repository;
 using Tools;
+using DataAccess;
 namespace ServicesTests
 {
     [TestClass]
     public class UserServiceTests
     {
+        private MyContext context;
+        private MyContext getContext()
+        {
+            if (context == null)
+                context = new MyContext();
+            return context;
+        }
         private UserService getService() {
-            GenericRepository<User> repo = new GenericRepository<User>(true);
-            return new UserService(repo);
+            GenericRepository<User> repo = new GenericRepository<User>(getContext(),true);
+            GenericRepository<Address> addressRepo = new GenericRepository<Address>(getContext());
+
+            return new UserService(repo,addressRepo);
         }
 
         [TestMethod]
@@ -71,7 +81,7 @@ namespace ServicesTests
             service.Register(u, a);
         }
 
-        [ExpectedException(typeof(AddressWithoutStreetException))]
+        [ExpectedException(typeof(MissingAddressDataException))]
         [TestMethod]
         public void RegisterMissingStreetTest()
         {
@@ -89,7 +99,7 @@ namespace ServicesTests
             service.Register(u, a);
         }
 
-        [ExpectedException(typeof(AddressWithoutStreetNumberException))]
+        [ExpectedException(typeof(MissingAddressDataException))]
         [TestMethod]
         public void RegisterMissingStreetNumberTest()
         {
@@ -106,7 +116,25 @@ namespace ServicesTests
             a.PhoneNumber = "26007263";
             service.Register(u, a);
         }
-        //falta missing address phone
+
+        [ExpectedException(typeof(MissingAddressDataException))]
+        [TestMethod]
+        public void RegisterMissingAddressPhoneNumberTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            UserService service = getService();
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "2222";
+            service.Register(u, a);
+        }
+
         [ExpectedException(typeof(MissingUserDataException))]
         [TestMethod]
         public void RegisterMissingPhoneNumberTest()
@@ -237,7 +265,7 @@ namespace ServicesTests
             service.Register(u, a);
         }
 
-        [ExpectedException(typeof(ExistingUsernameException))]
+        [ExpectedException(typeof(ExistingUserException))]
         [TestMethod]
         public void ExistingUsernameTest()
         {
@@ -270,7 +298,7 @@ namespace ServicesTests
             service.Register(u2,a2);
         }
 
-        [ExpectedException(typeof(ExistingEmailException))]
+        [ExpectedException(typeof(ExistingUserException))]
         [TestMethod]
         public void ExistingEmailTest()
         {
@@ -339,7 +367,7 @@ namespace ServicesTests
             a.PhoneNumber = "26007263";
             service.Register(u, a);
             Assert.AreNotEqual(Guid.Empty, u.Id);
-            GenericRepository<User> ur = new GenericRepository<User>();
+            GenericRepository<User> ur = new GenericRepository<User>(getContext());
             User savedUser = ur.Get(u.Id);
             Assert.AreEqual(EncryptionHelper.GetMD5("prueba1234"), savedUser.Password);
         }
@@ -364,7 +392,7 @@ namespace ServicesTests
             Assert.AreNotEqual(Guid.Empty, u.Address.Id);
         }
 
-     /*   [TestMethod]
+        [TestMethod]
         public void TwoUsersOneAddressTest()
         {
             User u = new User();
@@ -397,7 +425,7 @@ namespace ServicesTests
 
             Assert.AreEqual(u.Address.Id, u2.Address.Id);
 
-        }*/
+        }
 
         [TestMethod]
         public void LoginWithUsernameOkTest()
@@ -971,7 +999,7 @@ namespace ServicesTests
             service.Modify(u);
         }
 
-        [ExpectedException(typeof(ExistingUsernameException))]
+        [ExpectedException(typeof(ExistingUserException))]
         [TestMethod]
         public void ModifyUserExistingUsernameTest()
         {
@@ -1007,7 +1035,7 @@ namespace ServicesTests
             service.Modify(u2);
         }
 
-        [ExpectedException(typeof(ExistingEmailException))]
+        [ExpectedException(typeof(ExistingUserException))]
         [TestMethod]
         public void ModifyUserExistingEmailTest()
         {

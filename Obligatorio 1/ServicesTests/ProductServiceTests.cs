@@ -10,29 +10,37 @@ using System.Threading.Tasks;
 using Exceptions;
 using Services;
 using Entities.Statuses_And_Roles;
+using DataAccess;
 
 namespace ServicesTests
 {
     [TestClass]
     public class ProductServiceTests
     {
+        private MyContext context;
+        private MyContext getContext()
+        {
+            if (context == null)
+                context = new MyContext();
+            return context;
+        }
         private ProductService getService() {
-            GenericRepository<Product> repoInstance = new GenericRepository<Product>(true);
-            GenericRepository<ProductFeature> productFeatureRepoInstance = new GenericRepository<ProductFeature>();
-            GenericRepository<Feature> featureRepoInstance = new GenericRepository<Feature>();
+            GenericRepository<Product> repoInstance = new GenericRepository<Product>(getContext(),true);
+            GenericRepository<ProductFeature> productFeatureRepoInstance = new GenericRepository<ProductFeature>(getContext());
+            GenericRepository<Feature> featureRepoInstance = new GenericRepository<Feature>(getContext());
 
             return new ProductService(repoInstance, productFeatureRepoInstance,featureRepoInstance);
         }
 
         private CategoryService getCategoryService()
         {
-            GenericRepository<Category> repoInstance = new GenericRepository<Category>();
+            GenericRepository<Category> repoInstance = new GenericRepository<Category>(getContext());
             return new CategoryService(repoInstance);
         }
 
         private FeatureService getFeatureService()
         {
-            GenericRepository<Feature> repoInstance = new GenericRepository<Feature>();
+            GenericRepository<Feature> repoInstance = new GenericRepository<Feature>(getContext());
             return new FeatureService(repoInstance);
         }
 
@@ -1318,11 +1326,6 @@ namespace ServicesTests
         //Ok (no user)
         //Ok (user, with reviews)
         //Wrong User (Idem no user)
-
-
-
-
-
 
 
         //GET Filtered

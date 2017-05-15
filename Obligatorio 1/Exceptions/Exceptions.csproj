@@ -52,14 +52,10 @@
     <Compile Include="AddressDeleteDefaultNoReplacementException.cs" />
     <Compile Include="AddressDeleteNoAddressException.cs" />
     <Compile Include="AddressDeleteUserDoesntHaveException.cs" />
-    <Compile Include="AddressWithoutPhoneNumberException.cs" />
-    <Compile Include="AddressWithoutStreetException.cs" />
-    <Compile Include="AddressWithoutStreetNumberException.cs" />
     <Compile Include="NoLoginDataMatchException.cs" />
     <Compile Include="NotExistingUserException.cs" />
-    <Compile Include="ExistingEmailException.cs" />
     <Compile Include="ExistingCategoryNameException.cs" />
-    <Compile Include="ExistingUsernameException.cs" />
+    <Compile Include="ExistingUserException.cs" />
     <Compile Include="FeatureExistingCombinationException.cs" />
     <Compile Include="FeatureNoNameException.cs" />
     <Compile Include="FeatureWithoutTypeException.cs" />
