@@ -187,6 +187,10 @@ namespace WebApi.Controllers
             catch (ArgumentNullException ex) {
                 return BadRequest("Debes enviar todos los datos");
             }
+            catch (FormatException ex)
+            {
+                return BadRequest("El Id debe tener 32 caracteres");
+            }
 
         }
     }
