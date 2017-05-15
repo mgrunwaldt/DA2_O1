@@ -632,7 +632,180 @@ namespace WebApiTests
 
         }
 
-        //CASOS: NotExistingUserRoleException
+        [TestMethod]
+        public void ModifyUserNoTokenTest() {
+            var mockUserService = new Mock<IUserService>();
+            User u = getFakeUser();
 
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+            IHttpActionResult obtainedResult = controller.Put(u.Id,u);
+            var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+        }
+
+        [TestMethod]
+        public void ModifyUserDifferentUserThanTokenTest()
+        {
+            var mockUserService = new Mock<IUserService>();
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+            User u = getFakeUser();
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Returns(u);
+
+            IHttpActionResult obtainedResult = controller.Put(Guid.NewGuid(), u);
+            var createdResult = obtainedResult as CreatedAtRouteNegotiatedContentResult<User>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+
+        }
+
+        [TestMethod]
+        public void ModifyUserNoUserWithTokenTest()
+        {
+            var mockUserService = new Mock<IUserService>();
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+            User u = getFakeUser();
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Throws(new NoUserWithTokenException());
+
+            IHttpActionResult obtainedResult = controller.Put(Guid.NewGuid(), u);
+            var createdResult = obtainedResult as CreatedAtRouteNegotiatedContentResult<User>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+
+        }
+
+        [TestMethod]
+        public void ModifyUserMissingDataTest()
+        {
+            var mockUserService = new Mock<IUserService>();
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+            User u = getFakeUser();
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Returns(u);
+            u.FirstName = null;
+            mockUserService.Setup(service => service.Modify(u)).Throws(new MissingUserDataException());
+
+            IHttpActionResult obtainedResult = controller.Put(u.Id, u);
+            var createdResult = obtainedResult as CreatedAtRouteNegotiatedContentResult<User>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+
+        }
+
+        [TestMethod]
+        public void ModifyUserExistingUserTest()
+        {
+            var mockUserService = new Mock<IUserService>();
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+            User u = getFakeUser();
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Returns(u);
+            mockUserService.Setup(service => service.Modify(u)).Throws(new ExistingUserException());
+
+            IHttpActionResult obtainedResult = controller.Put(u.Id, u);
+            var createdResult = obtainedResult as CreatedAtRouteNegotiatedContentResult<User>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+
+        }
+
+        [TestMethod]
+        public void ModifyUserWrongNumberFormatTest()
+        {
+            var mockUserService = new Mock<IUserService>();
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+            User u = getFakeUser();
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Returns(u);
+            mockUserService.Setup(service => service.Modify(u)).Throws(new WrongNumberFormatException());
+
+            IHttpActionResult obtainedResult = controller.Put(u.Id, u);
+            var createdResult = obtainedResult as CreatedAtRouteNegotiatedContentResult<User>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+
+        }
+
+        [TestMethod]
+        public void ModifyUserWrongEmailFormatTest()
+        {
+            var mockUserService = new Mock<IUserService>();
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+            User u = getFakeUser();
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Returns(u);
+            mockUserService.Setup(service => service.Modify(u)).Throws(new WrongEmailFormatException());
+
+            IHttpActionResult obtainedResult = controller.Put(u.Id, u);
+            var createdResult = obtainedResult as CreatedAtRouteNegotiatedContentResult<User>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+        }
+
+        [TestMethod]
+        public void ModifyUserNullUserTest()
+        {
+            var mockUserService = new Mock<IUserService>();
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+            User u = getFakeUser();
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Returns(u);
+
+            IHttpActionResult obtainedResult = controller.Put(u.Id, null);
+            var createdResult = obtainedResult as CreatedAtRouteNegotiatedContentResult<User>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+        }
+     
     }
 }
