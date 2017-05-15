@@ -286,7 +286,7 @@ namespace WebApiTests
         public void LogoutTest() {
             var mockUserService = new Mock<IUserService>();
             User u = getFakeUser();
-            mockUserService.Setup(service => service.GetFromToken("token")).Returns(getFakeUser());
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Returns(u);
             mockUserService.Setup(service => service.Logout(u.Id));
 
             var controller = new UsersController(mockUserService.Object);
