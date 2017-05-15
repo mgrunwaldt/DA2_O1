@@ -163,7 +163,15 @@ namespace Services
 
         public void RemoveFeatureFromProduct(Product p, Feature f)
         {
-            throw new NotImplementedException();
+            checkIfProductExists(p.Id);
+            Feature savedFeature = getFeature(f.Id);
+            List<ProductFeature> allProductFeatures = productFeatureRepo.GetAll();
+            ProductFeature existing = allProductFeatures.Find(pf => pf.ProductId == p.Id && pf.FeatureId == f.Id);
+            if (existing == null)
+            {
+                throw new ProductWithoutFeatureException("Este producto no está asociado a este atributo");
+            }
+            productFeatureRepo.Delete(existing);
         }
     }
 }

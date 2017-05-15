@@ -81,7 +81,8 @@ namespace Repository
             {
                 dbSet.Attach(entityToDelete);
             }
-            dbSet.Remove(entityToDelete);                       
+            dbSet.Remove(entityToDelete);
+            this.context.SaveChanges();                   
         }
 
         public virtual void Update(TEntity entityToUpdate)
