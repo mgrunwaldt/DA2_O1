@@ -10,6 +10,7 @@ using System.Web.Http;
 using Exceptions;
 using Newtonsoft.Json.Linq;
 using Microsoft.CSharp.RuntimeBinder;
+using Entities.Statuses_And_Roles;
 
 namespace WebApi.Controllers
 {
@@ -130,29 +131,57 @@ namespace WebApi.Controllers
             
         }
 
+        //CASOS: GUID CONSTRUCTOR FAILS
         [Route("api/Users/ChangeRole", Name = "ChangeRole")]
         [HttpPost]
         public IHttpActionResult ChangeUserRole(JObject parameters)
         {
-            var re = Request;
-            var headers = re.Headers;
-
-            if (headers.Contains("Token"))
+            try
             {
-                string token = headers.GetValues("Token").First();
-                User u = _userService.GetFromToken(token);
-                dynamic json = parameters;
-                string role = json.UserRole;
-                int intVal;
-                if (Int32.TryParse(role, out intVal)) {
-                    _userService.ChangeUserRole(u.Id,intVal);
-                    return Ok("Rol cambiado con éxito");
+                var re = Request;
+                var headers = re.Headers;
+
+                if (headers.Contains("Token"))
+                {
+                    string token = headers.GetValues("Token").First();
+                    User admin = _userService.GetFromToken(token);
+                    if (admin.Role == UserRoles.SUPERADMIN) {
+                        dynamic json = parameters;
+                        string role = json.UserRole;
+                        string id = json.Id;
+                        Guid guid = new Guid(id);
+                        int intVal;
+                        if (Int32.TryParse(role, out intVal))
+                        {
+                            _userService.ChangeUserRole(guid, intVal);
+                            return Ok("Rol cambiado con éxito");
+                        }
+                        return BadRequest("El Rol debe ser numérico");
+                    }
+                    return BadRequest("Solo los SuperAdministradores pueden cambiar el rol de un usuario");
                 }
-                return BadRequest("El Rol debe ser numérico");
-
-
+                return BadRequest("Debes mandar el Token de sesión en los headers");
             }
-            return BadRequest("Debes mandar el Token de sesión en los headers");
+            catch (NoUserWithTokenException ex) {
+                return BadRequest(ex.Message);
+            }
+            catch (NotExistingUserException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (NotExistingUserRoleException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (NullReferenceException ex)
+            {
+                return BadRequest("Debes enviar todos los datos");
+            }
+            catch (RuntimeBinderException ex)
+            {
+                return BadRequest("Debes enviar todos los datos");
+            }
+
         }
     }
 }

@@ -139,7 +139,7 @@ namespace Services
             User u = userRepository.Get(id);
             if (u != null)
             {
-                if (role == 2 || role == 3)
+                if (role == 1 || role == 2 || role == 3)
                 {
                     u.Role = role;
                     userRepository.Update(u);
