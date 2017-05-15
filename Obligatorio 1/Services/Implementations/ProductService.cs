@@ -123,6 +123,9 @@ namespace Services
             }
         }
 
-        
+        public List<Product> GetAllFromOrder(Order order)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -147,7 +147,7 @@ namespace ServicesTests
 
         [ExpectedException(typeof(InactiveProductException))]
         [TestMethod]
-        public void AddProductNotExistingProductTest()
+        public void AddProductInactiveTest()
         {
             OrderService orderService = getOrderService();
             User u = registerUser();
@@ -155,19 +155,6 @@ namespace ServicesTests
             p.IsActive = false;
             orderService.AddProduct(u, p);
         }
-
-        [ExpectedException(typeof(NotExistingProductException))]
-        [TestMethod]
-        public void AddProductNotExistingProductTest()
-        {
-            OrderService orderService = getOrderService();
-            User u = registerUser();
-            Product p = generateProduct();
-            p.IsActive = false;
-            orderService.AddProduct(u, p);
-        }
-
-        //WRONG PRODUCT??
 
         [ExpectedException(typeof(WrongProductQuantityException))]
         [TestMethod]
@@ -340,7 +327,7 @@ namespace ServicesTests
 
             Order order = orderService.GetActiveOrderFromUser(u);
             Guid orderId = order.Id;
-            List<Product> allProducts = orderService.ViewAllProducts(u, orderId);
+            List<Product> allProducts = orderService.ViewAllProductsFromOrder(u, orderId);
             Assert.AreEqual(allProducts.Count, 1);
         }
 
@@ -354,7 +341,7 @@ namespace ServicesTests
 
             Order order = orderService.GetActiveOrderFromUser(u);
             Guid orderId = order.Id;
-            List<Product> allProducts = orderService.ViewAllProducts(u);
+            List<Product> allProducts = orderService.ViewAllProductsFromActiveOrder(u);
             Assert.AreEqual(allProducts.Count, 1);
         }
 
@@ -372,7 +359,7 @@ namespace ServicesTests
             Guid orderId = order.Id;
             User u2 = new User();
             u2.Id = Guid.NewGuid();
-            List<Product> allProducts = orderService.ViewAllProducts(u2);
+            List<Product> allProducts = orderService.ViewAllProductsFromActiveOrder(u2);
         }
 
         [ExpectedException(typeof(NotExistingOrderException))]
@@ -386,7 +373,7 @@ namespace ServicesTests
 
             Order order = orderService.GetActiveOrderFromUser(u);
             Guid orderId = order.Id;
-            List<Product> allProducts = orderService.ViewAllProducts(u, Guid.NewGuid());
+            List<Product> allProducts = orderService.ViewAllProductsFromOrder(u, Guid.NewGuid());
         }
 
         [ExpectedException(typeof(NotExistingOrderException))]
@@ -402,7 +389,7 @@ namespace ServicesTests
             Guid orderId = order.Id;
             Order o2 = new Order();
             o2.Id = Guid.NewGuid();
-            List<Product> allProducts = orderService.ViewAllProducts(u, o2.Id);
+            List<Product> allProducts = orderService.ViewAllProductsFromOrder(u, o2.Id);
         }
 
         //Add address
@@ -463,7 +450,7 @@ namespace ServicesTests
             Guid orderId = order.Id;
             orderService.SetAddress(u, u.Address.Id);
             orderService.Ship(orderId);
-            Order o2 = OrderService.Get(orderId);
+            Order o2 = orderService.Get(orderId);
             Assert.AreEqual(o2.Status, OrderStatuses.ON_ITS_WAY);
         }
 
@@ -515,7 +502,7 @@ namespace ServicesTests
             orderService.SetAddress(u, u.Address.Id);
             orderService.Ship(orderId);
             orderService.Pay(orderId);
-            Order o2 = OrderService.Get(orderId);
+            Order o2 = orderService.Get(orderId);
             Assert.AreEqual(o2.Status, OrderStatuses.PAYED);
         }
 
@@ -650,8 +637,9 @@ namespace ServicesTests
             orderService.Cancel(u, order.Id);
         }
 
+        [ExpectedException(typeof(IncorrectOrderStatusException))]
         [TestMethod]
-        public void CancelOrderByStoreOkTest()
+        public void CancelOrderByStoreIncorrectOrderStatusTest()
         {
             OrderService orderService = getOrderService();
             User u = registerUser();
@@ -679,7 +667,6 @@ namespace ServicesTests
             userService.Register(admin, a2);
 
             orderService.Cancel(admin, orderId);
-            Assert.AreEqual(order.Status, OrderStatuses.CANCELLED_BY_STORE);
         }
 
         //Create User, new empty order --------------

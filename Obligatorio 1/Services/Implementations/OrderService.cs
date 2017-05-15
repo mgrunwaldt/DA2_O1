@@ -27,5 +27,55 @@ namespace Services
             }
             return order;
         }
+
+        public void AddProduct(User u2, Product p, int quantity = 0)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteProduct(User u, Product p)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ChangeProductQuantity(User u, Guid id, int newQuantity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Product> ViewAllProductsFromOrder(User u, Guid orderId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Product> ViewAllProductsFromActiveOrder(User u)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetAddress(User u, Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Ship(Guid orderId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Order Get(Guid orderId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Pay(Guid orderId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Cancel(User u, Guid id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
