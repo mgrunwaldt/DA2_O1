@@ -151,6 +151,9 @@ namespace Services
             }
         }
 
-        
+        public void ModifyProductFeatureValue(Guid id, string v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
