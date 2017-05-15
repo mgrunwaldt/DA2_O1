@@ -52,7 +52,6 @@ namespace Services.Implementations
             checkIfUserHasAddress(u, a);
             u.Addresses.Add(existingAddress);
             userRepo.Update(u);
-         
         }
 
         private void checkIfUserHasAddress(User u, Address a)

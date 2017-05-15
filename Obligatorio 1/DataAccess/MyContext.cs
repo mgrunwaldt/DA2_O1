@@ -17,8 +17,9 @@ namespace DataAccess
         public DbSet<Feature> Features { get; set; }
         public DbSet<ProductFeature> ProductFeatures { get; set; }
         public DbSet<Address> Addresses { get; set; }
-        
-      
+        public DbSet<Order> Orders { get; set; }
+
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             Database.SetInitializer<MyContext>(null);
@@ -56,6 +57,10 @@ namespace DataAccess
             foreach (Feature f in Features)
             {
                 this.Features.Remove(f);
+            }
+            foreach (Order o in Orders)
+            {
+                this.Orders.Remove(o);
             }
             this.SaveChanges();
         }

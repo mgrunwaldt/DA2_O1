@@ -48,7 +48,8 @@ namespace ServicesTests
         }
         private UserService getUserService()
         {
-            return new UserService(getUserRepo());
+            GenericRepository<Order> repo = new GenericRepository<Order>();
+            return new UserService(getUserRepo(), repo);
         }
 
         private User getUser() {

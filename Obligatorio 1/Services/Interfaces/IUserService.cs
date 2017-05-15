@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Entities;
-namespace Services
+namespace Services.Interfaces
 {
     public interface IUserService
     {

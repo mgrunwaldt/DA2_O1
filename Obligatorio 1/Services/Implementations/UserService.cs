@@ -4,15 +4,20 @@ using Repository;
 using Exceptions;
 using System.Collections.Generic;
 using Tools;
+using Entities.Statuses_And_Roles;
+using Services.Interfaces;
+
 namespace Services
 {
     public class UserService : IUserService
     {
 
         private IGenericRepository<User> userRepository;
+        private IGenericRepository<Order> orderRepository;
 
-        public UserService(IGenericRepository<User> repo) {
+        public UserService(IGenericRepository<User> repo, IGenericRepository<Order> orderRepo) {
             userRepository = repo;
+            orderRepository = orderRepo;
         }
         public void Register(User u, Address a)
         {
@@ -26,7 +31,11 @@ namespace Services
             a.Validate();
             u.Address = a;
             u.Role = 1;
+            Order order = new Order();
+            order.Status = OrderStatuses.WAITING_FOR_ADDRESS;
+            order.UserId = u.Id;
             userRepository.Add(u);
+            orderRepository.Add(order);
         }
 
         private void checkPasswordFormat(String password) {
