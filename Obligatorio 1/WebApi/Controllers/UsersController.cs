@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Web.Http;
 using Exceptions;
 using Newtonsoft.Json.Linq;
+using Microsoft.CSharp.RuntimeBinder;
 
 namespace WebApi.Controllers
 {
@@ -70,16 +71,37 @@ namespace WebApi.Controllers
         [HttpPost]
         public IHttpActionResult Login(JObject parameters)
         {
-            string identifier = null;
-            dynamic json = parameters;
-            string password = json.Password;
-            if (json.Email != null)
-                identifier = json.Email;
-            else if (json.Username != null)
-                identifier = json.Username;
+            try
+            {
+                string identifier = null;
+                dynamic json = parameters;
+                string password = json.Password;
+                if (json.Email != null)
+                    identifier = json.Email;
+                else if (json.Username != null)
+                    identifier = json.Username;
 
-            string token = _userService.Login(identifier, password);
-            return Ok("Loggueado con éxito, el token de seguridad es " + token);
+                string token = _userService.Login(identifier, password);
+                return Ok("Loggueado con éxito, el token de seguridad es " + token);
+            }
+            
+            catch (NotExistingUserException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (NoLoginDataMatchException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (NullReferenceException ex)
+            {
+                return BadRequest("Debes enviar todos los datos");
+            }
+            catch (RuntimeBinderException ex)
+            {
+                return BadRequest("Debes enviar todos los datos");
+            }
+
         }
     }
 }

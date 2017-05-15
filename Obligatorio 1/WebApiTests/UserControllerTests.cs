@@ -8,6 +8,7 @@ using System.Web.Http;
 using System.Web.Http.Results;
 using Exceptions;
 using Newtonsoft.Json.Linq;
+using Microsoft.CSharp.RuntimeBinder;
 
 namespace WebApiTests
 {
@@ -174,7 +175,7 @@ namespace WebApiTests
 
 
         [TestMethod]
-        public void LoginOkTest()
+        public void LoginEmailOkTest()
         {
             dynamic parameters = new JObject();
             parameters.Email = "matigru@gmail.com";
@@ -191,5 +192,93 @@ namespace WebApiTests
             Assert.IsNotNull(createdResult);
             Assert.AreEqual("Loggueado con éxito, el token de seguridad es tokenNuevo", createdResult.Content);
         }
+
+        [TestMethod]
+        public void LoginUsernameOkTest()
+        {
+            dynamic parameters = new JObject();
+            parameters.Username = "matigru";
+            parameters.Password = "miPass";
+            var mockUserService = new Mock<IUserService>();
+            mockUserService.Setup(service => service.Login("matigru", "miPass")).Returns("tokenNuevo");
+
+            var controller = new UsersController(mockUserService.Object);
+
+            IHttpActionResult obtainedResult = controller.Login(parameters);
+            var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
+
+            mockUserService.VerifyAll();
+            Assert.IsNotNull(createdResult);
+            Assert.AreEqual("Loggueado con éxito, el token de seguridad es tokenNuevo", createdResult.Content);
+        }
+
+        [TestMethod]
+        public void LoginWrongPasswordTest()
+        {
+            dynamic parameters = new JObject();
+            parameters.Username = "matigru";
+            parameters.Password = "miPass";
+            var mockUserService = new Mock<IUserService>();
+            mockUserService.Setup(service => service.Login("matigru", "miPass")).Throws(new NoLoginDataMatchException());
+
+            var controller = new UsersController(mockUserService.Object);
+
+            IHttpActionResult obtainedResult = controller.Login(parameters);
+            var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+        }
+
+        [TestMethod]
+        public void LoginNoUserTest()
+        {
+            dynamic parameters = new JObject();
+            parameters.Username = "matigru";
+            parameters.Password = "miPass";
+            var mockUserService = new Mock<IUserService>();
+            mockUserService.Setup(service => service.Login("matigru", "miPass")).Throws(new NotExistingUserException());
+
+            var controller = new UsersController(mockUserService.Object);
+
+            IHttpActionResult obtainedResult = controller.Login(parameters);
+            var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+        }
+
+        [TestMethod]
+        public void LoginNullTest()
+        {
+            var mockUserService = new Mock<IUserService>();
+
+            var controller = new UsersController(mockUserService.Object);
+
+            IHttpActionResult obtainedResult = controller.Login(null);
+            var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
+
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+        }
+
+        [TestMethod]
+        public void LoginNullInfoTest()
+        {
+            var mockUserService = new Mock<IUserService>();
+            dynamic parameters = new JObject();
+            parameters.Username = null;
+            parameters.Password = null;
+            mockUserService.Setup(service => service.Login(null, null)).Throws(new NullReferenceException());
+
+            var controller = new UsersController(mockUserService.Object);
+
+            IHttpActionResult obtainedResult = controller.Login(parameters);
+            var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+        }
+
+
     }
 }
