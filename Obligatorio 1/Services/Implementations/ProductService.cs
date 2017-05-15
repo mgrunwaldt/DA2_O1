@@ -54,6 +54,7 @@ namespace Services
             {
                 throw new ProductNotExistingException("No hay producto activo con este id");
             }
+            existing.ProductFeatures = GetAllProductFeaturesFromProduct(existing);
             return existing;
         }
 

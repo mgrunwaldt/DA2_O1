@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using Entities.Statuses_And_Roles;
+using System.Collections.Generic;
 
 namespace Entities
 {
