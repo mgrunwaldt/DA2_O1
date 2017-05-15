@@ -1098,8 +1098,110 @@ namespace ServicesTests
             service.ModifyProductFeatureValue(productFeature.Id, "10");
         }
 
-        
 
+        [TestMethod]
+        public void ProductDeleteFeatureOk() {
+            ProductService service = getService();
+            FeatureService featureService = getFeatureService();
+
+            Feature f = new Feature();
+            f.Name = "Color";
+            f.Type = FeatureTypes.INT;
+            featureService.Add(f);
+
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            Category cat = getCategory();
+            p.Category = cat;
+            service.Add(p);
+
+            ProductFeature productFeature = new ProductFeature();
+            productFeature.ProductId = p.Id;
+            productFeature.FeatureId = f.Id;
+            productFeature.Value = "11";
+
+            service.AddProductFeature(productFeature);
+
+            service.RemoveFeatureFromProduct(p, f);
+            List<ProductFeature> productFeatures = service.GetAllProductFeaturesFromProduct(p);
+            Assert.AreEqual(0,productFeatures.Count());
+        }
+
+        [ExpectedException(typeof(ProductNotExistingException))]
+        [TestMethod]
+        public void ProductDeleteFeatureNoProduct()
+        {
+            ProductService service = getService();
+            FeatureService featureService = getFeatureService();
+
+            Feature f = new Feature();
+            f.Name = "Color";
+            f.Type = FeatureTypes.INT;
+            featureService.Add(f);
+
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            Category cat = getCategory();
+            p.Category = cat;
+            service.RemoveFeatureFromProduct(p, f);
+        }
+
+        [ExpectedException(typeof(NoFeatureException))]
+        [TestMethod]
+        public void ProductDeleteFeatureNoProduct()
+        {
+            ProductService service = getService();
+            FeatureService featureService = getFeatureService();
+
+            Feature f = new Feature();
+            f.Name = "Color";
+            f.Type = FeatureTypes.INT;
+
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            Category cat = getCategory();
+            p.Category = cat;
+            service.Add(p);
+
+            service.RemoveFeatureFromProduct(p, f);
+        }
+
+        [ExpectedException(typeof(ProductWithouthFeatureException))]
+        [TestMethod]
+        public void ProductDeleteFeatureNoProductFeature()
+        {
+            ProductService service = getService();
+            FeatureService featureService = getFeatureService();
+
+            Feature f = new Feature();
+            f.Name = "Color";
+            f.Type = FeatureTypes.INT;
+            featureService.Add(f);
+
+            Product p = new Product();
+            p.Code = "1234";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Name";
+            p.Price = 100;
+            Category cat = getCategory();
+            p.Category = cat;
+            service.Add(p);
+
+            service.RemoveFeatureFromProduct(p, f);
+        }
 
         //Delete ProductFeature
         //OK
