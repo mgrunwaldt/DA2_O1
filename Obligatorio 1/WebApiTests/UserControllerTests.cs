@@ -7,6 +7,7 @@ using WebApi.Controllers;
 using System.Web.Http;
 using System.Web.Http.Results;
 using Exceptions;
+using Newtonsoft.Json.Linq;
 
 namespace WebApiTests
 {
@@ -170,6 +171,27 @@ namespace WebApiTests
             mockUserService.VerifyAll();
             Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
         }
-        
+
+
+        [TestMethod]
+        public void LoginOkTest()
+        {
+            dynamic parameters = new JObject();
+            parameters.Email = "matigru@gmail.com";
+            parameters.Password = "miPass";
+            User fakeUser = getFakeUser();
+            var mockUserService = new Mock<IUserService>();
+            mockUserService.Setup(service => service.Login(fakeUser.Email,fakeUser.Password)).Returns("tokenNuevo");
+
+            var controller = new UsersController(mockUserService.Object);
+
+            IHttpActionResult obtainedResult = controller.Login(parameters);
+            var createdResult = obtainedResult as CreatedAtRouteNegotiatedContentResult<String>;
+
+            mockUserService.VerifyAll();
+            Assert.IsNotNull(createdResult);
+            Assert.AreEqual("Login", createdResult.RouteName);
+            Assert.AreEqual("tokenNuevo", createdResult.Content);
+        }
     }
 }

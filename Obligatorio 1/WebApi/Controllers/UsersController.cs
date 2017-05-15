@@ -64,36 +64,6 @@ namespace WebApi.Controllers
                 return BadRequest("Debes enviar todos los datos");
             }
         }
-        /*
-          [EnableCors(origins: "*", headers: "*", methods: "*")]
-        [Route("api/Users/Register", Name="Register")]
-        [HttpPost]
-        [ResponseType(typeof(User))]
-        public IHttpActionResult Register(User user)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            int id = userService.CreateUser(user);
-            return Ok(user);
-        }
-         */
-        /*
-         public IEnumerable<Product> Get()
-    {
-        return _repository.GetAll();
-    }
-
-    public IHttpActionResult Get(int id)
-    {
-        var product = _repository.GetByID(id);
-        if (product == null)
-        {
-            return NotFound();
-        }
-        return Ok(product);
-    }
-         */
+     
     }
 }
