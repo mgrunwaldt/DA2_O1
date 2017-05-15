@@ -13,11 +13,12 @@ namespace Services
     {
         private GenericRepository<Product> repo;
         private GenericRepository<ProductFeature> productFeatureRepo;
-
-        public ProductService(GenericRepository<Product> repoInstance, GenericRepository<ProductFeature> productFeatureRepoInstance)
+        private GenericRepository<Feature> featureRepo;
+        public ProductService(GenericRepository<Product> repoInstance, GenericRepository<ProductFeature> productFeatureRepoInstance, GenericRepository<Feature> featureRepoInstance)
         {
             this.repo = repoInstance;
             this.productFeatureRepo = productFeatureRepoInstance;
+            this.featureRepo = featureRepoInstance;
         }
 
 
@@ -38,7 +39,7 @@ namespace Services
 
         public void Modify(Product p)
         {
-            checkIfProductExists(p);
+            checkIfProductExists(p.Id);
             p.Validate();
             checkForExistingProduct(p);
             setCategory(p);
@@ -77,7 +78,33 @@ namespace Services
 
         public void AddProductFeature(ProductFeature productFeature)
         {
+            checkIfProductExists(productFeature.ProductId);
+            checkIfProductAlreadyHasFeature(productFeature.FeatureId,productFeature.ProductId);
+            Feature feature = getFeature(productFeature.FeatureId);
+            productFeature.Validate();
+            productFeature.CheckIfValueCorrespondsToType(feature);
             this.productFeatureRepo.Add(productFeature);
+        }
+
+        private void checkIfProductAlreadyHasFeature(Guid featureId,Guid productId)
+        {
+            List<ProductFeature> allProductFeatures = productFeatureRepo.GetAll();
+            ProductFeature existing = allProductFeatures.Find(pf => pf.ProductId == productId && pf.FeatureId == featureId);
+            if (existing != null) {
+                throw new ProductFeatureDuplicateFeature("Este producto ya tiene un valor para este atributo");
+            }
+        }
+
+        private Feature getFeature(Guid featureId)
+        {
+            List<Feature> allFeatures = featureRepo.GetAll();
+            Feature existing = allFeatures.Find(feature => feature.Id == featureId);
+            if (existing == null)
+            {
+                throw new NoFeatureException("No existe este atributo");
+            }
+            return existing;
+
         }
 
         public List<ProductFeature> GetAllProductFeaturesFromProduct(Product p)
@@ -113,13 +140,14 @@ namespace Services
 
        
 
-        private void checkIfProductExists(Product p)
+        private void checkIfProductExists(Guid pId)
         {
             List<Product> allProducts = repo.GetAll();
-            Product existing = allProducts.Find(prod => prod.Id == p.Id && prod.IsActive == true);
+            Product existing = allProducts.Find(prod => prod.Id == pId && prod.IsActive == true);
             if (existing == null)
             {
-                throw new ProductModifyNotExistingException("No se puede modificar un producto que no está en el sistema");
+                
+                throw new ProductNotExistingException("No existe este producto");
             }
         }
 

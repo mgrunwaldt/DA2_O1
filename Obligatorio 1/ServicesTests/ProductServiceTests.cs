@@ -19,7 +19,9 @@ namespace ServicesTests
         private ProductService getService() {
             GenericRepository<Product> repoInstance = new GenericRepository<Product>(true);
             GenericRepository<ProductFeature> productFeatureRepoInstance = new GenericRepository<ProductFeature>();
-            return new ProductService(repoInstance, productFeatureRepoInstance);
+            GenericRepository<Feature> featureRepoInstance = new GenericRepository<Feature>();
+
+            return new ProductService(repoInstance, productFeatureRepoInstance,featureRepoInstance);
         }
 
         private CategoryService getCategoryService()
@@ -456,7 +458,7 @@ namespace ServicesTests
             service.Modify(p2);
         }
 
-        [ExpectedException(typeof(ProductModifyNotExistingException))]
+        [ExpectedException(typeof(ProductNotExistingException))]
         [TestMethod]
         public void ProductModifyNotExistingTest() {
             Product p = new Product();
