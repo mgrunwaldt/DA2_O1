@@ -51,7 +51,7 @@ namespace Services
             repo.Update(p);
         }
 
-        public Product Get(Guid id)
+        public Product Get(Guid id, bool getReviews = false)
         {
             List<Product> allProducts = repo.GetAll();
             Product existing = allProducts.Find(prod => prod.Id == id && prod.IsActive == true);
@@ -60,6 +60,19 @@ namespace Services
                 throw new ProductNotExistingException("No hay producto activo con este id");
             }
             existing.ProductFeatures = GetAllProductFeaturesFromProduct(existing);
+            if (!getReviews) {
+                Product copyWithoutReviews = new Product();
+                copyWithoutReviews.Category = existing.Category;
+                copyWithoutReviews.Code = existing.Code;
+                copyWithoutReviews.Description = existing.Description;
+                copyWithoutReviews.Id = existing.Id;
+                copyWithoutReviews.Manufacturer = existing.Manufacturer;
+                copyWithoutReviews.Name = existing.Name;
+                copyWithoutReviews.Price = existing.Price;
+                copyWithoutReviews.ProductFeatures = existing.ProductFeatures;
+                copyWithoutReviews.ProductReviews = null;
+                return copyWithoutReviews;
+            }
             return existing;
         }
 

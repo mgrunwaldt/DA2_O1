@@ -12,7 +12,7 @@ namespace Services.Interfaces
         void Add(Product p);
         void Delete(Guid pId);
         void Modify(Product p);
-        Product Get(Guid id);
+        Product Get(Guid id, bool getReviews = false);
         void ChangeCategory(Guid id, Guid cId);
         void AddProductFeature(ProductFeature productFeature);
         void ModifyProductFeatureValue(Guid id, string val);

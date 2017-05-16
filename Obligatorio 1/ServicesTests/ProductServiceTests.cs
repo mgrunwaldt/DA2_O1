@@ -1241,7 +1241,7 @@ namespace ServicesTests
         }
 
         [TestMethod]
-        public void ProductGetOk()
+        public void ProductGetOkTest()
         {
             ProductService service = getService();
             Product p = new Product();
@@ -1257,7 +1257,7 @@ namespace ServicesTests
         }
 
         [TestMethod]
-        public void ProductGetCheckFeaturesOk()
+        public void ProductGetCheckFeaturesOkTest()
         {
             ProductService service = getService();
             FeatureService featureService = getFeatureService();
@@ -1337,7 +1337,7 @@ namespace ServicesTests
         }
 
         [TestMethod]
-          public void ProductGetAllNoUserOk() {
+          public void ProductGetAllNoUserOkTest() {
 
             ReviewService reviewService = getReviewService();
             OrderService orderService = getOrderService();
@@ -1400,7 +1400,7 @@ namespace ServicesTests
         }
 
         [TestMethod]
-        public void ProductGetAllLoggedUserOk()
+        public void ProductGetAllLoggedUserOkTest()
         {
 
             ReviewService reviewService = getReviewService();
@@ -1463,19 +1463,74 @@ namespace ServicesTests
 
         }
 
+        [TestMethod]
+        public void GetMostSoldProductsOk() {
+            ReviewService reviewService = getReviewService();
+            OrderService orderService = getOrderService();
+            ProductService service = getService();
+            FeatureService featureService = getFeatureService();
+            User u = registerUser();
+
+            Product p = new Product();
+            p.Code = "1111";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Product 1";
+            p.Price = 100;
+            p.Category = getCategory();
+            service.Add(p);
+
+            Feature f = new Feature();
+            f.Name = "Color";
+            f.Type = FeatureTypes.STRING;
+            featureService.Add(f);
+
+            ProductFeature productFeature = new ProductFeature();
+            productFeature.ProductId = p.Id;
+            productFeature.FeatureId = f.Id;
+            productFeature.Value = "Rojo";
+
+            service.AddProductFeature(productFeature);
+
+            Product p2 = new Product();
+            p2.Code = "2222";
+            p2.Description = "Desc";
+            p2.Manufacturer = "Manu";
+            p2.Name = "Product 2";
+            p2.Price = 100;
+            service.Add(p2);
+
+            Product p3 = new Product();
+            p3.Code = "3333";
+            p3.Description = "Desc";
+            p3.Manufacturer = "Manu";
+            p3.Name = "Product 3";
+            p3.Price = 100;
+            service.Add(p3);
+
+            Guid orderId = orderService.GetActiveOrderFromUser(u).Id;
+
+            orderService.AddProduct(u, p.Id);
+            orderService.AddProduct(u, p2.Id);
+            orderService.ChangeProductQuantity(u, p2.Id, 100);
+
+            orderService.SetAddress(u, u.Address.Id);
+            orderService.Ship(orderId);
+            orderService.Pay(orderId);
+
+            List<Tuple<Product,int>> mostSoldProducts = service.GetMostSold(10);
+            Tuple<Product, int> firstProduct = mostSoldProducts.First();
+            Assert.AreEqual(2, mostSoldProducts.Count);
+            Assert.AreEqual(10, firstProduct.Item2);
+            Assert.AreEqual(p2, firstProduct.Item1);
 
 
-        //GET WITH ATTRIBUTES
-        //GET ALL 
-        //Ok (no user)
-        //Ok (user, with reviews)
-        //Wrong User (Idem no user)
-
+        }
+        //GET MOST SOLD
+        //Por api user es admin
+        
 
         //GET Filtered
-
-
-        //GET MOST SOLD
         //ADD PICTURE
         //DELETE PICTURE
 
