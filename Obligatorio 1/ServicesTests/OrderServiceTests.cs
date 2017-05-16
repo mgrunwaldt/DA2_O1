@@ -226,7 +226,18 @@ namespace ServicesTests
             orderService.DeleteProduct(u2, p);
         }
 
-        //NO ACTIVE ORDER
+        [ExpectedException(typeof(NotExistingOrderException))]
+        [TestMethod]
+        public void DeleteProductNoOrderTest()
+        {
+            OrderService orderService = getOrderService();
+            User u = registerUser();
+            Product p = generateProduct();
+            orderService.AddProduct(u, p);
+            Order order = orderService.GetActiveOrderFromUser(u);
+            orderService.SetAddress(u, u.Address.Id);
+            orderService.DeleteProduct(u, p);
+        }
 
         [ExpectedException(typeof(NotExistingProductException))]
         [TestMethod]
@@ -256,7 +267,7 @@ namespace ServicesTests
             p2.Manufacturer = "Manu";
             p2.Name = "Name Product 2";
             p2.Price = 120;
-            p2.Category = getCategory();
+            p2.Category = p.Category;
             ProductService productService = getProductService();
             productService.Add(p2);
 
@@ -321,7 +332,7 @@ namespace ServicesTests
             p2.Manufacturer = "Manu";
             p2.Name = "Name2";
             p2.Price = 120;
-            p2.Category = getCategory();
+            p2.Category = p.Category;
             service.Add(p2);
 
             orderService.AddProduct(u, p);
@@ -355,7 +366,7 @@ namespace ServicesTests
 
             Order order = orderService.GetActiveOrderFromUser(u);
             Guid orderId = order.Id;
-            List<Product> allProducts = orderService.ViewAllProductsFromActiveOrder(u);
+            List<Product> allProducts = orderService.ViewAllProductsFromOrder(u);
             Assert.AreEqual(allProducts.Count, 1);
         }
 
@@ -373,7 +384,7 @@ namespace ServicesTests
             Guid orderId = order.Id;
             User u2 = new User();
             u2.Id = Guid.NewGuid();
-            List<Product> allProducts = orderService.ViewAllProductsFromActiveOrder(u2);
+            List<Product> allProducts = orderService.ViewAllProductsFromOrder(u2);
         }
 
         [ExpectedException(typeof(NotExistingOrderException))]
@@ -385,8 +396,6 @@ namespace ServicesTests
             Product p = generateProduct();
             orderService.AddProduct(u, p);
 
-            Order order = orderService.GetActiveOrderFromUser(u);
-            Guid orderId = order.Id;
             List<Product> allProducts = orderService.ViewAllProductsFromOrder(u, Guid.NewGuid());
         }
 
@@ -596,7 +605,7 @@ namespace ServicesTests
             a2.PhoneNumber = "26002540";
             UserService userService = getUserService();
             userService.Register(admin, a2);
-
+            admin.Role = UserRoles.ADMIN;
             orderService.Cancel(admin, orderId);
             Assert.AreEqual(order.Status, OrderStatuses.CANCELLED_BY_STORE);
         }
@@ -679,7 +688,7 @@ namespace ServicesTests
             a2.PhoneNumber = "26002540";
             UserService userService = getUserService();
             userService.Register(admin, a2);
-
+            admin.Role = UserRoles.ADMIN;
             orderService.Cancel(admin, orderId);
         }
 
@@ -699,7 +708,7 @@ namespace ServicesTests
         //DELETE PRODUCT FROM ORDER
         //OK ---------------------
         //No user --------------
-        //No active order ????
+        //No active order ----------------
         //No product ---------------------
         //No product in order --------------
 
