@@ -806,6 +806,41 @@ namespace WebApiTests
             mockUserService.VerifyAll();
             Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
         }
-     
+
+        [TestMethod]
+        public void DeleteUserOkTest()
+        {
+            var mockUserService = new Mock<IUserService>();
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+            User u = getFakeUser();
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Returns(u);
+            mockUserService.Setup(service => service.Delete(u.Id));
+
+            IHttpActionResult obtainedResult = controller.Delete(u.Id);
+            var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
+
+            mockUserService.VerifyAll();
+            Assert.IsNotNull(createdResult);
+            Assert.AreEqual("Se eliminó al usuario con éxito", createdResult.Content);
+
+        }
+        /*
+         * ok
+         return BadRequest("Solo se puede modificar el usuario que tenga sesión activa");
+                }
+                return BadRequest("Debes mandar el Token de sesión en los headers");
+            }
+            catch (NoUserWithTokenException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+         */
     }
 }
