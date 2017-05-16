@@ -28,7 +28,10 @@ namespace ServicesTests
         {
             GenericRepository<Review> reviewRepoInstance = new GenericRepository<Review>(getContext(), true);
             GenericRepository<Product> productRepoInstance = new GenericRepository<Product>(getContext());
-            return new ReviewService(reviewRepoInstance, productRepoInstance);
+            GenericRepository<User> userRepoInstance = new GenericRepository<User>(getContext());
+            GenericRepository<Order> orderRepoInstance = new GenericRepository<Order>(getContext());
+            GenericRepository<OrderProduct> orderProductRepoInstance = new GenericRepository<OrderProduct>(getContext());
+            return new ReviewService(reviewRepoInstance, productRepoInstance, userRepoInstance, orderRepoInstance, orderProductRepoInstance);
         }
 
         private CategoryService getCategoryService()
@@ -206,7 +209,7 @@ namespace ServicesTests
             orderService.SetAddress(u, u.Address.Id);
             orderService.Ship(orderId);
             string reviewText = "Muy bueno";
-            reviewService.Evaluate(u, p.Id, Guid.NewGuid(), reviewText);
+            reviewService.Evaluate(u, p.Id, orderId, reviewText);
         }
 
         [ExpectedException(typeof(NotExistingProductInOrderException))]
@@ -224,14 +227,14 @@ namespace ServicesTests
             p2.Manufacturer = "Manu";
             p2.Name = "Name2";
             p2.Price = 120;
-            p2.Category = getCategory();
+            p2.Category = p.Category;
             productService.Add(p2);
             Guid orderId = orderService.GetActiveOrderFromUser(u).Id;
             orderService.AddProduct(u, p);
             orderService.SetAddress(u, u.Address.Id);
             orderService.Ship(orderId);
             string reviewText = "Muy bueno";
-            reviewService.Evaluate(u, p2.Id, Guid.NewGuid(), reviewText);
+            reviewService.Evaluate(u, p2.Id, orderId, reviewText);
         }
 
         [TestMethod]
@@ -267,7 +270,7 @@ namespace ServicesTests
             p2.Manufacturer = "Manu";
             p2.Name = "Name2";
             p2.Price = 120;
-            p2.Category = getCategory();
+            p2.Category = p.Category;
             productService.Add(p2);
             Guid orderId = orderService.GetActiveOrderFromUser(u).Id;
             orderService.AddProduct(u, p);

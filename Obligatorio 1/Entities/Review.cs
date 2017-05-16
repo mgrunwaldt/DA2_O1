@@ -17,5 +17,10 @@ namespace Entities
         public Guid OrderId { get; set; }
         public string Text { get; set; }
         public DateTime Date { get; set; }
+
+        public Review()
+        {
+            this.Id = Guid.NewGuid();
+        }
     }
 }

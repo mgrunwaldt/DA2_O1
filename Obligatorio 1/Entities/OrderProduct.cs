@@ -15,5 +15,10 @@ namespace Entities
 
         [Key]
         public Guid Id { get; set; }
+
+        public OrderProduct()
+        {
+            this.Id = Guid.NewGuid();
+        }
     }
 }
