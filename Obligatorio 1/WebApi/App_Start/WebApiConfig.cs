@@ -27,11 +27,13 @@ namespace WebApi
             GenericRepository<Product> productRepo = new GenericRepository<Product>(context);
             GenericRepository<Feature> featureRepo = new GenericRepository<Feature>(context);
             GenericRepository<ProductFeature> productFeatureRepo = new GenericRepository<ProductFeature>(context);
+            GenericRepository<OrderProduct> orderProductFeatureRepo = new GenericRepository<OrderProduct>(context);
+
 
             UserService userService = new UserService(userRepo,orderRepo, addressRepo);
             AddressService addressService = new AddressService(addressRepo,userRepo);
             CategoryService categoryService = new CategoryService(categoryRepo,productRepo);
-            ProductService productService = new ProductService(productRepo, productFeatureRepo, featureRepo);
+            ProductService productService = new ProductService(productRepo, productFeatureRepo, featureRepo, orderProductFeatureRepo);
             FeatureService featureService = new FeatureService(featureRepo);
             container.RegisterInstance<IUserService>(userService);
             container.RegisterInstance<IAddressService>(addressService);
