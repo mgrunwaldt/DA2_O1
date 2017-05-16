@@ -22,7 +22,9 @@ namespace ServicesTests
             GenericRepository<User> repo = new GenericRepository<User>(getContext(),true);
             GenericRepository<Order> orderRepo = new GenericRepository<Order>(getContext());
             GenericRepository<Address> addressRepo = new GenericRepository<Address>(getContext());
-            return new UserService(repo, orderRepo,addressRepo);
+            GenericRepository<OrderProduct> orderProductRepo = new GenericRepository<OrderProduct>(getContext());
+            GenericRepository<Product> productRepo = new GenericRepository<Product>(getContext());
+            return new UserService(repo, orderRepo, addressRepo, orderProductRepo, productRepo);
         }
 
         [TestMethod]

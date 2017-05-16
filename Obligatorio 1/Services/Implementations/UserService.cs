@@ -15,13 +15,16 @@ namespace Services
         private IGenericRepository<User> userRepository;
         private IGenericRepository<Order> orderRepository;
         private IGenericRepository<Address> addressRepository;
+        private IGenericRepository<OrderProduct> orderProductRepository;
+        private IGenericRepository<Product> productRepository;
 
 
-
-        public UserService(IGenericRepository<User> repo, IGenericRepository<Order> orderRepo, IGenericRepository<Address> addressRepo) {
+        public UserService(IGenericRepository<User> repo, IGenericRepository<Order> orderRepo, IGenericRepository<Address> addressRepo, IGenericRepository<OrderProduct> orderProductRepo, IGenericRepository<Product> productRepo) {
             userRepository = repo;
             orderRepository = orderRepo;
             addressRepository = addressRepo;
+            orderProductRepository = orderProductRepo;
+            productRepository = productRepo;
         }
         public void Register(User u, Address a)
         {
@@ -87,6 +90,45 @@ namespace Services
                             string token = TokenHelper.CreateToken();
                             user.Token = token;
                             userRepository.Update(user);
+                            List<Order> allOrders = orderRepository.GetAll();
+                            Order userActiveOrder = allOrders.Find(o => o.UserId == user.Id && o.Status == OrderStatuses.WAITING_FOR_ADDRESS);
+                            List<OrderProduct> allOrderProducts = orderProductRepository.GetAll();
+                            List<OrderProduct> productsFromActiveOrder = allOrderProducts.FindAll(op => op.OrderId == userActiveOrder.Id);
+                            List<Product> productsToBuy = new List<Product>();
+                            string productsToBuyString = " En el carrito tienes los siguientes productos: ";
+
+                            foreach (OrderProduct orderProductToBuy in productsFromActiveOrder)
+                            {
+                                Product p = productRepository.Get(orderProductToBuy.ProductId);
+                                if (p != null && p.IsActive)
+                                {
+                                    if (!productsToBuy.Contains(p))
+                                    {
+                                        productsToBuy.Add(p);
+                                        productsToBuyString += (p.Name + " ");
+                                    }
+                                }
+                            }
+
+                            List<Order> ordersToEvaluate = allOrders.FindAll(o => o.UserId == user.Id && o.Status == OrderStatuses.PAYED);
+                            List<Product> productsToEvaluate = new List<Product>();
+                            string productsToEvaluateString = " Debes evaluar los siguientes productos: ";
+                            foreach (Order orderToEvaluate in ordersToEvaluate) {
+                                List<OrderProduct> productsFromOrder = allOrderProducts.FindAll(op => op.OrderId == userActiveOrder.Id);
+                                foreach (OrderProduct orderProductToEvaluate in productsFromOrder) {
+                                    Product p = productRepository.Get(orderProductToEvaluate.ProductId);
+                                    if (p != null && p.IsActive) {
+                                        if (!productsToEvaluate.Contains(p)) {
+                                            productsToEvaluate.Add(p);
+                                            productsToEvaluateString += (p.Name +" ");
+                                        }
+                                    }
+                                }
+                            }
+                            if (productsToBuyString != " En el carrito tienes los siguientes productos: ")
+                                token += productsToBuyString;
+                            if (productsToEvaluateString != " Debes evaluar los siguientes productos: ")
+                                token += productsToEvaluateString;
                             return token;
                         }
                         else {

@@ -55,7 +55,9 @@ namespace ServicesTests
             GenericRepository<User> repoInstance = new GenericRepository<User>(getContext());
             GenericRepository<Order> orderRepoInstance = new GenericRepository<Order>(getContext());
             GenericRepository<Address> addressRepoInstance = new GenericRepository<Address>(getContext());
-            return new UserService(repoInstance, orderRepoInstance, addressRepoInstance);
+            GenericRepository<OrderProduct> orderProductRepo = new GenericRepository<OrderProduct>(getContext());
+            GenericRepository<Product> productRepo = new GenericRepository<Product>(getContext());
+            return new UserService(repoInstance, orderRepoInstance, addressRepoInstance, orderProductRepo, productRepo);
         }
 
         private OrderService getOrderService()

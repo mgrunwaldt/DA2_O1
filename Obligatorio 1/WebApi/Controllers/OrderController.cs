@@ -416,5 +416,53 @@ namespace WebApi.Controllers
             }
 
         }
+
+        [Route("api/Order/GetCategoryStatistics", Name = "GetCategoryStatistics")]
+        [HttpGet]
+        public IHttpActionResult GetCategoryStatistics(JObject parameters)
+        {
+            try
+            {
+                var re = Request;
+                var headers = re.Headers;
+                if (headers.Contains("Token"))
+                {
+                    string token = headers.GetValues("Token").First();
+                    User loggedUser = _userService.GetFromToken(token);
+                    if (loggedUser.Role == UserRoles.ADMIN || loggedUser.Role == UserRoles.SUPERADMIN) {
+                        DateTime now = DateTime.Now;
+                        DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
+                        DateTime lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+                        DateTime from = firstDayOfMonth;
+                        DateTime to = lastDayOfMonth;
+                        if (parameters != null)
+                        {
+                            dynamic json = parameters;
+                            if (json.StartDate != null && json.EndDate != null) {
+                                DateTime fromParam;
+                                if (DateTime.TryParse(json.StartDate, out fromParam))
+                                {
+                                    DateTime toParam;
+                                    if (DateTime.TryParse(json.EndDate, out toParam))
+                                    {
+                                        from = fromParam;
+                                        to = toParam;
+                                    }
+                                }
+                            }
+                        }
+                        List<string> details = _orderService.GetCategoryStatistics(from, to);
+                        return Ok(details);
+                    }
+                    return BadRequest("Solo los administradores pueden ver las estadísticas por categoría");
+                }
+                return BadRequest("Debes mandar el Token de sesión en los headers");
+            }
+            catch (NoUserWithTokenException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+           
+        }
     }
 }

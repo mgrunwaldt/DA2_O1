@@ -31,7 +31,7 @@ namespace WebApi
             GenericRepository<Review> reviewRepo = new GenericRepository<Review>(context);
 
 
-            UserService userService = new UserService(userRepo,orderRepo, addressRepo);
+            UserService userService = new UserService(userRepo,orderRepo, addressRepo,orderProductRepo,productRepo);
             AddressService addressService = new AddressService(addressRepo,userRepo);
             CategoryService categoryService = new CategoryService(categoryRepo,productRepo);
 

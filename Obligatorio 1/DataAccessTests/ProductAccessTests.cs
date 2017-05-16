@@ -22,7 +22,7 @@ namespace DataAccessTests
         public void AddTest()
         {
             Product p = new Product();
-            p.Name = "puto";
+            p.Name = "hola";
             GenericRepository<Product> pr = new GenericRepository<Product>(getContext(),true);
             pr.Add(p);
             Assert.AreNotEqual(Guid.Empty, p.Id);
