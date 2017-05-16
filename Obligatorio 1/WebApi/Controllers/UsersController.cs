@@ -242,8 +242,32 @@ namespace WebApi.Controllers
             {
                 return BadRequest("Debes enviar todos los datos");
             }
-            
+        }
 
+        public IHttpActionResult Delete(Guid id)
+        {            
+            try
+            {
+                var re = Request;
+                var headers = re.Headers;
+
+                if (headers.Contains("Token"))
+                {
+                    string token = headers.GetValues("Token").First();
+                    User loggedUser = _userService.GetFromToken(token);
+                    if (loggedUser.Id == id)
+                    {
+                        _userService.Delete(id);
+                        return Ok("Se eliminó al usuario con éxito");
+                    }
+                    return BadRequest("Solo se puede modificar el usuario que tenga sesión activa");
+                }
+                return BadRequest("Debes mandar el Token de sesión en los headers");
+            }
+            catch (NoUserWithTokenException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

@@ -830,11 +830,72 @@ namespace WebApiTests
             Assert.AreEqual("Se eliminó al usuario con éxito", createdResult.Content);
 
         }
+
+        [TestMethod]
+        public void DeleteUserNoTokenTest()
+        {
+            var mockUserService = new Mock<IUserService>();
+            User u = getFakeUser();
+
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+            IHttpActionResult obtainedResult = controller.Delete(u.Id);
+            var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+        }
+
+        [TestMethod]
+        public void DeleteOtherUserTest()
+        {
+            var mockUserService = new Mock<IUserService>();
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+            User u = getFakeUser();
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Returns(u);
+
+            IHttpActionResult obtainedResult = controller.Delete(Guid.NewGuid());
+            var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+
+        }
+
+        [TestMethod]
+        public void DeleteUserNoUserWithTokenTest()
+        {
+            var mockUserService = new Mock<IUserService>();
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+            User u = getFakeUser();
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Throws(new NoUserWithTokenException());
+
+            IHttpActionResult obtainedResult = controller.Delete(Guid.NewGuid());
+            var createdResult = obtainedResult as CreatedAtRouteNegotiatedContentResult<User>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+
+        }
         /*
          * ok
-         return BadRequest("Solo se puede modificar el usuario que tenga sesión activa");
                 }
-                return BadRequest("Debes mandar el Token de sesión en los headers");
             }
             catch (NoUserWithTokenException ex)
             {
