@@ -15,14 +15,7 @@ using Services.Interfaces;
 using Services.Implementations;
 namespace WebApi.Controllers
 {
-    /*
-     private IProductRepository _repository;
 
-    public ProductsController(IProductRepository repository)  
-    {
-        _repository = repository;
-    }
-         */
      
     public class UsersController : ApiController
     {
