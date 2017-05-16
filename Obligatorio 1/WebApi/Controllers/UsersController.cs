@@ -269,5 +269,45 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [Route("api/Users/ChangePassword", Name = "ChangePassword")]
+        [HttpPost]
+        public IHttpActionResult ChangePassword(JObject parameters)
+        {
+            try
+            {
+                var re = Request;
+                var headers = re.Headers;
+
+                if (headers.Contains("Token"))
+                {
+                    string token = headers.GetValues("Token").First();
+                    User loggedUser = _userService.GetFromToken(token);
+                    dynamic json = parameters;
+                    string oldPassword = json.OldPassword;
+                    string newPassword = json.NewPassword;
+                    _userService.ChangePassword(loggedUser.Id, oldPassword, newPassword);
+                    return Ok("Se cambió la contraseña con éxito");
+                }
+                return BadRequest("Debes mandar el Token de sesión en los headers");
+            }
+            catch (NoUserWithTokenException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (WrongPasswordException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
+            catch (RuntimeBinderException ex)
+            {
+                return BadRequest("Debes enviar todos los datos");
+            }
+            catch (ArgumentNullException ex) {
+                return BadRequest("Debes enviar todos los datos");
+            }
+
+        }
     }
 }

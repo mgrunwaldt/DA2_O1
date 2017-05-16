@@ -694,6 +694,7 @@ namespace WebApiTests
 
         }
 
+
         [TestMethod]
         public void ModifyUserMissingDataTest()
         {
@@ -893,15 +894,161 @@ namespace WebApiTests
             Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
 
         }
-        /*
-         * ok
-                }
-            }
-            catch (NoUserWithTokenException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+
+        [TestMethod]
+        public void ChangePasswordOk() {
+            var mockUserService = new Mock<IUserService>();
+            User u = getFakeUser();
+            u.Role = UserRoles.SUPERADMIN;
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Returns(u);
+            mockUserService.Setup(service => service.ChangePassword(u.Id, "old","new"));
+
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+
+            dynamic parameters = new JObject();
+            parameters.OldPassword = "old";
+            parameters.NewPassword = "new";
+
+
+            IHttpActionResult obtainedResult = controller.ChangePassword(parameters);
+            var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
+
+            mockUserService.VerifyAll();
+            Assert.IsNotNull(createdResult);
+            Assert.AreEqual("Se cambió la contraseña con éxito", createdResult.Content);
         }
-         */
+
+        [TestMethod]
+        public void ChangePasswordNoUserWithTokenTest()
+        {
+            var mockUserService = new Mock<IUserService>();
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+            User u = getFakeUser();
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Throws(new NoUserWithTokenException());
+
+            dynamic parameters = new JObject();
+            parameters.OldPassword = "old";
+            parameters.NewPassword = "new";
+
+            IHttpActionResult obtainedResult = controller.ChangePassword(parameters);
+            var createdResult = obtainedResult as OkNegotiatedContentResult<User>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+
+        }
+        [TestMethod]
+        public void ChangePasswordNoTokenTest()
+        {
+            var mockUserService = new Mock<IUserService>();
+            User u = getFakeUser();
+
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+            dynamic parameters = new JObject();
+            parameters.OldPassword = "old";
+            parameters.NewPassword = "new";
+
+            IHttpActionResult obtainedResult = controller.ChangePassword(parameters);
+            var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+        }
+
+        [TestMethod]
+        public void ChangePasswordWrongPassword()
+        {
+            var mockUserService = new Mock<IUserService>();
+            User u = getFakeUser();
+            u.Role = UserRoles.SUPERADMIN;
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Returns(u);
+            mockUserService.Setup(service => service.ChangePassword(u.Id, "old", "new")).Throws(new WrongPasswordException());
+
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+
+            dynamic parameters = new JObject();
+            parameters.OldPassword = "old";
+            parameters.NewPassword = "new";
+
+
+            IHttpActionResult obtainedResult = controller.ChangePassword(parameters);
+            var createdResult = obtainedResult as OkNegotiatedContentResult<String>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+
+        }
+
+        [TestMethod]
+        public void ChangePasswordNullDataTest()
+        {
+            var mockUserService = new Mock<IUserService>();
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+            User u = getFakeUser();
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Returns(u);
+
+            IHttpActionResult obtainedResult = controller.ChangePassword(null);
+            var createdResult = obtainedResult as CreatedAtRouteNegotiatedContentResult<User>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+        }
+
+        [TestMethod]
+        public void ChangePasswordNullPasswordTest()
+        {
+            var mockUserService = new Mock<IUserService>();
+            var controller = new UsersController(mockUserService.Object);
+            var controllerContext = new HttpControllerContext();
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Token", "aheup9obyd8xnu3xsd1lnxljgx8j7vt1");
+            controllerContext.Request = request;
+            controller.ControllerContext = controllerContext;
+
+            User u = getFakeUser();
+            mockUserService.Setup(service => service.GetFromToken("aheup9obyd8xnu3xsd1lnxljgx8j7vt1")).Returns(u);
+            mockUserService.Setup(service => service.ChangePassword(u.Id, null, "new")).Throws(new ArgumentNullException());
+            dynamic parameters = new JObject();
+            parameters.OldPassword = null;
+            parameters.NewPassword = "new";
+
+            IHttpActionResult obtainedResult = controller.ChangePassword(parameters);
+            var createdResult = obtainedResult as CreatedAtRouteNegotiatedContentResult<User>;
+
+            mockUserService.VerifyAll();
+            Assert.IsInstanceOfType(obtainedResult, typeof(BadRequestErrorMessageResult));
+        }
+
+
+
     }
 }
