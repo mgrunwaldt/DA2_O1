@@ -14,11 +14,13 @@ namespace Services
         private GenericRepository<Product> repo;
         private GenericRepository<ProductFeature> productFeatureRepo;
         private GenericRepository<Feature> featureRepo;
-        public ProductService(GenericRepository<Product> repoInstance, GenericRepository<ProductFeature> productFeatureRepoInstance, GenericRepository<Feature> featureRepoInstance)
+        private GenericRepository<OrderProduct> orderProductRepo;
+        public ProductService(GenericRepository<Product> repoInstance, GenericRepository<ProductFeature> productFeatureRepoInstance, GenericRepository<Feature> featureRepoInstance, GenericRepository<OrderProduct> orderProductRepoInstance)
         {
             this.repo = repoInstance;
             this.productFeatureRepo = productFeatureRepoInstance;
             this.featureRepo = featureRepoInstance;
+            this.orderProductRepo = orderProductRepoInstance;
         }
 
 
@@ -165,7 +167,16 @@ namespace Services
 
         public List<Product> GetAllFromOrder(Order order)
         {
-            throw new NotImplementedException();
+            List<Product> ret = new List<Product>();
+            List<OrderProduct> allOrderProducts = orderProductRepo.GetAll();
+            foreach(var orderProduct in allOrderProducts)
+            {
+                if(orderProduct.OrderId == order.Id)
+                {
+                    ret.Add(repo.Get(orderProduct.ProductId));
+                }
+            }
+            return ret;
         }
         public void RemoveFeatureFromProduct(Product p, Feature f)
         {

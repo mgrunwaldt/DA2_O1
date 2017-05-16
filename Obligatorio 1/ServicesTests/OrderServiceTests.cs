@@ -34,8 +34,11 @@ namespace ServicesTests
 
         private OrderService getOrderService()
         {
-            GenericRepository<Order> repo = new GenericRepository<Order>(getContext(),true);
-            return new OrderService(repo);
+            GenericRepository<Order> orderRepo = new GenericRepository<Order>(getContext(),true);
+            GenericRepository<OrderProduct> orderProductRepo = new GenericRepository<OrderProduct>(getContext());
+            GenericRepository<User> userRepo = new GenericRepository<User>(getContext());
+            GenericRepository<Product> productRepo = new GenericRepository<Product>(getContext());
+            return new OrderService(orderRepo, orderProductRepo, userRepo, productRepo);
         }
 
         private User registerUser()
@@ -61,8 +64,8 @@ namespace ServicesTests
             GenericRepository<Product> repoInstance = new GenericRepository<Product>(getContext());
             GenericRepository<ProductFeature> productFeatureRepoInstance = new GenericRepository<ProductFeature>(getContext());
             GenericRepository<Feature> featureRepoInstance = new GenericRepository<Feature>(getContext());
-
-            return new ProductService(repoInstance, productFeatureRepoInstance,featureRepoInstance);
+            GenericRepository<OrderProduct> orderProductRepoInstance = new GenericRepository<OrderProduct>(getContext());
+            return new ProductService(repoInstance, productFeatureRepoInstance,featureRepoInstance, orderProductRepoInstance);
         }
         private CategoryService getCategoryService()
         {
@@ -70,6 +73,7 @@ namespace ServicesTests
             GenericRepository<Product> pRepoInstance = new GenericRepository<Product>(getContext());
             return new CategoryService(repoInstance, pRepoInstance);
         }
+
         private Category getCategory()
         {
             Category c = new Category();
@@ -125,10 +129,11 @@ namespace ServicesTests
             User u = registerUser();
             Product p = generateProduct();
             orderService.AddProduct(u, p);
-            Order order = orderService.GetActiveOrderFromUser(u);
-
-            Assert.IsNotNull(order);
-            Assert.AreEqual(order.Status, OrderStatuses.WAITING_FOR_ADDRESS);
+            orderService.SetAddress(u, u.Address.Id);
+            orderService.AddProduct(u, p);
+            Order checkOrder = orderService.GetActiveOrderFromUser(u);
+            Assert.IsNotNull(checkOrder);
+            Assert.AreEqual(checkOrder.Status, OrderStatuses.WAITING_FOR_ADDRESS);
         }
 
         [ExpectedException(typeof(NotExistingUserException))]
@@ -188,11 +193,10 @@ namespace ServicesTests
             orderService.AddProduct(u, p);
             orderService.AddProduct(u, p);
             Order order = orderService.GetActiveOrderFromUser(u);
-            int ammount = order.GetQuantityOfProductInOrder(p.Id);
+            int ammount = orderService.GetQuantityOfProductInOrder(order, p.Id);
 
             Assert.AreEqual(ammount, 2);
         }
-
 
         //Delete
 
@@ -224,7 +228,18 @@ namespace ServicesTests
             orderService.DeleteProduct(u2, p);
         }
 
-        //NO ACTIVE ORDER
+        [ExpectedException(typeof(NotExistingOrderException))]
+        [TestMethod]
+        public void DeleteProductNoOrderTest()
+        {
+            OrderService orderService = getOrderService();
+            User u = registerUser();
+            Product p = generateProduct();
+            orderService.AddProduct(u, p);
+            Order order = orderService.GetActiveOrderFromUser(u);
+            orderService.SetAddress(u, u.Address.Id);
+            orderService.DeleteProduct(u, p);
+        }
 
         [ExpectedException(typeof(NotExistingProductException))]
         [TestMethod]
@@ -254,7 +269,7 @@ namespace ServicesTests
             p2.Manufacturer = "Manu";
             p2.Name = "Name Product 2";
             p2.Price = 120;
-            p2.Category = getCategory();
+            p2.Category = p.Category;
             ProductService productService = getProductService();
             productService.Add(p2);
 
@@ -273,7 +288,7 @@ namespace ServicesTests
             int newQuantity = 3;
             orderService.ChangeProductQuantity(u, p.Id, newQuantity);
             Order order = orderService.GetActiveOrderFromUser(u);
-            int ammount = order.GetQuantityOfProductInOrder(p.Id);
+            int ammount = orderService.GetQuantityOfProductInOrder(order, p.Id);
             Assert.AreEqual(newQuantity, ammount);
         }
 
@@ -319,7 +334,7 @@ namespace ServicesTests
             p2.Manufacturer = "Manu";
             p2.Name = "Name2";
             p2.Price = 120;
-            p2.Category = getCategory();
+            p2.Category = p.Category;
             service.Add(p2);
 
             orderService.AddProduct(u, p);
@@ -353,7 +368,7 @@ namespace ServicesTests
 
             Order order = orderService.GetActiveOrderFromUser(u);
             Guid orderId = order.Id;
-            List<Product> allProducts = orderService.ViewAllProductsFromActiveOrder(u);
+            List<Product> allProducts = orderService.ViewAllProductsFromOrder(u);
             Assert.AreEqual(allProducts.Count, 1);
         }
 
@@ -371,7 +386,7 @@ namespace ServicesTests
             Guid orderId = order.Id;
             User u2 = new User();
             u2.Id = Guid.NewGuid();
-            List<Product> allProducts = orderService.ViewAllProductsFromActiveOrder(u2);
+            List<Product> allProducts = orderService.ViewAllProductsFromOrder(u2);
         }
 
         [ExpectedException(typeof(NotExistingOrderException))]
@@ -383,8 +398,6 @@ namespace ServicesTests
             Product p = generateProduct();
             orderService.AddProduct(u, p);
 
-            Order order = orderService.GetActiveOrderFromUser(u);
-            Guid orderId = order.Id;
             List<Product> allProducts = orderService.ViewAllProductsFromOrder(u, Guid.NewGuid());
         }
 
@@ -434,7 +447,7 @@ namespace ServicesTests
             orderService.SetAddress(u2, u.Address.Id);
         }
 
-        [ExpectedException(typeof(NotExistingOrderWithCorrectStatusException))]
+        [ExpectedException(typeof(NotExistingOrderException))]
         [TestMethod]
         public void AddAddressToOrderWithWrongStatusTest()
         {
@@ -594,7 +607,7 @@ namespace ServicesTests
             a2.PhoneNumber = "26002540";
             UserService userService = getUserService();
             userService.Register(admin, a2);
-
+            admin.Role = UserRoles.ADMIN;
             orderService.Cancel(admin, orderId);
             Assert.AreEqual(order.Status, OrderStatuses.CANCELLED_BY_STORE);
         }
@@ -677,7 +690,7 @@ namespace ServicesTests
             a2.PhoneNumber = "26002540";
             UserService userService = getUserService();
             userService.Register(admin, a2);
-
+            admin.Role = UserRoles.ADMIN;
             orderService.Cancel(admin, orderId);
         }
 
@@ -697,7 +710,7 @@ namespace ServicesTests
         //DELETE PRODUCT FROM ORDER
         //OK ---------------------
         //No user --------------
-        //No active order ????
+        //No active order ----------------
         //No product ---------------------
         //No product in order --------------
 

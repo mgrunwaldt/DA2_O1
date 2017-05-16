@@ -28,8 +28,8 @@ namespace ServicesTests
             GenericRepository<Product> repoInstance = new GenericRepository<Product>(getContext(),true);
             GenericRepository<ProductFeature> productFeatureRepoInstance = new GenericRepository<ProductFeature>(getContext());
             GenericRepository<Feature> featureRepoInstance = new GenericRepository<Feature>(getContext());
-
-            return new ProductService(repoInstance, productFeatureRepoInstance,featureRepoInstance);
+            GenericRepository<OrderProduct> orderProductRepoInstance = new GenericRepository<OrderProduct>(getContext());
+            return new ProductService(repoInstance, productFeatureRepoInstance,featureRepoInstance,orderProductRepoInstance);
         }
 
         private CategoryService getCategoryService()

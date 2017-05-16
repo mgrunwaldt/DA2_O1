@@ -24,6 +24,7 @@ namespace Entities
         public int Price { get; set; }
         public virtual Category Category { get; set; }
 
+
         public Product()
         {
             this.Id = Guid.NewGuid();

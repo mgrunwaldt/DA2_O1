@@ -51,12 +51,14 @@
   <ItemGroup>
     <Compile Include="Implementations\FeatureService.cs" />
     <Compile Include="Implementations\CategoryService.cs" />
+    <Compile Include="Implementations\ReviewService.cs" />
     <Compile Include="Interfaces\ICategoryService.cs" />
     <Compile Include="Implementations\AddressService.cs" />
     <Compile Include="Interfaces\IAddressService.cs" />
     <Compile Include="Interfaces\IFeatureService.cs" />
     <Compile Include="Interfaces\IOrderService.cs" />
     <Compile Include="Interfaces\IProductService.cs" />
+    <Compile Include="Interfaces\IReviewService.cs" />
     <Compile Include="Interfaces\IUserService.cs" />
     <Compile Include="Implementations\ProductService.cs" />
     <Compile Include="Implementations\OrderService.cs" />
