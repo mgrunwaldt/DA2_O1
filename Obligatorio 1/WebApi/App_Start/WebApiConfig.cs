@@ -22,6 +22,7 @@ namespace WebApi
             GenericRepository<User> userRepo = new GenericRepository<User>(context);
             GenericRepository<Address> addressRepo = new GenericRepository<Address>(context);
             GenericRepository<Order> orderRepo = new GenericRepository<Order>(context);
+
             UserService userService = new UserService(userRepo,orderRepo, addressRepo);
             container.RegisterInstance<IUserService>(userService);
             config.DependencyResolver = new UnityResolver(container);

@@ -7,7 +7,7 @@ using System.Web.Http;
 
 namespace WebApi.Controllers
 {
-    public class CategoriesController : ApiController
+    public class CategoryController : ApiController
     {
     }
 }
