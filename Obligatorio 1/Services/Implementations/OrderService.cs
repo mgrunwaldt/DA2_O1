@@ -313,6 +313,7 @@ namespace Services
                 if (orderStatus == OrderStatuses.ON_ITS_WAY)
                 {
                     order.Status = OrderStatuses.PAYED;
+                    order.PayedOn = DateTime.Now;
                     orderRepo.Update(order);
                 }
                 else

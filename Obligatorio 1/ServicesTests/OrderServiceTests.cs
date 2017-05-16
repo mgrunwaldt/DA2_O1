@@ -93,11 +93,35 @@ namespace ServicesTests
             p.Description = "Desc";
             p.Manufacturer = "Manu";
             p.Name = "Name";
-            p.Price = 100;
-            p.Category = getCategory();
+            p.Price = 200;
+            p.Category = getCategory2();
             service.Add(p);
             return p;
         }
+
+        private Category getCategory2()
+        {
+            Category c2 = new Category();
+            c2.Name = "Nombre Cat2";
+            c2.Description = "Description Cat2";
+            CategoryService service = getCategoryService();
+            service.Add(c2);
+            return c2;
+        }
+        private Product generateProduct2()
+        {
+            ProductService service = getProductService();
+            Product p2 = new Product();
+            p2.Code = "2222";
+            p2.Description = "Desc";
+            p2.Manufacturer = "Manu";
+            p2.Name = "Name2";
+            p2.Price = 600;
+            p2.Category = getCategory2();
+            service.Add(p2);
+            return p2;
+        }
+        
 
         [TestMethod]
         public void RegisterUserCreateOrderOkTest()
@@ -696,67 +720,35 @@ namespace ServicesTests
             orderService.Cancel(admin, orderId);
         }
 
-        //Create User, new empty order --------------
+        [TestMethod]
+        public void GetCategoryStatisticsTest() {
+            OrderService orderService = getOrderService();
+            User u = registerUser();
+            Product p = generateProduct();
+            Product p2 = generateProduct();
 
-        //ADD PRODUCT:
-        //ok ----------------
-        //Create Order if no status = waiting for address-----------
-        //No user ---------------
-        //no product ---------------
-        //existing product not active -----------------
-        //wrong product  ????
-        //no quantity ----------------NO POR QUE POR DEFECTO TE PONE 1
-        //wrong quantity ----------------
-        //Same product added twice, add quantity ---------------
+            orderService.AddProduct(u, p.Id);
+            orderService.AddProduct(u, p2.Id);
+            orderService.AddProduct(u, p.Id);
 
-        //DELETE PRODUCT FROM ORDER
-        //OK ---------------------
-        //No user --------------
-        //No active order ----------------
-        //No product ---------------------
-        //No product in order --------------
+            Order order = orderService.GetActiveOrderFromUser(u);
+            Guid orderId = order.Id;
+            orderService.SetAddress(u, u.Address.Id);
+            orderService.Ship(orderId);
+            orderService.Pay(orderId);
 
-        //CHANGE PRODUCT QUANTITY
-        //OK ----------------------
-        //No user  ------------------
-        //No active order ????
-        //Wrong quantity --------------
-        //No product in order ------------
+            DateTime tomorrow = DateTime.Now.AddDays(1);
+            DateTime yesterday = DateTime.Now.AddDays(-1);
 
-        //VIEW ALL PRODUCTS
-        //OK Without Order Id -------------------
-        //OK With Order Id -----------------
-        //No user -------------------
-        //Not Existing Order Id  ---------------------
-        //Not mine order Id ---------
+            List<string> categoryStatistics = orderService.GetCategoryStatistics(tomorrow, yesterday);
 
-        //ADD ADDRESS
-        //OK -----------------
-        //ORDER STATUS != WAITING FOR ADDRESS ----------
-        //No Address for user 
-        //No user -------------
+            Assert.AreEqual(4, categoryStatistics.Count);
+            Assert.AreEqual("Nombre Cat2 - 60% - $600", categoryStatistics[0]);
+            Assert.AreEqual("Nombre Cat - 40% - $400", categoryStatistics[1]);
+            Assert.AreEqual("------------------------", categoryStatistics[2]);
+            Assert.AreEqual("Total ($) - $1000", categoryStatistics[3]);
+        }
 
-        //SHIP
-        //OK -------------------
-        //NO USER ----------------------  NO VA SE CHEQUEA EN EL CONTROLLER?
-        //USER ROLE != ADMIN --------------------  NO VA SE CHEQUEA EN EL CONTROLLER
-        //NO ORDER ---------------------------
-        //ORDER STATUS != FROM WAITING FOR DELIVERY -------------------------
 
-        //RECEIVE PAYMENT
-        //OK ------------------------
-        //NO USER --------  NO VA SE CHEQUEA EN EL CONTROLLER?
-        //USER ROLE != ADMIN --------  NO VA SE CHEQUEA EN EL CONTROLLER
-        //NO ORDER ----------------------------
-        //ORDER STATUS != FROM WAITING FOR DELIVERY ------------------
-
-        //CANCEL
-        //USER OK (puede hasta en camino) ------------------
-        //ADMIN OK (puede hasta pago) -----------------
-        //NO USER ----------------------
-        //NO ORDER --------------------------
-        //ORDER STATUS WRONG - USER  --------------------
-        //ORDER STATUS WRONG - ADMIN ----------------------
-        //USER NOT ADMIN ORDER NOT HIS ????
     }
 }

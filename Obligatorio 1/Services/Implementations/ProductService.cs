@@ -262,7 +262,7 @@ namespace Services
         public List<Pair<Product, int>> GetMostSold(int maxNumberOfProducts)
         {
             List<Order> allOrders = orderRepo.GetAll();
-            List<Order> finishedOrders = allOrders.FindAll(o => o.Status == OrderStatuses.PAYED || o.Status == OrderStatuses.PAYED);
+            List<Order> finishedOrders = allOrders.FindAll(o => o.Status == OrderStatuses.PAYED || o.Status == OrderStatuses.FINALIZED);
             List<OrderProduct> allOrderProducts = orderProductRepo.GetAll();
             List<OrderProduct> finishedOrderedProducts = new List<OrderProduct>();
 
@@ -277,20 +277,20 @@ namespace Services
             foreach (OrderProduct op in finishedOrderedProducts) {
                 bool existingProduct = false;
                 foreach (Pair<Product, int> tuple in soldProducts) {
-                    if (tuple.First.Id == op.Id) {
+                    if (tuple.Product.Id == op.Id) {
                         existingProduct = true;
-                        tuple.Second += op.Quantity;
+                        tuple.Quantity += op.Quantity;
                     }
                 }
                 if (!existingProduct) {
                     Pair<Product, int> newTuple = new Pair<Product, int>();
                     Product p = Get(op.ProductId);
-                    newTuple.First = p;
-                    newTuple.Second = op.Quantity;
+                    newTuple.Product = p;
+                    newTuple.Quantity = op.Quantity;
                     soldProducts.Add(newTuple);
                 }
             }
-            List<Pair<Product, int>> orderedProducts = soldProducts.OrderByDescending(p => p.Second).ToList();
+            List<Pair<Product, int>> orderedProducts = soldProducts.OrderByDescending(p => p.Quantity).ToList();
             if (orderedProducts.Count > maxNumberOfProducts) {
                 List<Pair<Product, int>> productsToReturn = new List<Pair<Product, int>>();
                 int count = 0;

@@ -158,6 +158,10 @@
       <Project>{390f5bc8-881c-458c-b96b-ca04f75cf5f3}</Project>
       <Name>Services</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Tools\Tools.csproj">
+      <Project>{8C25C28B-DC9B-46EC-B473-EA72A03882CD}</Project>
+      <Name>Tools</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

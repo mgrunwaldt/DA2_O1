@@ -85,17 +85,6 @@ namespace WebApi.Controllers
                         return Ok(allFeatures);
                     }
                     return BadRequest("Solo los administradores pueden ver las características");
-                  /*  List<Address> allAddresses = _addressService.GetAllAddresses(loggedUser);
-                    List<Address> addressesToShow = new List<Address>();
-                    foreach (Address add in allAddresses)
-                    {
-                        Address a = new Address();
-                        a.Id = add.Id;
-                        a.Street = add.Street;
-                        a.StreetNumber = add.StreetNumber;
-                        a.PhoneNumber = add.PhoneNumber;
-                        addressesToShow.Add(a);
-                    }*/
                 }
                 return BadRequest("Debes mandar el Token de sesión en los headers");
             }

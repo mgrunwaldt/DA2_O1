@@ -150,7 +150,7 @@ namespace ServicesTests
             service.Modify(c, modifiedName, c.Description);
         }
 
-      /*  [ExpectedException(typeof(MissingCategoryDataException))]
+        [ExpectedException(typeof(MissingCategoryDataException))]
         [TestMethod]
         public void ModifyMissingCategoryDescriptionTest()
         {
@@ -162,7 +162,7 @@ namespace ServicesTests
             string modifiedDescription = "";
             service.Modify(c, c.Name, modifiedDescription);
         }
-        */
+        
         [ExpectedException(typeof(ExistingCategoryNameException))]
         [TestMethod]
         public void ModifyExistingCategoryNameTest()

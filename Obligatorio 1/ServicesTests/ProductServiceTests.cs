@@ -1538,14 +1538,14 @@ namespace ServicesTests
             List<Pair<Product, int>> mostSoldProducts = service.GetMostSold(10);
             Pair<Product, int> firstProduct = mostSoldProducts.First();
             Assert.AreEqual(2, mostSoldProducts.Count);
-            Assert.AreEqual(100, firstProduct.Second);
-            Assert.AreEqual(p2, firstProduct.First);
+            Assert.AreEqual(100, firstProduct.Quantity);
+            Assert.AreEqual(p2, firstProduct.Product);
 
 
         }
-        //GET MOST SOLD
-        //Por api user es admin
 
+        /*[TestMethod] 
+        public void */
 
         //GET Filtered
         //ADD PICTURE

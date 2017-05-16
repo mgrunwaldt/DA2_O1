@@ -118,16 +118,6 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        /*
-         public IHttpActionResult Get()
-        {
-            IEnumerable<Breed> breeds = breedsBusinessLogic.GetAllBreeds();
-            if (breeds == null)
-            {
-                return NotFound();
-            }
-            return Ok(breeds);
-        }
-         */
+        
     }
 }
