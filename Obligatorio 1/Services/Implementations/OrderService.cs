@@ -5,6 +5,7 @@ using Services.Interfaces;
 using System.Collections.Generic;
 using Entities.Statuses_And_Roles;
 using Exceptions;
+using System.Linq;
 
 namespace Services
 {
@@ -37,13 +38,20 @@ namespace Services
             return order;
         }
 
-        public void AddProduct(User u, Product p, int quantity = 1)
+        public void AddProduct(User u, Guid pId, int quantity = 1)
         {
             User user = userRepo.Get(u.Id); 
-            if(user != null){ 
+            if (user != null){ 
                 Order order = this.GetActiveOrderFromUser(u);
+                if (order == null) {
+                    Order newOrder = new Order();
+                    newOrder.Status = OrderStatuses.WAITING_FOR_ADDRESS;
+                    newOrder.UserId = u.Id;
+                    orderRepo.Add(newOrder);
+                    order = newOrder;
+                }
                 if(order != null){
-                    Product product = productRepo.Get(p.Id);
+                    Product product = productRepo.Get(pId);
                     if (product != null)
                     {
                         if (product.IsActive)
@@ -56,7 +64,7 @@ namespace Services
                                 {
                                     OrderProduct newOrderProduct = new OrderProduct();
                                     newOrderProduct.OrderId = order.Id;
-                                    newOrderProduct.ProductId = p.Id;
+                                    newOrderProduct.ProductId = pId;
                                     newOrderProduct.Quantity = quantity;
                                     orderProductRepo.Add(newOrderProduct);
                                 }else
@@ -77,12 +85,6 @@ namespace Services
                         throw new NotExistingProductException("No existe el producto indicado");
                     }
                     
-                }else
-                {
-                    Order newOrder = new Order();
-                    newOrder.Status = OrderStatuses.WAITING_FOR_ADDRESS;
-                    newOrder.UserId = u.Id;
-                    orderRepo.Add(newOrder);
                 }
             }
             else
@@ -91,18 +93,18 @@ namespace Services
             }
         }
 
-        public void DeleteProduct(User u, Product p)
+        public void DeleteProduct(Guid uId, Guid pId)
         {
-            User user = userRepo.Get(u.Id);
+            User user = userRepo.Get(uId);
             if (user != null){
-                Order order = this.GetActiveOrderFromUser(u);
+                Order order = this.GetActiveOrderFromUser(user); 
                 if (order != null)
                 {
-                    Product prod = productRepo.Get(p.Id);
+                    Product prod = productRepo.Get(pId);
                     if (prod != null)
                     {
                         List<OrderProduct> allOrderProducts = orderProductRepo.GetAll();
-                        OrderProduct orderProd = allOrderProducts.Find(op => op.OrderId == order.Id && op.ProductId == p.Id);
+                        OrderProduct orderProd = allOrderProducts.Find(op => op.OrderId == order.Id && op.ProductId == pId);
                         if (orderProd != null)
                         {
                             orderProductRepo.Delete(orderProd);
@@ -164,7 +166,7 @@ namespace Services
             }
         }
 
-        public List<Product> ViewAllProductsFromOrder(User u, Object orderIdObj = null)
+        public List<Product> ViewAllProductsFromOrder(User u, object orderIdObj = null)
         {
             User user = userRepo.Get(u.Id);
             if (user != null)
@@ -242,16 +244,25 @@ namespace Services
                     }
                     if (isOk)
                     {
-                        order.AddressId = id;
-                        order.Status = OrderStatuses.WAITING_FOR_DELIVERY;
-                        orderRepo.Update(order);
+                        List<Address> listAddresses = u.Addresses.ToList();
+                        var add = listAddresses.Find(a => a.Id == id);
+                        if (u.Address.Id == id || add != null)
+                        {
+                            order.AddressId = id;
+                            order.Status = OrderStatuses.WAITING_FOR_DELIVERY;
+                            orderRepo.Update(order);
+                        }
+                        else {
+                            throw new UserDoesntHaveAddressException("El usuario no tiene esta dirección");
+                        }
+                        
                     }
                     else
                     {
                         throw new NotExistingProductInOrderException("La orden no tiene productos");
                     }
                 }
-                else
+                else 
                 {
                     throw new NotExistingOrderException("No existe orden esperando por dirección para el usuario indicado");
                 }
@@ -306,7 +317,7 @@ namespace Services
                 }
                 else
                 {
-                    throw new NotExistingOrderWithCorrectStatusException("La orden indicada no esta en estado 'Esperando para ser entregada'");
+                    throw new NotExistingOrderWithCorrectStatusException("La orden indicada no esta en estado 'Esperando para ser paga'");
                 }
             }
             else
@@ -328,8 +339,13 @@ namespace Services
                     {
                         if (orderStatus == OrderStatuses.WAITING_FOR_ADDRESS || orderStatus == OrderStatuses.WAITING_FOR_DELIVERY)
                         {
-                            order.Status = OrderStatuses.CANCELLED_BY_USER;
-                            orderRepo.Update(order);
+                            if (order.UserId == u.Id)
+                            {
+                                order.Status = OrderStatuses.CANCELLED_BY_USER;
+                                orderRepo.Update(order);
+                            }
+                            else throw new NotExistingOrderException("Un usuario no puede cancelar una orden que no sea propia");
+                            
                         }else
                         {
                             throw new IncorrectOrderStatusException("No se puede cancelar esta orden por que ya esta en camino a ser enviada");
@@ -338,12 +354,17 @@ namespace Services
                     {
                         if (orderStatus == OrderStatuses.WAITING_FOR_ADDRESS || orderStatus == OrderStatuses.WAITING_FOR_DELIVERY || orderStatus == OrderStatuses.ON_ITS_WAY)
                         {
-                            order.Status = OrderStatuses.CANCELLED_BY_STORE;
+                            if (order.UserId == u.Id && orderStatus == OrderStatuses.WAITING_FOR_ADDRESS)
+                            {
+                                order.Status = OrderStatuses.CANCELLED_BY_USER;
+                            }
+                            else
+                                order.Status = OrderStatuses.CANCELLED_BY_STORE;
                             orderRepo.Update(order);
                         }
                         else
                         {
-                            throw new IncorrectOrderStatusException("No se puede cancelar esta orden por que ya esta en camino a ser enviada");
+                            throw new IncorrectOrderStatusException("No se puede cancelar esta orden por que ya se pagó");
                         }
                     }
                 }else

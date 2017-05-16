@@ -37,61 +37,71 @@ namespace Services.Implementations
                 if (product != null)
                 {
                     Order order = orderRepository.Get(orderId);
+
                     if(order != null)
                     {
-                        if(reviewText.Trim().Length > 0)
+                        if (order.UserId == u.Id)
                         {
-                            List<OrderProduct> allOrderProducts = orderProductRepository.GetAll();
-                            OrderProduct orderProd = allOrderProducts.Find(op => op.OrderId == order.Id && op.ProductId == productId);
-                            if (orderProd != null)
+                            if (reviewText.Trim().Length > 0)
                             {
-                                int orderStatus = orderRepository.Get(orderId).Status;
-                                if(orderStatus == OrderStatuses.PAYED)
+                                List<OrderProduct> allOrderProducts = orderProductRepository.GetAll();
+                                OrderProduct orderProd = allOrderProducts.Find(op => op.OrderId == order.Id && op.ProductId == productId);
+                                if (orderProd != null)
                                 {
-                                    List<Review> allReviews = reviewRepository.GetAll();
-                                    bool exists = false;
-                                    foreach(var review in allReviews)
+                                    int orderStatus = orderRepository.Get(orderId).Status;
+                                    if (orderStatus == OrderStatuses.PAYED)
                                     {
-                                        if (review.OrderId == orderId && review.ProductId == productId)
+                                        List<Review> allReviews = reviewRepository.GetAll();
+                                        bool exists = false;
+                                        foreach (var review in allReviews)
                                         {
-                                            exists = true;
+                                            if (review.OrderId == orderId && review.ProductId == productId)
+                                            {
+                                                exists = true;
+                                            }
                                         }
-                                    }
-                                    if (!exists)
-                                    {
-                                        Review rev = new Review();
-                                        rev.OrderId = orderId;
-                                        rev.ProductId = productId;
-                                        rev.UserId = user.Id;
-                                        rev.Text = reviewText;
-                                        rev.Date = DateTime.Now;
-                                        reviewRepository.Add(rev);
-                                        List<Review> savedReviews = reviewRepository.GetAll();
-                                        List<Review> orderReviews = savedReviews.FindAll(r => r.OrderId == orderId);
-                                        List<OrderProduct> productsFromOrder = allOrderProducts.FindAll(op => op.OrderId == orderId);
-                                        if(orderReviews.Count == productsFromOrder.Count)
+                                        if (!exists)
                                         {
-                                            order.Status = OrderStatuses.FINALIZED;
-                                            orderRepository.Update(order);
+                                            Review rev = new Review();
+                                            rev.OrderId = orderId;
+                                            rev.ProductId = productId;
+                                            rev.UserId = user.Id;
+                                            rev.Text = reviewText;
+                                            rev.Date = DateTime.Now;
+                                            reviewRepository.Add(rev);
+                                            List<Review> savedReviews = reviewRepository.GetAll();
+                                            List<Review> orderReviews = savedReviews.FindAll(r => r.OrderId == orderId);
+                                            List<OrderProduct> productsFromOrder = allOrderProducts.FindAll(op => op.OrderId == orderId);
+                                            if (orderReviews.Count == productsFromOrder.Count)
+                                            {
+                                                order.Status = OrderStatuses.FINALIZED;
+                                                orderRepository.Update(order);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            throw new ProductAlreadyEvaluatedException("El producto ya fue evaluado");
                                         }
                                     }
                                     else
                                     {
-                                        throw new ProductAlreadyEvaluatedException("El producto ya fue evaluado");
+                                        throw new IncorrectOrderStatusException("La orden no esta habilitada para evaluar");
                                     }
-                                }else
-                                {
-                                    throw new IncorrectOrderStatusException("La orden no esta habilitada para evaluar");
                                 }
-                            }else
+                                else
+                                {
+                                    throw new NotExistingProductInOrderException("El producto no esta en la orden");
+                                }
+                            }
+                            else
                             {
-                                throw new NotExistingProductInOrderException("El producto no esta en la orden");
+                                throw new NoTextForReviewException("Debe ingresar un texto para evaluar este producto");
                             }
                         }
-                        else
-                        {
-                            throw new NoTextForReviewException("Debe ingresar un texto para evaluar este producto");
+                        else {
+                            throw new NotExistingOrderException("La orden enviada no corresponde al usuario con sesión activa");
                         }
+                        
                     }else
                     {
                         throw new NotExistingOrderException("No existe esa orden");

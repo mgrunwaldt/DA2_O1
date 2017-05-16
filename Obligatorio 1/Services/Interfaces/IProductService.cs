@@ -17,6 +17,7 @@ namespace Services.Interfaces
         void AddProductFeature(ProductFeature productFeature);
         void ModifyProductFeatureValue(Guid id, string val);
         List<Product> GetAllFromOrder(Order order);
-        void RemoveFeatureFromProduct(Product p, Feature f);
+        void RemoveFeatureFromProduct(Guid pId, Guid fId);
+        List<Product> GetAll(bool getReviews);
     }
 }

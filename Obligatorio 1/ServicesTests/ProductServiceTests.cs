@@ -29,7 +29,8 @@ namespace ServicesTests
             GenericRepository<ProductFeature> productFeatureRepoInstance = new GenericRepository<ProductFeature>(getContext());
             GenericRepository<Feature> featureRepoInstance = new GenericRepository<Feature>(getContext());
             GenericRepository<OrderProduct> orderProductRepoInstance = new GenericRepository<OrderProduct>(getContext());
-            return new ProductService(repoInstance, productFeatureRepoInstance,featureRepoInstance,orderProductRepoInstance);
+            GenericRepository<Review> reviewRepoInstance = new GenericRepository<Review>(getContext());
+            return new ProductService(repoInstance, productFeatureRepoInstance,featureRepoInstance,orderProductRepoInstance,reviewRepoInstance);
         }
 
         private CategoryService getCategoryService()
@@ -1371,7 +1372,6 @@ namespace ServicesTests
             p2.Manufacturer = "Manu";
             p2.Name = "Product 2";
             p2.Price = 100;
-            p2.Category = getCategory();
             service.Add(p2);
 
             Product p3 = new Product();
@@ -1380,7 +1380,6 @@ namespace ServicesTests
             p3.Manufacturer = "Manu";
             p3.Name = "Product 3";
             p3.Price = 100;
-            p3.Category = getCategory();
             service.Add(p3);
 
             Guid orderId = orderService.GetActiveOrderFromUser(u).Id;
@@ -1437,7 +1436,6 @@ namespace ServicesTests
             p2.Manufacturer = "Manu";
             p2.Name = "Product 2";
             p2.Price = 100;
-            p2.Category = getCategory();
             service.Add(p2);
 
             Product p3 = new Product();
@@ -1446,7 +1444,6 @@ namespace ServicesTests
             p3.Manufacturer = "Manu";
             p3.Name = "Product 3";
             p3.Price = 100;
-            p3.Category = getCategory();
             service.Add(p3);
 
             Guid orderId = orderService.GetActiveOrderFromUser(u).Id;

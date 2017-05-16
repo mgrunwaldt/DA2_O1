@@ -6,6 +6,7 @@ using DataAccess;
 using System.Linq;
 using Exceptions;
 using System.Collections.Generic;
+using Services.Implementations;
 
 namespace Services
 {
@@ -15,12 +16,14 @@ namespace Services
         private GenericRepository<ProductFeature> productFeatureRepo;
         private GenericRepository<Feature> featureRepo;
         private GenericRepository<OrderProduct> orderProductRepo;
-        public ProductService(GenericRepository<Product> repoInstance, GenericRepository<ProductFeature> productFeatureRepoInstance, GenericRepository<Feature> featureRepoInstance, GenericRepository<OrderProduct> orderProductRepoInstance)
+        private GenericRepository<Review> reviewRepo;
+        public ProductService(GenericRepository<Product> repoInstance, GenericRepository<ProductFeature> productFeatureRepoInstance, GenericRepository<Feature> featureRepoInstance, GenericRepository<OrderProduct> orderProductRepoInstance,GenericRepository<Review> reviewRepoInstance)
         {
             this.repo = repoInstance;
             this.productFeatureRepo = productFeatureRepoInstance;
             this.featureRepo = featureRepoInstance;
             this.orderProductRepo = orderProductRepoInstance;
+            this.reviewRepo = reviewRepoInstance;
         }
 
 
@@ -84,7 +87,7 @@ namespace Services
 
         public void AddProductFeature(ProductFeature productFeature)
         {
-            checkIfProductExists(productFeature.ProductId);
+            checkIfProductExists(productFeature.ProductId); 
             checkIfProductAlreadyHasFeature(productFeature.FeatureId,productFeature.ProductId);
             Feature feature = getFeature(productFeature.FeatureId);
             productFeature.Validate();
@@ -95,11 +98,15 @@ namespace Services
         public void ModifyProductFeatureValue(Guid id, string val)
         {
             ProductFeature productFeature = productFeatureRepo.Get(id);
-            productFeature.Value = val;
-            productFeature.Validate();
-            Feature feature = getFeature(productFeature.FeatureId);
-            productFeature.CheckIfValueCorrespondsToType(feature);
-            productFeatureRepo.Update(productFeature);
+            if (productFeature != null)
+            {
+                productFeature.Value = val;
+                productFeature.Validate();
+                Feature feature = getFeature(productFeature.FeatureId);
+                productFeature.CheckIfValueCorrespondsToType(feature);
+                productFeatureRepo.Update(productFeature);
+            }
+            else throw new NoProductFeatureException("No hay atributo de producto con este id");
         }
 
         public List<ProductFeature> GetAllProductFeaturesFromProduct(Product p)
@@ -160,7 +167,6 @@ namespace Services
             Product existing = allProducts.Find(prod => prod.Id == pId && prod.IsActive == true);
             if (existing == null)
             {
-                
                 throw new ProductNotExistingException("No existe este producto");
             }
         }
@@ -178,17 +184,45 @@ namespace Services
             }
             return ret;
         }
-        public void RemoveFeatureFromProduct(Product p, Feature f)
+        public void RemoveFeatureFromProduct(Guid pId,Guid fId)
         {
-            checkIfProductExists(p.Id);
-            Feature savedFeature = getFeature(f.Id);
+            checkIfProductExists(pId);
+            Feature savedFeature = getFeature(fId);
             List<ProductFeature> allProductFeatures = productFeatureRepo.GetAll();
-            ProductFeature existing = allProductFeatures.Find(pf => pf.ProductId == p.Id && pf.FeatureId == f.Id);
+            ProductFeature existing = allProductFeatures.Find(pf => pf.ProductId == pId && pf.FeatureId == fId);
             if (existing == null)
             {
                 throw new ProductWithoutFeatureException("Este producto no está asociado a este atributo");
             }
             productFeatureRepo.Delete(existing);
+        }
+
+        public List<Product> GetAll(bool getReviews)
+        {
+            List<Product> allProducts = repo.GetAll();
+            List<Product> productsToShow = new List<Product>();
+            foreach (Product p in allProducts) {
+                if (p.IsActive) {
+                    Product toAdd = new Product();
+                    toAdd.Category = p.Category;
+                    toAdd.Code = p.Code;
+                    toAdd.Description = p.Description;
+                    toAdd.Id = p.Id;
+                    toAdd.Manufacturer = p.Manufacturer;
+                    toAdd.Name = p.Name;
+                    toAdd.Price = p.Price;
+                    toAdd.ProductFeatures = null;
+                    if (getReviews)
+                    {
+                        toAdd.ProductReviews = p.ProductReviews;
+                    }
+                    else {
+                        toAdd.ProductReviews = null;
+                    }
+                    productsToShow.Add(toAdd);
+                }
+            }
+            return productsToShow;            
         }
     }
 }

@@ -65,7 +65,8 @@ namespace ServicesTests
             GenericRepository<ProductFeature> productFeatureRepoInstance = new GenericRepository<ProductFeature>(getContext());
             GenericRepository<Feature> featureRepoInstance = new GenericRepository<Feature>(getContext());
             GenericRepository<OrderProduct> orderProductRepoInstance = new GenericRepository<OrderProduct>(getContext());
-            return new ProductService(repoInstance, productFeatureRepoInstance, featureRepoInstance, orderProductRepoInstance);
+            GenericRepository<Review> reviewRepoInstance = new GenericRepository<Review>(getContext());
+            return new ProductService(repoInstance, productFeatureRepoInstance, featureRepoInstance, orderProductRepoInstance,reviewRepoInstance);
         }
 
         private Product generateProduct()

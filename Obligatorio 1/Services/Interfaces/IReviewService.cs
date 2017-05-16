@@ -9,6 +9,6 @@ namespace Services.Interfaces
 {
     public interface IReviewService
     {
-
+        void Evaluate(User u, Guid productId, Guid orderId, string reviewText);
     }
 }
