@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Entities.Statuses_And_Roles;
 using Exceptions;
 using System.Linq;
+using Tools;
 
 namespace Services
 {
@@ -390,6 +391,97 @@ namespace Services
             {
                 throw new NotExistingProductInOrderException("El producto o la orden no existen, o hoy una orden con el producto indicado");
             }
+        }
+
+        public List<string> GetCategoryStatistics(DateTime from, DateTime to)
+        {
+
+            List<Product> allProducts = productRepo.GetAll();
+
+            List<Order> allOrders = orderRepo.GetAll();
+            List<Order> finishedOrdersInDate = allOrders.FindAll(o => (o.Status == OrderStatuses.PAYED || o.Status == OrderStatuses.FINALIZED) && (o.PayedOn>=from && o.PayedOn<=to));
+            List<OrderProduct> allOrderProducts = orderProductRepo.GetAll();
+            List<OrderProduct> finishedOrderedProducts = new List<OrderProduct>();
+
+            foreach (Order finished in finishedOrdersInDate)
+            {
+                foreach (OrderProduct finishedOP in allOrderProducts)
+                {
+                    if (finishedOP.OrderId == finished.Id)
+                    {
+                        finishedOrderedProducts.Add(finishedOP);
+                    }
+                }
+            }
+            List<Pair<Product, int>> soldProducts = new List<Pair<Product, int>>();
+            foreach (OrderProduct op in finishedOrderedProducts)
+            {
+                bool existingProduct = false;
+                foreach (Pair<Product, int> tuple in soldProducts)
+                {
+                    if (tuple.Product.Id == op.Id)
+                    {
+                        existingProduct = true;
+                        tuple.Quantity += op.Quantity;
+                    }
+                }
+                if (!existingProduct)
+                {
+                    Product existing = allProducts.Find(prod => prod.Id == op.ProductId && prod.IsActive == true);
+                    if (existing != null) {
+                        if (existing.Category != null) {
+                            Pair<Product, int> newTuple = new Pair<Product, int>();
+                            newTuple.Product = existing;
+                            newTuple.Quantity = op.Quantity;
+                            soldProducts.Add(newTuple);
+                        }
+                    }
+                    
+                }
+            }
+            List<Pair<Product, int>> orderedProducts = soldProducts.OrderByDescending(p => p.Quantity).ToList();
+            List<Pair<Category, int>> categoryTotalPrices = new List<Pair<Category, int>>();
+            int totalMoney = 0;
+
+            foreach (Pair<Product, int> productQuantity in orderedProducts) {
+                bool existingCategory = false;
+                foreach (Pair<Category, int> catTuple in categoryTotalPrices)
+                {
+                    if (catTuple.Product.Id == productQuantity.Product.Category.Id)
+                    {
+                        existingCategory = true;
+                        int money = productQuantity.Product.Price * productQuantity.Quantity;
+                        catTuple.Quantity += money;
+                        totalMoney += money;
+                    }
+                }
+                if (!existingCategory)
+                {
+                    Category existing =productQuantity.Product.Category;
+                    if (existing != null)
+                    {
+                        int money = productQuantity.Product.Price * productQuantity.Quantity;
+
+                        Pair<Category, int> newCatTuple = new Pair<Category, int>();
+                        newCatTuple.Product = existing;
+                        newCatTuple.Quantity = money;
+                        totalMoney += money;
+                        categoryTotalPrices.Add(newCatTuple);
+                    }
+                }
+            }
+            List<Pair<Category, int>> orderedCategories = categoryTotalPrices.OrderByDescending(p => p.Quantity).ToList();
+            List<String> listToShow = new List<String>();
+            foreach (Pair<Category, int> catSpent in orderedCategories) {
+                int money = catSpent.Quantity;
+                int percentage = (money * 100) / totalMoney;
+                listToShow.Add(catSpent.Product.Name + " - " + percentage + "% - $" + money);
+            }
+            if (listToShow.Count != 0) {
+                listToShow.Add("------------------------");
+                listToShow.Add("Total ($) - $" + totalMoney);
+            }return listToShow;
+
         }
     }
 }

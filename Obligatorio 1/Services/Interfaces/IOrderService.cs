@@ -19,5 +19,6 @@ namespace Services.Interfaces
         Order Get(Guid orderId);
         void Pay(Guid orderId);
         void Cancel(User u, Guid orderId);
+        List<string> GetCategoryStatistics(DateTime from, DateTime to);
     }
 }

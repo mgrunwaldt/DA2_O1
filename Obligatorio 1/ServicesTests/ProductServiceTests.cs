@@ -1544,9 +1544,7 @@ namespace ServicesTests
 
         }
 
-        /*[TestMethod] 
-        public void */
-
+       
         //GET Filtered
         //ADD PICTURE
         //DELETE PICTURE

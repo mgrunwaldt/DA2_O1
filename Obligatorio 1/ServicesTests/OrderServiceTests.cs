@@ -94,7 +94,7 @@ namespace ServicesTests
             p.Manufacturer = "Manu";
             p.Name = "Name";
             p.Price = 200;
-            p.Category = getCategory2();
+            p.Category = getCategory();
             service.Add(p);
             return p;
         }
@@ -725,7 +725,7 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            Product p2 = generateProduct();
+            Product p2 = generateProduct2();
 
             orderService.AddProduct(u, p.Id);
             orderService.AddProduct(u, p2.Id);
@@ -740,7 +740,7 @@ namespace ServicesTests
             DateTime tomorrow = DateTime.Now.AddDays(1);
             DateTime yesterday = DateTime.Now.AddDays(-1);
 
-            List<string> categoryStatistics = orderService.GetCategoryStatistics(tomorrow, yesterday);
+            List<string> categoryStatistics = orderService.GetCategoryStatistics(yesterday, tomorrow);
 
             Assert.AreEqual(4, categoryStatistics.Count);
             Assert.AreEqual("Nombre Cat2 - 60% - $600", categoryStatistics[0]);
