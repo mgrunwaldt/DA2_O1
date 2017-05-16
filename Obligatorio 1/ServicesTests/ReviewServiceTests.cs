@@ -118,7 +118,7 @@ namespace ServicesTests
             User u = registerUser();
             Product p = generateProduct();
             Guid orderId = orderService.GetActiveOrderFromUser(u).Id;
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             orderService.SetAddress(u, u.Address.Id);
             orderService.Ship(orderId);
             orderService.Pay(orderId);
@@ -137,7 +137,7 @@ namespace ServicesTests
             User u = registerUser();
             Product p = generateProduct();
             Guid orderId = orderService.GetActiveOrderFromUser(u).Id;
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             orderService.SetAddress(u, u.Address.Id);
             orderService.Ship(orderId);
             orderService.Pay(orderId);
@@ -156,7 +156,7 @@ namespace ServicesTests
             User u = registerUser();
             Product p = generateProduct();
             Guid orderId = orderService.GetActiveOrderFromUser(u).Id;
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             orderService.SetAddress(u, u.Address.Id);
             orderService.Ship(orderId);
             orderService.Pay(orderId);
@@ -173,7 +173,7 @@ namespace ServicesTests
             User u = registerUser();
             Product p = generateProduct();
             Guid orderId = orderService.GetActiveOrderFromUser(u).Id;
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             orderService.SetAddress(u, u.Address.Id);
             orderService.Ship(orderId);
             orderService.Pay(orderId);
@@ -190,7 +190,7 @@ namespace ServicesTests
             User u = registerUser();
             Product p = generateProduct();
             Guid orderId = orderService.GetActiveOrderFromUser(u).Id;
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             orderService.SetAddress(u, u.Address.Id);
             orderService.Ship(orderId);
             orderService.Pay(orderId);
@@ -207,7 +207,7 @@ namespace ServicesTests
             User u = registerUser();
             Product p = generateProduct();
             Guid orderId = orderService.GetActiveOrderFromUser(u).Id;
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             orderService.SetAddress(u, u.Address.Id);
             orderService.Ship(orderId);
             string reviewText = "Muy bueno";
@@ -232,7 +232,7 @@ namespace ServicesTests
             p2.Category = p.Category;
             productService.Add(p2);
             Guid orderId = orderService.GetActiveOrderFromUser(u).Id;
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             orderService.SetAddress(u, u.Address.Id);
             orderService.Ship(orderId);
             string reviewText = "Muy bueno";
@@ -247,7 +247,7 @@ namespace ServicesTests
             User u = registerUser();
             Product p = generateProduct();
             Guid orderId = orderService.GetActiveOrderFromUser(u).Id;
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             orderService.SetAddress(u, u.Address.Id);
             orderService.Ship(orderId);
             orderService.Pay(orderId);
@@ -275,8 +275,8 @@ namespace ServicesTests
             p2.Category = p.Category;
             productService.Add(p2);
             Guid orderId = orderService.GetActiveOrderFromUser(u).Id;
-            orderService.AddProduct(u, p);
-            orderService.AddProduct(u, p2);
+            orderService.AddProduct(u, p.Id);
+            orderService.AddProduct(u, p2.Id);
             orderService.SetAddress(u, u.Address.Id);
             orderService.Ship(orderId);
             orderService.Pay(orderId);

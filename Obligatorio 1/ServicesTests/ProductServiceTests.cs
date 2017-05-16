@@ -46,6 +46,31 @@ namespace ServicesTests
             return new FeatureService(repoInstance);
         }
 
+        private UserService getUserService() {
+            GenericRepository<User> repoInstance = new GenericRepository<User>(getContext());
+            GenericRepository<Order> orderRepoInstance = new GenericRepository<Order>(getContext());
+            GenericRepository<Address> addressRepoInstance = new GenericRepository<Address>(getContext());
+            return new UserService(repoInstance,orderRepoInstance,addressRepoInstance);
+        }
+
+        private OrderService getOrderService() {
+            GenericRepository<User> userRepoInstance = new GenericRepository<User>(getContext());
+            GenericRepository<Order> orderRepoInstance = new GenericRepository<Order>(getContext());
+            GenericRepository<OrderProduct> orderProductRepoInstance = new GenericRepository<OrderProduct>(getContext());
+            GenericRepository<Product> repoInstance = new GenericRepository<Product>(getContext(), true);
+            return new OrderService(orderRepoInstance, orderProductRepoInstance, userRepoInstance, repoInstance);
+        }
+
+        private ReviewService getReviewService()
+        {
+            GenericRepository<Review> reviewRepoInstance = new GenericRepository<Review>(getContext());
+            GenericRepository<User> userRepoInstance = new GenericRepository<User>(getContext());
+            GenericRepository<Order> orderRepoInstance = new GenericRepository<Order>(getContext());
+            GenericRepository<OrderProduct> orderProductRepoInstance = new GenericRepository<OrderProduct>(getContext());
+            GenericRepository<Product> repoInstance = new GenericRepository<Product>(getContext(), true);
+            return new ReviewService(reviewRepoInstance,repoInstance,userRepoInstance,orderRepoInstance, orderProductRepoInstance);
+        }
+
         private Category getCategory()
         {
             Category c = new Category();
@@ -1137,7 +1162,7 @@ namespace ServicesTests
 
             service.AddProductFeature(productFeature);
 
-            service.RemoveFeatureFromProduct(p, f);
+            service.RemoveFeatureFromProduct(p.Id, f.Id);
             List<ProductFeature> productFeatures = service.GetAllProductFeaturesFromProduct(p);
             Assert.AreEqual(0,productFeatures.Count());
         }
@@ -1162,7 +1187,7 @@ namespace ServicesTests
             p.Price = 100;
             Category cat = getCategory();
             p.Category = cat;
-            service.RemoveFeatureFromProduct(p, f);
+            service.RemoveFeatureFromProduct(p.Id, f.Id);
         }
 
         [ExpectedException(typeof(NoFeatureException))]
@@ -1186,7 +1211,7 @@ namespace ServicesTests
             p.Category = cat;
             service.Add(p);
 
-            service.RemoveFeatureFromProduct(p, f);
+            service.RemoveFeatureFromProduct(p.Id, f.Id);
         }
 
         [ExpectedException(typeof(ProductWithoutFeatureException))]
@@ -1211,7 +1236,7 @@ namespace ServicesTests
             p.Category = cat;
             service.Add(p);
 
-            service.RemoveFeatureFromProduct(p, f);
+            service.RemoveFeatureFromProduct(p.Id, f.Id);
         }
 
         [TestMethod]
@@ -1292,39 +1317,158 @@ namespace ServicesTests
 
         }
 
+        private User registerUser()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+            UserService userService = getUserService();
+            userService.Register(u, a);
+            return u;
+        }
 
-        /*  [TestMethod]
+        [TestMethod]
           public void ProductGetAllNoUserOk() {
-              ProductService service = getService();
-              Product p = new Product();
-              p.Code = "1111";
-              p.Description = "Desc";
-              p.Manufacturer = "Manu";
-              p.Name = "Product 1";
-              p.Price = 100;
-              p.Category = getCategory();
-              service.Add(p);
 
-              Product p2 = new Product();
-              p2.Code = "2222";
-              p2.Description = "Desc";
-              p2.Manufacturer = "Manu";
-              p2.Name = "Product 2";
-              p2.Price = 100;
-              p2.Category = getCategory();
-              service.Add(p2);
+            ReviewService reviewService = getReviewService();
+            OrderService orderService = getOrderService();
+            ProductService service = getService();
+            FeatureService featureService = getFeatureService();
+            User u = registerUser();
 
-              Product p3 = new Product();
-              p3.Code = "3333";
-              p3.Description = "Desc";
-              p3.Manufacturer = "Manu";
-              p3.Name = "Product 3";
-              p3.Price = 100;
-              p3.Category = getCategory();
-              service.Add(p3);
-          }
-          */
+            Product p = new Product();
+            p.Code = "1111";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Product 1";
+            p.Price = 100;
+            p.Category = getCategory();
+            service.Add(p);
 
+            Feature f = new Feature();
+            f.Name = "Color";
+            f.Type = FeatureTypes.STRING;
+            featureService.Add(f);
+
+            ProductFeature productFeature = new ProductFeature();
+            productFeature.ProductId = p.Id;
+            productFeature.FeatureId = f.Id;
+            productFeature.Value = "Rojo";
+
+            service.AddProductFeature(productFeature);
+
+            Product p2 = new Product();
+            p2.Code = "2222";
+            p2.Description = "Desc";
+            p2.Manufacturer = "Manu";
+            p2.Name = "Product 2";
+            p2.Price = 100;
+            p2.Category = getCategory();
+            service.Add(p2);
+
+            Product p3 = new Product();
+            p3.Code = "3333";
+            p3.Description = "Desc";
+            p3.Manufacturer = "Manu";
+            p3.Name = "Product 3";
+            p3.Price = 100;
+            p3.Category = getCategory();
+            service.Add(p3);
+
+            Guid orderId = orderService.GetActiveOrderFromUser(u).Id;
+
+            orderService.AddProduct(u, p.Id);
+            orderService.SetAddress(u, u.Address.Id);
+            orderService.Ship(orderId);
+            orderService.Pay(orderId);
+            string reviewText = "Muy bueno";
+            reviewService.Evaluate(u, p.Id, orderId, reviewText);
+
+            List<Product> allProducts = service.GetAll(false);
+            Assert.AreEqual(3, allProducts.Count);
+            Product reviewed = allProducts.Find(pr => pr.Id == p.Id);
+            Assert.IsNull(reviewed.ProductReviews);
+            Assert.IsNull(reviewed.ProductFeatures);
+
+        }
+
+        [TestMethod]
+        public void ProductGetAllLoggedUserOk()
+        {
+
+            ReviewService reviewService = getReviewService();
+            OrderService orderService = getOrderService();
+            ProductService service = getService();
+            FeatureService featureService = getFeatureService();
+            User u = registerUser();
+
+            Product p = new Product();
+            p.Code = "1111";
+            p.Description = "Desc";
+            p.Manufacturer = "Manu";
+            p.Name = "Product 1";
+            p.Price = 100;
+            p.Category = getCategory();
+            service.Add(p);
+
+            Feature f = new Feature();
+            f.Name = "Color";
+            f.Type = FeatureTypes.STRING;
+            featureService.Add(f);
+
+            ProductFeature productFeature = new ProductFeature();
+            productFeature.ProductId = p.Id;
+            productFeature.FeatureId = f.Id;
+            productFeature.Value = "Rojo";
+
+            service.AddProductFeature(productFeature);
+
+            Product p2 = new Product();
+            p2.Code = "2222";
+            p2.Description = "Desc";
+            p2.Manufacturer = "Manu";
+            p2.Name = "Product 2";
+            p2.Price = 100;
+            p2.Category = getCategory();
+            service.Add(p2);
+
+            Product p3 = new Product();
+            p3.Code = "3333";
+            p3.Description = "Desc";
+            p3.Manufacturer = "Manu";
+            p3.Name = "Product 3";
+            p3.Price = 100;
+            p3.Category = getCategory();
+            service.Add(p3);
+
+            Guid orderId = orderService.GetActiveOrderFromUser(u).Id;
+
+            orderService.AddProduct(u, p.Id);
+            orderService.SetAddress(u, u.Address.Id);
+            orderService.Ship(orderId);
+            orderService.Pay(orderId);
+            string reviewText = "Muy bueno";
+            reviewService.Evaluate(u, p.Id, orderId, reviewText);
+
+            List<Product> allProducts = service.GetAll(true);
+            Assert.AreEqual(3, allProducts.Count);
+            Product reviewed = allProducts.Find(pr => pr.Id == p.Id);
+            Assert.AreEqual(1,reviewed.ProductReviews.Count);
+            Assert.IsNull(reviewed.ProductFeatures);
+
+        }
+
+
+
+        //GET WITH ATTRIBUTES
         //GET ALL 
         //Ok (no user)
         //Ok (user, with reviews)

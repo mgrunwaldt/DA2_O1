@@ -114,7 +114,7 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             Order order = orderService.GetActiveOrderFromUser(u);
             ProductService productService = getProductService();
 
@@ -128,9 +128,9 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             orderService.SetAddress(u, u.Address.Id);
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             Order checkOrder = orderService.GetActiveOrderFromUser(u);
             Assert.IsNotNull(checkOrder);
             Assert.AreEqual(checkOrder.Status, OrderStatuses.WAITING_FOR_ADDRESS);
@@ -146,7 +146,7 @@ namespace ServicesTests
             Guid id = Guid.NewGuid();
             u2.Id = id;
             Product p = generateProduct();
-            orderService.AddProduct(u2, p);
+            orderService.AddProduct(u2, p.Id);
         }
 
         [ExpectedException(typeof(NotExistingProductException))]
@@ -159,7 +159,7 @@ namespace ServicesTests
             Product p2 = new Product();
             Guid id = Guid.NewGuid();
             p2.Id = id;
-            orderService.AddProduct(u, p2);
+            orderService.AddProduct(u, p2.Id);
         }
 
         [ExpectedException(typeof(InactiveProductException))]
@@ -170,7 +170,7 @@ namespace ServicesTests
             User u = registerUser();
             Product p = generateProduct();
             p.IsActive = false;
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
         }
 
         [ExpectedException(typeof(WrongProductQuantityException))]
@@ -181,7 +181,7 @@ namespace ServicesTests
             User u = registerUser();
             Product p = generateProduct();
             int quantity = -5;
-            orderService.AddProduct(u, p, quantity);
+            orderService.AddProduct(u, p.Id, quantity);
         }
 
         [TestMethod]
@@ -190,8 +190,8 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
+            orderService.AddProduct(u, p.Id);
             Order order = orderService.GetActiveOrderFromUser(u);
             int ammount = orderService.GetQuantityOfProductInOrder(order, p.Id);
 
@@ -206,8 +206,8 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
-            orderService.DeleteProduct(u, p);
+            orderService.AddProduct(u, p.Id);
+            orderService.DeleteProduct(u.Id, p.Id);
             Order order = orderService.GetActiveOrderFromUser(u);
             ProductService productService = getProductService();
             List<Product> productsOfOrder = productService.GetAllFromOrder(order);
@@ -224,8 +224,8 @@ namespace ServicesTests
             Guid id = Guid.NewGuid();
             u2.Id = id;
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
-            orderService.DeleteProduct(u2, p);
+            orderService.AddProduct(u, p.Id);
+            orderService.DeleteProduct(u2.Id, p.Id);
         }
 
         [ExpectedException(typeof(NotExistingOrderException))]
@@ -235,10 +235,10 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             Order order = orderService.GetActiveOrderFromUser(u);
             orderService.SetAddress(u, u.Address.Id);
-            orderService.DeleteProduct(u, p);
+            orderService.DeleteProduct(u.Id, p.Id);
         }
 
         [ExpectedException(typeof(NotExistingProductException))]
@@ -248,11 +248,11 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             Product p2 = new Product();
             Guid id = Guid.NewGuid();
             p2.Id = id;
-            orderService.DeleteProduct(u, p2);
+            orderService.DeleteProduct(u.Id, p2.Id);
         }
 
         [ExpectedException(typeof(NotExistingProductInOrderException))]
@@ -262,7 +262,7 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             Product p2 = new Product();
             p2.Code = "1235";
             p2.Description = "Desc";
@@ -273,7 +273,7 @@ namespace ServicesTests
             ProductService productService = getProductService();
             productService.Add(p2);
 
-            orderService.DeleteProduct(u, p2);
+            orderService.DeleteProduct(u.Id, p2.Id);
         }
 
         //Change Product Quantity
@@ -284,7 +284,7 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             int newQuantity = 3;
             orderService.ChangeProductQuantity(u, p.Id, newQuantity);
             Order order = orderService.GetActiveOrderFromUser(u);
@@ -299,7 +299,7 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             int newQuantity = 3;
             User u2 = new User();
             u2.Id = Guid.NewGuid();
@@ -313,7 +313,7 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             int newQuantity = -5;
             orderService.ChangeProductQuantity(u, p.Id, newQuantity);
         }
@@ -337,7 +337,7 @@ namespace ServicesTests
             p2.Category = p.Category;
             service.Add(p2);
 
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             int newQuantity = 5;
             orderService.ChangeProductQuantity(u, p2.Id, newQuantity);
         }
@@ -350,7 +350,7 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
 
             Order order = orderService.GetActiveOrderFromUser(u);
             Guid orderId = order.Id;
@@ -364,7 +364,7 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
 
             Order order = orderService.GetActiveOrderFromUser(u);
             Guid orderId = order.Id;
@@ -380,7 +380,7 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
 
             Order order = orderService.GetActiveOrderFromUser(u);
             Guid orderId = order.Id;
@@ -396,7 +396,7 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
 
             List<Product> allProducts = orderService.ViewAllProductsFromOrder(u, Guid.NewGuid());
         }
@@ -408,7 +408,7 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
 
             Order order = orderService.GetActiveOrderFromUser(u);
             Guid orderId = order.Id;
@@ -425,7 +425,7 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
 
             Order order = orderService.GetActiveOrderFromUser(u);
             orderService.SetAddress(u, u.Address.Id);
@@ -440,7 +440,7 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             User u2 = new User();
             Guid id = Guid.NewGuid();
             u2.Id = id;
@@ -455,7 +455,7 @@ namespace ServicesTests
             User u = registerUser();
             Product p = generateProduct();
             
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             Order order = orderService.GetActiveOrderFromUser(u);
             order.Status = OrderStatuses.WAITING_FOR_DELIVERY;
             orderService.SetAddress(u, u.Address.Id);
@@ -469,7 +469,7 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
 
             Order order = orderService.GetActiveOrderFromUser(u);
             Guid orderId = order.Id;
@@ -486,7 +486,7 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             orderService.SetAddress(u, u.Address.Id);
             Order order = orderService.GetActiveOrderFromUser(u);
             Order o2 = new Order();
@@ -503,7 +503,7 @@ namespace ServicesTests
             User u = registerUser();
             Product p = generateProduct();
 
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             Guid orderId = orderService.GetActiveOrderFromUser(u).Id;
             orderService.SetAddress(u, u.Address.Id);
             Order o2 = orderService.Get(orderId);
@@ -520,7 +520,7 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
 
             Order order = orderService.GetActiveOrderFromUser(u);
             Guid orderId = order.Id;
@@ -539,7 +539,7 @@ namespace ServicesTests
             User u = registerUser();
             Product p = generateProduct();
             Guid orderId = orderService.GetActiveOrderFromUser(u).Id;
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             orderService.SetAddress(u, u.Address.Id);
             orderService.Ship(orderId);
             Guid wrongId = Guid.NewGuid();
@@ -553,7 +553,7 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
             Guid orderId = orderService.GetActiveOrderFromUser(u).Id;
             orderService.SetAddress(u, u.Address.Id);
             orderService.Ship(orderId);
@@ -571,7 +571,7 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
 
             Order order = orderService.GetActiveOrderFromUser(u);
             Guid orderId = order.Id;
@@ -586,7 +586,7 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
 
             Order order = orderService.GetActiveOrderFromUser(u);
             Guid orderId = order.Id;
@@ -619,7 +619,7 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
 
             Order order = orderService.GetActiveOrderFromUser(u);
             Guid orderId = order.Id;
@@ -636,7 +636,7 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
 
             Order order = orderService.GetActiveOrderFromUser(u);
             Guid orderId = order.Id;
@@ -653,7 +653,7 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
 
             Order order = orderService.GetActiveOrderFromUser(u);
             Guid orderId = order.Id;
@@ -669,7 +669,7 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            orderService.AddProduct(u, p);
+            orderService.AddProduct(u, p.Id);
 
             Order order = orderService.GetActiveOrderFromUser(u);
             Guid orderId = order.Id;
