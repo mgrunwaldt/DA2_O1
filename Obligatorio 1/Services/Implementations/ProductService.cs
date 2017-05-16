@@ -7,23 +7,27 @@ using System.Linq;
 using Exceptions;
 using System.Collections.Generic;
 using Services.Implementations;
+using Entities.Statuses_And_Roles;
+using Tools;
 
 namespace Services
 {
-    public class ProductService:IProductService
+    public class ProductService : IProductService
     {
         private GenericRepository<Product> repo;
         private GenericRepository<ProductFeature> productFeatureRepo;
         private GenericRepository<Feature> featureRepo;
         private GenericRepository<OrderProduct> orderProductRepo;
+        private GenericRepository<Order> orderRepo;
         private GenericRepository<Review> reviewRepo;
-        public ProductService(GenericRepository<Product> repoInstance, GenericRepository<ProductFeature> productFeatureRepoInstance, GenericRepository<Feature> featureRepoInstance, GenericRepository<OrderProduct> orderProductRepoInstance,GenericRepository<Review> reviewRepoInstance)
+        public ProductService(GenericRepository<Product> repoInstance, GenericRepository<ProductFeature> productFeatureRepoInstance, GenericRepository<Feature> featureRepoInstance, GenericRepository<OrderProduct> orderProductRepoInstance, GenericRepository<Review> reviewRepoInstance, GenericRepository<Order> orderRepoInstance)
         {
             this.repo = repoInstance;
             this.productFeatureRepo = productFeatureRepoInstance;
             this.featureRepo = featureRepoInstance;
             this.orderProductRepo = orderProductRepoInstance;
             this.reviewRepo = reviewRepoInstance;
+            this.orderRepo = orderRepoInstance;
         }
 
 
@@ -37,9 +41,14 @@ namespace Services
 
         public void Delete(Guid pId)
         {
-            Product p = Get(pId);
-            p.IsActive = false;
-            repo.Update(p);
+            List<Product> allProducts = repo.GetAll();
+            Product existing = allProducts.Find(prod => prod.Id == pId && prod.IsActive == true);
+            if (existing == null)
+            {
+                throw new ProductNotExistingException("No hay producto activo con este id");
+            }
+            existing.IsActive = false;
+            repo.Update(existing);
         }
 
         public void Modify(Product p)
@@ -60,7 +69,8 @@ namespace Services
                 throw new ProductNotExistingException("No hay producto activo con este id");
             }
             existing.ProductFeatures = GetAllProductFeaturesFromProduct(existing);
-            if (!getReviews) {
+            if (!getReviews)
+            {
                 Product copyWithoutReviews = new Product();
                 copyWithoutReviews.Category = existing.Category;
                 copyWithoutReviews.Code = existing.Code;
@@ -78,7 +88,12 @@ namespace Services
 
         public void ChangeCategory(Guid id, Guid cId)
         {
-            Product p = Get(id);
+            List<Product> allProducts = repo.GetAll();
+            Product p = allProducts.Find(prod => prod.Id == id && prod.IsActive == true);
+            if (p == null)
+            {
+                throw new ProductNotExistingException("No hay producto activo con este id");
+            }
             MyContext context = repo.GetContext();
             if (cId != Guid.Empty)
             {
@@ -87,11 +102,12 @@ namespace Services
                 {
                     throw new ProductChangeCategoryException("La categoría nueva no existe");
                 }
-                if (p.Category != null) {
+                if (p.Category != null)
+                {
                     if (cId.Equals(p.Category.Id))
                         throw new ProductChangeCategoryException("El producto ya tiene esta categoría");
                 }
-                
+
                 p.Category = c;
             }
             else p.Category = null;
@@ -100,8 +116,8 @@ namespace Services
 
         public void AddProductFeature(ProductFeature productFeature)
         {
-            checkIfProductExists(productFeature.ProductId); 
-            checkIfProductAlreadyHasFeature(productFeature.FeatureId,productFeature.ProductId);
+            checkIfProductExists(productFeature.ProductId);
+            checkIfProductAlreadyHasFeature(productFeature.FeatureId, productFeature.ProductId);
             Feature feature = getFeature(productFeature.FeatureId);
             productFeature.Validate();
             productFeature.CheckIfValueCorrespondsToType(feature);
@@ -129,11 +145,12 @@ namespace Services
             return productFeatures;
         }
 
-        private void checkIfProductAlreadyHasFeature(Guid featureId,Guid productId)
+        private void checkIfProductAlreadyHasFeature(Guid featureId, Guid productId)
         {
             List<ProductFeature> allProductFeatures = productFeatureRepo.GetAll();
             ProductFeature existing = allProductFeatures.Find(pf => pf.ProductId == productId && pf.FeatureId == featureId);
-            if (existing != null) {
+            if (existing != null)
+            {
                 throw new ProductFeatureDuplicateFeature("Este producto ya tiene un valor para este atributo");
             }
         }
@@ -150,12 +167,13 @@ namespace Services
 
         }
 
-        
+
         private void checkForExistingProduct(Product p)
         {
             List<Product> allProducts = repo.GetAll();
             Product existing = allProducts.Find(prod => (prod.Name == p.Name || prod.Code == p.Code) && prod.Id != p.Id && prod.IsActive == true);
-            if (existing != null) {
+            if (existing != null)
+            {
                 throw new ProductDuplicateException("Ya existe un producto con este nombre y/o código");
             }
         }
@@ -172,7 +190,7 @@ namespace Services
             }
         }
 
-       
+
 
         private void checkIfProductExists(Guid pId)
         {
@@ -188,16 +206,16 @@ namespace Services
         {
             List<Product> ret = new List<Product>();
             List<OrderProduct> allOrderProducts = orderProductRepo.GetAll();
-            foreach(var orderProduct in allOrderProducts)
+            foreach (var orderProduct in allOrderProducts)
             {
-                if(orderProduct.OrderId == order.Id)
+                if (orderProduct.OrderId == order.Id)
                 {
                     ret.Add(repo.Get(orderProduct.ProductId));
                 }
             }
             return ret;
         }
-        public void RemoveFeatureFromProduct(Guid pId,Guid fId)
+        public void RemoveFeatureFromProduct(Guid pId, Guid fId)
         {
             checkIfProductExists(pId);
             Feature savedFeature = getFeature(fId);
@@ -214,8 +232,10 @@ namespace Services
         {
             List<Product> allProducts = repo.GetAll();
             List<Product> productsToShow = new List<Product>();
-            foreach (Product p in allProducts) {
-                if (p.IsActive) {
+            foreach (Product p in allProducts)
+            {
+                if (p.IsActive)
+                {
                     Product toAdd = new Product();
                     toAdd.Category = p.Category;
                     toAdd.Code = p.Code;
@@ -229,18 +249,60 @@ namespace Services
                     {
                         toAdd.ProductReviews = p.ProductReviews;
                     }
-                    else {
+                    else
+                    {
                         toAdd.ProductReviews = null;
                     }
                     productsToShow.Add(toAdd);
                 }
             }
-            return productsToShow;            
+            return productsToShow;
         }
 
-        public List<Tuple<Product, int>> GetMostSold(int maxNumberOfProducts)
+        public List<Pair<Product, int>> GetMostSold(int maxNumberOfProducts)
         {
-            throw new NotImplementedException();
+            List<Order> allOrders = orderRepo.GetAll();
+            List<Order> finishedOrders = allOrders.FindAll(o => o.Status == OrderStatuses.PAYED || o.Status == OrderStatuses.PAYED);
+            List<OrderProduct> allOrderProducts = orderProductRepo.GetAll();
+            List<OrderProduct> finishedOrderedProducts = new List<OrderProduct>();
+
+            foreach (Order finished in finishedOrders) {
+                foreach (OrderProduct finishedOP in allOrderProducts) {
+                    if (finishedOP.OrderId == finished.Id) {
+                        finishedOrderedProducts.Add(finishedOP);
+                    }
+                }
+            }
+            List<Pair<Product, int>> soldProducts = new List<Pair<Product, int>>();
+            foreach (OrderProduct op in finishedOrderedProducts) {
+                bool existingProduct = false;
+                foreach (Pair<Product, int> tuple in soldProducts) {
+                    if (tuple.First.Id == op.Id) {
+                        existingProduct = true;
+                        tuple.Second += op.Quantity;
+                    }
+                }
+                if (!existingProduct) {
+                    Pair<Product, int> newTuple = new Pair<Product, int>();
+                    Product p = Get(op.ProductId);
+                    newTuple.First = p;
+                    newTuple.Second = op.Quantity;
+                    soldProducts.Add(newTuple);
+                }
+            }
+            List<Pair<Product, int>> orderedProducts = soldProducts.OrderByDescending(p => p.Second).ToList();
+            if (orderedProducts.Count > maxNumberOfProducts) {
+                List<Pair<Product, int>> productsToReturn = new List<Pair<Product, int>>();
+                int count = 0;
+                foreach (Pair<Product, int> p in orderedProducts) {
+                    if (count < maxNumberOfProducts) {
+                        productsToReturn.Add(p);
+                    }
+                    count++;
+                }
+                return productsToReturn;
+            }
+            return orderedProducts;
         }
     }
 }

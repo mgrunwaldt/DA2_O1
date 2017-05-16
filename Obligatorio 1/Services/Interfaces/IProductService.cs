@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tools;
 
 namespace Services.Interfaces
 {
@@ -19,6 +20,6 @@ namespace Services.Interfaces
         List<Product> GetAllFromOrder(Order order);
         void RemoveFeatureFromProduct(Guid pId, Guid fId);
         List<Product> GetAll(bool getReviews);
-        List<Tuple<Product, int>> GetMostSold(int maxNumberOfProducts);
+        List<Pair<Product, int>> GetMostSold(int maxNumberOfProducts);
     }
 }

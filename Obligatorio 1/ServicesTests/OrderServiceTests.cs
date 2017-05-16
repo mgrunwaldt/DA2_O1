@@ -29,12 +29,12 @@ namespace ServicesTests
             GenericRepository<User> repo = new GenericRepository<User>(getContext());
             GenericRepository<Order> orderRepo = new GenericRepository<Order>(getContext());
             GenericRepository<Address> addressRepo = new GenericRepository<Address>(getContext());
-            return new UserService(repo, orderRepo,addressRepo);
+            return new UserService(repo, orderRepo, addressRepo);
         }
 
         private OrderService getOrderService()
         {
-            GenericRepository<Order> orderRepo = new GenericRepository<Order>(getContext(),true);
+            GenericRepository<Order> orderRepo = new GenericRepository<Order>(getContext(), true);
             GenericRepository<OrderProduct> orderProductRepo = new GenericRepository<OrderProduct>(getContext());
             GenericRepository<User> userRepo = new GenericRepository<User>(getContext());
             GenericRepository<Product> productRepo = new GenericRepository<Product>(getContext());
@@ -66,7 +66,8 @@ namespace ServicesTests
             GenericRepository<Feature> featureRepoInstance = new GenericRepository<Feature>(getContext());
             GenericRepository<OrderProduct> orderProductRepoInstance = new GenericRepository<OrderProduct>(getContext());
             GenericRepository<Review> reviewRepoInstance = new GenericRepository<Review>(getContext());
-            return new ProductService(repoInstance, productFeatureRepoInstance, featureRepoInstance, orderProductRepoInstance, reviewRepoInstance);
+            GenericRepository<Order> orderRepoInstance = new GenericRepository<Order>(getContext());
+            return new ProductService(repoInstance, productFeatureRepoInstance, featureRepoInstance, orderProductRepoInstance, reviewRepoInstance, orderRepoInstance);
         }
         private CategoryService getCategoryService()
         {
@@ -373,7 +374,7 @@ namespace ServicesTests
             Assert.AreEqual(allProducts.Count, 1);
         }
 
-        
+
         [ExpectedException(typeof(NotExistingUserException))]
         [TestMethod]
         public void ViewAllProductsNoUserTest()
@@ -430,7 +431,7 @@ namespace ServicesTests
 
             Order order = orderService.GetActiveOrderFromUser(u);
             orderService.SetAddress(u, u.Address.Id);
-           
+
             Assert.AreEqual(order.AddressId, u.Address.Id);
         }
 
@@ -455,13 +456,13 @@ namespace ServicesTests
             OrderService orderService = getOrderService();
             User u = registerUser();
             Product p = generateProduct();
-            
+
             orderService.AddProduct(u, p.Id);
             Order order = orderService.GetActiveOrderFromUser(u);
             order.Status = OrderStatuses.WAITING_FOR_DELIVERY;
             orderService.SetAddress(u, u.Address.Id);
         }
-        
+
         //Ship
 
         [TestMethod]
@@ -561,7 +562,7 @@ namespace ServicesTests
             Order o2 = orderService.Get(orderId);
             o2.Status = OrderStatuses.FINALIZED;
             orderService.Pay(o2.Id);
-            
+
         }
 
         //Cancel

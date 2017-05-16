@@ -11,6 +11,7 @@ using Exceptions;
 using Services;
 using Entities.Statuses_And_Roles;
 using DataAccess;
+using Tools;
 
 namespace ServicesTests
 {
@@ -24,13 +25,15 @@ namespace ServicesTests
                 context = new MyContext();
             return context;
         }
-        private ProductService getService() {
-            GenericRepository<Product> repoInstance = new GenericRepository<Product>(getContext(),true);
+        private ProductService getService()
+        {
+            GenericRepository<Product> repoInstance = new GenericRepository<Product>(getContext(), true);
             GenericRepository<ProductFeature> productFeatureRepoInstance = new GenericRepository<ProductFeature>(getContext());
             GenericRepository<Feature> featureRepoInstance = new GenericRepository<Feature>(getContext());
             GenericRepository<OrderProduct> orderProductRepoInstance = new GenericRepository<OrderProduct>(getContext());
             GenericRepository<Review> reviewRepoInstance = new GenericRepository<Review>(getContext());
-            return new ProductService(repoInstance, productFeatureRepoInstance,featureRepoInstance,orderProductRepoInstance,reviewRepoInstance);
+            GenericRepository<Order> orderRepoInstance = new GenericRepository<Order>(getContext());
+            return new ProductService(repoInstance, productFeatureRepoInstance, featureRepoInstance, orderProductRepoInstance, reviewRepoInstance, orderRepoInstance);
         }
 
         private CategoryService getCategoryService()
@@ -38,7 +41,7 @@ namespace ServicesTests
             GenericRepository<Category> repoInstance = new GenericRepository<Category>(getContext());
             GenericRepository<Product> productRepo = new GenericRepository<Product>(getContext());
 
-            return new CategoryService(repoInstance,productRepo);
+            return new CategoryService(repoInstance, productRepo);
         }
 
         private FeatureService getFeatureService()
@@ -47,14 +50,16 @@ namespace ServicesTests
             return new FeatureService(repoInstance);
         }
 
-        private UserService getUserService() {
+        private UserService getUserService()
+        {
             GenericRepository<User> repoInstance = new GenericRepository<User>(getContext());
             GenericRepository<Order> orderRepoInstance = new GenericRepository<Order>(getContext());
             GenericRepository<Address> addressRepoInstance = new GenericRepository<Address>(getContext());
-            return new UserService(repoInstance,orderRepoInstance,addressRepoInstance);
+            return new UserService(repoInstance, orderRepoInstance, addressRepoInstance);
         }
 
-        private OrderService getOrderService() {
+        private OrderService getOrderService()
+        {
             GenericRepository<User> userRepoInstance = new GenericRepository<User>(getContext());
             GenericRepository<Order> orderRepoInstance = new GenericRepository<Order>(getContext());
             GenericRepository<OrderProduct> orderProductRepoInstance = new GenericRepository<OrderProduct>(getContext());
@@ -69,7 +74,7 @@ namespace ServicesTests
             GenericRepository<Order> orderRepoInstance = new GenericRepository<Order>(getContext());
             GenericRepository<OrderProduct> orderProductRepoInstance = new GenericRepository<OrderProduct>(getContext());
             GenericRepository<Product> repoInstance = new GenericRepository<Product>(getContext(), true);
-            return new ReviewService(reviewRepoInstance,repoInstance,userRepoInstance,orderRepoInstance, orderProductRepoInstance);
+            return new ReviewService(reviewRepoInstance, repoInstance, userRepoInstance, orderRepoInstance, orderProductRepoInstance);
         }
 
         private Category getCategory()
@@ -278,7 +283,8 @@ namespace ServicesTests
         }
 
         [TestMethod]
-        public void ProductModifyOkTest() {
+        public void ProductModifyOkTest()
+        {
             ProductService service = getService();
             Product p = new Product();
             p.Code = "1234";
@@ -293,7 +299,7 @@ namespace ServicesTests
             Product savedProduct = service.Get(p.Id);
 
             Assert.IsNotNull(savedProduct);
-            Assert.AreEqual("Cambiado",savedProduct.Name);
+            Assert.AreEqual("Cambiado", savedProduct.Name);
         }
 
         [TestMethod]
@@ -496,7 +502,8 @@ namespace ServicesTests
 
         [ExpectedException(typeof(ProductNotExistingException))]
         [TestMethod]
-        public void ProductModifyNotExistingTest() {
+        public void ProductModifyNotExistingTest()
+        {
             Product p = new Product();
             p.Code = "1234";
             p.Description = "Desc";
@@ -507,9 +514,10 @@ namespace ServicesTests
             service.Modify(p);
         }
 
-        [ExpectedException (typeof(ProductNotExistingException))]
+        [ExpectedException(typeof(ProductNotExistingException))]
         [TestMethod]
-        public void ProductDeleteOkTest() {//FALTA BORRAR ORDER PRODUCTS DE ORDENES WAITING FOR SHIPPING, NO LLAMO A DELETE, CAMBIO ACTIVE A 0, ESO CAMBIA LOS GET!!!!
+        public void ProductDeleteOkTest()
+        {//FALTA BORRAR ORDER PRODUCTS DE ORDENES WAITING FOR SHIPPING, NO LLAMO A DELETE, CAMBIO ACTIVE A 0, ESO CAMBIA LOS GET!!!!
             ProductService service = getService();
             Product p = new Product();
             p.Code = "1234";
@@ -519,9 +527,10 @@ namespace ServicesTests
             p.Price = 100;
             p.Category = getCategory();
             service.Add(p);
+
             service.Delete(p.Id);
             Product savedProduct = service.Get(p.Id);
-         }
+        }
 
         [ExpectedException(typeof(ProductNotExistingException))]
         [TestMethod]
@@ -541,7 +550,8 @@ namespace ServicesTests
         //Delete con ordenes con este producto (borro order products de ordenes haciendose), cambio active a 0
 
         [TestMethod]
-        public void ProductChangeCategoryOkTest() {
+        public void ProductChangeCategoryOkTest()
+        {
             ProductService service = getService();
             Product p = new Product();
             p.Code = "1234";
@@ -578,7 +588,7 @@ namespace ServicesTests
             Assert.AreEqual(null, savedProduct.Category);
         }
 
-        [ExpectedException (typeof(ProductChangeCategoryException))]
+        [ExpectedException(typeof(ProductChangeCategoryException))]
         [TestMethod]
         public void ProductChangeCategorySameCategoryTest()
         {
@@ -610,12 +620,13 @@ namespace ServicesTests
             p.Category = cat;
             service.Add(p);
             Category newC = new Category();
-            service.ChangeCategory(p.Id,newC.Id);
+            service.ChangeCategory(p.Id, newC.Id);
         }
 
         [ExpectedException(typeof(ProductNotExistingException))]
         [TestMethod]
-        public void ProductChangeCategoryNoProductTest() {
+        public void ProductChangeCategoryNoProductTest()
+        {
             ProductService service = getService();
             Product p = new Product();
             Category cat = getCategory();
@@ -623,7 +634,8 @@ namespace ServicesTests
         }
 
         [TestMethod]
-        public void ProductAddFeatureStringOkTest() {
+        public void ProductAddFeatureStringOkTest()
+        {
             ProductService service = getService();
             FeatureService featureService = getFeatureService();
 
@@ -651,7 +663,7 @@ namespace ServicesTests
 
             List<ProductFeature> productFeatures = service.GetAllProductFeaturesFromProduct(p);
             Assert.AreEqual(productFeature, productFeatures.First());
-             
+
         }
 
         [TestMethod]
@@ -720,7 +732,7 @@ namespace ServicesTests
 
         }
 
-        [ExpectedException (typeof(NoFeatureException))]
+        [ExpectedException(typeof(NoFeatureException))]
         [TestMethod]
         public void ProductAddFeatureNoFeatureTest()
         {
@@ -842,7 +854,7 @@ namespace ServicesTests
             service.AddProductFeature(productFeature);
         }
 
-     
+
 
         [ExpectedException(typeof(ProductFeatureWrongValueException))]
         [TestMethod]
@@ -900,7 +912,7 @@ namespace ServicesTests
             productFeature.ProductId = p.Id;
             productFeature.FeatureId = f.Id;
 
-            service.AddProductFeature(productFeature);           
+            service.AddProductFeature(productFeature);
 
         }
         [ExpectedException(typeof(ProductFeatureDuplicateFeature))]
@@ -941,7 +953,8 @@ namespace ServicesTests
         }
 
         [TestMethod]
-        public void ProductModifyStringFeatureOkTest() {
+        public void ProductModifyStringFeatureOkTest()
+        {
             ProductService service = getService();
             FeatureService featureService = getFeatureService();
 
@@ -1137,7 +1150,8 @@ namespace ServicesTests
 
 
         [TestMethod]
-        public void ProductDeleteFeatureOk() {
+        public void ProductDeleteFeatureOk()
+        {
             ProductService service = getService();
             FeatureService featureService = getFeatureService();
 
@@ -1165,7 +1179,7 @@ namespace ServicesTests
 
             service.RemoveFeatureFromProduct(p.Id, f.Id);
             List<ProductFeature> productFeatures = service.GetAllProductFeaturesFromProduct(p);
-            Assert.AreEqual(0,productFeatures.Count());
+            Assert.AreEqual(0, productFeatures.Count());
         }
 
         [ExpectedException(typeof(ProductNotExistingException))]
@@ -1302,7 +1316,8 @@ namespace ServicesTests
 
         [ExpectedException(typeof(ProductNotExistingException))]
         [TestMethod]
-        public void ProductGetNotExistingTest() {
+        public void ProductGetNotExistingTest()
+        {
             ProductService service = getService();
 
             Product p = new Product();
@@ -1337,7 +1352,8 @@ namespace ServicesTests
         }
 
         [TestMethod]
-          public void ProductGetAllNoUserOkTest() {
+        public void ProductGetAllNoUserOkTest()
+        {
 
             ReviewService reviewService = getReviewService();
             OrderService orderService = getOrderService();
@@ -1458,13 +1474,14 @@ namespace ServicesTests
             List<Product> allProducts = service.GetAll(true);
             Assert.AreEqual(3, allProducts.Count);
             Product reviewed = allProducts.Find(pr => pr.Id == p.Id);
-            Assert.AreEqual(1,reviewed.ProductReviews.Count);
+            Assert.AreEqual(1, reviewed.ProductReviews.Count);
             Assert.IsNull(reviewed.ProductFeatures);
 
         }
 
         [TestMethod]
-        public void GetMostSoldProductsOk() {
+        public void GetMostSoldProductsOk()
+        {
             ReviewService reviewService = getReviewService();
             OrderService orderService = getOrderService();
             ProductService service = getService();
@@ -1518,17 +1535,17 @@ namespace ServicesTests
             orderService.Ship(orderId);
             orderService.Pay(orderId);
 
-            List<Tuple<Product,int>> mostSoldProducts = service.GetMostSold(10);
-            Tuple<Product, int> firstProduct = mostSoldProducts.First();
+            List<Pair<Product, int>> mostSoldProducts = service.GetMostSold(10);
+            Pair<Product, int> firstProduct = mostSoldProducts.First();
             Assert.AreEqual(2, mostSoldProducts.Count);
-            Assert.AreEqual(10, firstProduct.Item2);
-            Assert.AreEqual(p2, firstProduct.Item1);
+            Assert.AreEqual(100, firstProduct.Second);
+            Assert.AreEqual(p2, firstProduct.First);
 
 
         }
         //GET MOST SOLD
         //Por api user es admin
-        
+
 
         //GET Filtered
         //ADD PICTURE

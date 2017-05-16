@@ -24,6 +24,7 @@ namespace Entities
         public int Price { get; set; }
         public virtual Category Category { get; set; }
 
+        public virtual List<Review> ProductReviews { get; set; }
 
         public Product()
         {
