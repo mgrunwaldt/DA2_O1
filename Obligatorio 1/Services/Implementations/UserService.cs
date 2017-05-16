@@ -197,14 +197,25 @@ namespace Services
 
         public void Modify(User user)
         {
-            List<User> all = userRepository.GetAll();
-            user.Validate();
-            checkForExistingEmail(user, user.Email);
-            checkForExistingUsername(user, user.Username);
-            user.PhoneNumber = PhoneHelper.GetPhoneWithCorrectFormat(user.PhoneNumber);
-            EmailHelper.CheckEmailFormat(user.Email);
-            userRepository.Update(user);
-        }
+            User u = this.Get(user.Id);
+            
+            if(u != null){
+                string pass = u.Password;
+                Address add = u.Address;
+                List <User> all = userRepository.GetAll();
+                user.Validate();
+                checkForExistingEmail(user, user.Email);
+                checkForExistingUsername(user, user.Username);
+                user.PhoneNumber = PhoneHelper.GetPhoneWithCorrectFormat(user.PhoneNumber);
+                user.Password = pass;
+                user.Address = add;
+                EmailHelper.CheckEmailFormat(user.Email);
+                userRepository.Update(user);
+            }else
+            {
+                throw new NotExistingUserException();
+            }
+    }
 
         public List<User> GetAll()
         {

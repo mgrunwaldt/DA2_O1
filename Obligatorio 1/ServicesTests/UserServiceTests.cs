@@ -1071,6 +1071,32 @@ namespace ServicesTests
             service.Modify(u2);
         }
 
+        [ExpectedException(typeof(NotExistingUserException))]
+        [TestMethod]
+        public void ModifyUserNoUserTest()
+        {
+            User u = new User();
+            u.FirstName = "Matias";
+            u.LastName = "Grunwaldt";
+            u.PhoneNumber = "+59894606123";
+            u.Password = "prueba1234";
+            u.Email = "matigru@gmail.com";
+            u.Username = "Mati";
+            Address a = new Address();
+            a.Street = "Carlos Butler";
+            a.StreetNumber = "1921";
+            a.PhoneNumber = "26007263";
+
+            User u2 = new User();
+            u2.Id = Guid.NewGuid();
+
+            UserService service = getService();
+            service.Register(u, a);
+
+            service.Modify(u2);
+        }
+
+       
         [TestMethod]
         public void GetUserFromTokenOkTest() {
             User u = new User();
