@@ -21,6 +21,14 @@ namespace Services.Implementations
             this.productRepository = productRepo;
         }
 
-        
+        public void Evaluate(User u, Guid id, Guid orderId, string reviewText)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Review Get(Guid id, Guid orderId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

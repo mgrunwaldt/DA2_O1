@@ -178,7 +178,7 @@ namespace ServicesTests
 
         [ExpectedException(typeof(NotExistingOrderException))]
         [TestMethod]
-        public void ReviewNoTextTest()
+        public void ReviewNoOrderTest()
         {
             ReviewService reviewService = getService();
             OrderService orderService = getOrderService();
@@ -209,9 +209,9 @@ namespace ServicesTests
             reviewService.Evaluate(u, p.Id, Guid.NewGuid(), reviewText);
         }
 
-        [ExpectedException(typeof(IncorrectOrderStatusException))]
+        [ExpectedException(typeof(NotExistingProductInOrderException))]
         [TestMethod]
-        public void ReviewIncorrectOrderStatusTest()
+        public void ReviewNoProductInOrderTest()
         {
             ReviewService reviewService = getService();
             OrderService orderService = getOrderService();
