@@ -19,6 +19,7 @@ namespace DataAccess
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderProduct> OrderProducts { get; set; }
+        public DbSet<Review> Reviews { get; set; }
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -68,6 +69,10 @@ namespace DataAccess
             foreach (OrderProduct op in OrderProducts)
             {
                 this.OrderProducts.Remove(op);
+            }
+            foreach (Review r in Reviews)
+            {
+                this.Reviews.Remove(r);
             }
             this.SaveChanges();
         }

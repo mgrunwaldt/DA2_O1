@@ -72,6 +72,7 @@ namespace ServicesTests
             GenericRepository<Category> repoInstance = new GenericRepository<Category>(getContext());
             return new CategoryService(repoInstance);
         }
+
         private Category getCategory()
         {
             Category c = new Category();

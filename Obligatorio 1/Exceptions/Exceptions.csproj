@@ -72,9 +72,11 @@
     <Compile Include="NotExistingCategoryException.cs" />
     <Compile Include="MissingAddressDataException.cs" />
     <Compile Include="NotExistingUserRoleException.cs" />
+    <Compile Include="NoTextForReviewException.cs" />
     <Compile Include="NoTokenException.cs" />
     <Compile Include="NoUserForAddressException.cs" />
     <Compile Include="NoUserWithTokenException.cs" />
+    <Compile Include="ProductAlreadyEvaluatedException.cs" />
     <Compile Include="ProductChangeCategoryException.cs" />
     <Compile Include="ProductDuplicateException.cs" />
     <Compile Include="ProductFeatureDuplicateFeature.cs" />

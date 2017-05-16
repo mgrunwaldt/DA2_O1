@@ -231,9 +231,25 @@ namespace Services
                 Order order = allOrders.Find(o => o.UserId == u.Id && o.Status == OrderStatuses.WAITING_FOR_ADDRESS);
                 if (order != null)
                 {
-                    order.AddressId = id;
-                    order.Status = OrderStatuses.WAITING_FOR_DELIVERY;
-                    orderRepo.Update(order);
+                    bool isOk = false;
+                    List<OrderProduct> allOrderProducts = orderProductRepo.GetAll();
+                    foreach (var orderProduct in allOrderProducts)
+                    {
+                        if (orderProduct.OrderId == order.Id)
+                        {
+                            isOk = true;
+                        }
+                    }
+                    if (isOk)
+                    {
+                        order.AddressId = id;
+                        order.Status = OrderStatuses.WAITING_FOR_DELIVERY;
+                        orderRepo.Update(order);
+                    }
+                    else
+                    {
+                        throw new NotExistingProductInOrderException("La orden no tiene productos");
+                    }
                 }
                 else
                 {
