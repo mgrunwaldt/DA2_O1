@@ -19,5 +19,6 @@ namespace Services.Interfaces
         List<Product> GetAllFromOrder(Order order);
         void RemoveFeatureFromProduct(Guid pId, Guid fId);
         List<Product> GetAll(bool getReviews);
+        List<Tuple<Product, int>> GetMostSold(int maxNumberOfProducts);
     }
 }
