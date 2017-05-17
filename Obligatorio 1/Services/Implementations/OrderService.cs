@@ -166,7 +166,9 @@ namespace Services
                 throw new NotExistingUserException("No existe el usuario");
             }
         }
-
+       /* public List<string> ViewCart(User u, object orderIdObj = null) {
+        
+        }*/
         public List<Product> ViewAllProductsFromOrder(User u, object orderIdObj = null)
         {
             User user = userRepo.Get(u.Id);
@@ -219,7 +221,9 @@ namespace Services
                         throw new NotExistingOrderException("No hay una orden esperando dirección para este usuario");
                     }
                 }
-                return ret;
+
+                List<Product> sortedProducts = ret.OrderBy(p => p.Description).ToList(); 
+                return sortedProducts;
             }else
             {
                 throw new NotExistingUserException("No existe el usuario");

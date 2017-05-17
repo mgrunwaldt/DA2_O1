@@ -18,6 +18,7 @@ namespace DataAccessTests
                 context = new MyContext();
             return context;
         }
+
         [TestMethod]
         public void AddTest()
         {
@@ -31,8 +32,9 @@ namespace DataAccessTests
         [TestMethod]
         public void GetTest()
         {
+            GenericRepository<Product> pr = new GenericRepository<Product>(getContext(), true);
+
             Product p = new Product();
-            GenericRepository<Product> pr = new GenericRepository<Product>(getContext(),true);
             pr.Add(p);
             Product p2 = pr.Get(p.Id);
             Assert.AreEqual(p2, p);
@@ -41,10 +43,11 @@ namespace DataAccessTests
         [TestMethod]
         public void GetAllTest()
         {
+            GenericRepository<Product> pr = new GenericRepository<Product>(getContext(), true);
+
             Product p1 = new Product();
             Product p2 = new Product();
             Product p3 = new Product();
-            GenericRepository<Product> pr = new GenericRepository<Product>(getContext(),true);
             pr.Add(p1);
             pr.Add(p2);
             pr.Add(p3);
@@ -55,9 +58,10 @@ namespace DataAccessTests
         [TestMethod]
         public void DeleteTest()
         {
+            GenericRepository<Product> pr = new GenericRepository<Product>(getContext(), true);
+
             Product p1 = new Product();
             Product p2 = new Product();
-            GenericRepository<Product> pr = new GenericRepository<Product>(getContext(),true);
             pr.Add(p1);
             pr.Add(p2);
             pr.Delete(p1.Id);
@@ -69,13 +73,14 @@ namespace DataAccessTests
         [TestMethod]
         public void UpdateTest()
         {
+            GenericRepository<Product> pr = new GenericRepository<Product>(getContext(), true);
+
             Product p1 = new Product();
             p1.Name = "Producto 555";
             p1.Code = "123456";
             p1.Description = "Descripcion p1";
             p1.Manufacturer = "Fabricante p1";
             p1.Price = 100;
-            GenericRepository<Product> pr = new GenericRepository<Product>(getContext(),true);
             pr.Add(p1);
             p1.Name = "Producto 1 Actualizado";
             pr.Update(p1);

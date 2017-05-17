@@ -104,3 +104,5 @@ C:\Users\Mati\ORT WINDOWS\Obligatorio 1\Obligatorio 1\WebApi\bin\Tools.pdb
 C:\Users\Mati\ORT WINDOWS\Obligatorio 1\Obligatorio 1\WebApi\obj\Debug\WebApi.csprojResolveAssemblyReference.cache
 C:\Users\Mati\ORT WINDOWS\Obligatorio 1\Obligatorio 1\WebApi\obj\Debug\WebApi.dll
 C:\Users\Mati\ORT WINDOWS\Obligatorio 1\Obligatorio 1\WebApi\obj\Debug\WebApi.pdb
+C:\Users\Mati\ORT WINDOWS\Obligatorio 1\Obligatorio 1\WebApi\bin\WebApi.dll.CodeAnalysisLog.xml
+C:\Users\Mati\ORT WINDOWS\Obligatorio 1\Obligatorio 1\WebApi\bin\WebApi.dll.lastcodeanalysissucceeded

@@ -304,6 +304,46 @@ namespace WebApi.Controllers
 
         }
 
+        [Route("api/Order/SetDefaultAddress", Name = "SetDefaultAddress")]
+        [HttpPut]
+        public IHttpActionResult SetDefaultAddress()
+        {
+            try
+            {
+                var re = Request;
+                var headers = re.Headers;
+                if (headers.Contains("Token"))
+                {
+                    string token = headers.GetValues("Token").First();
+                    User loggedUser = _userService.GetFromToken(token);
+                    _orderService.SetAddress(loggedUser, loggedUser.Address.Id);
+                    return Ok("Se le agregó una dirección a la orden del usuario " + loggedUser.Id + ", por lo que esta orden ahora espera envío");
+                }
+                return BadRequest("Debes mandar el Token de sesión en los headers");
+            }
+            catch (NoUserWithTokenException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (UserDoesntHaveAddressException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (NullReferenceException ex)
+            {
+                return BadRequest("Por favor asegurate de haber pasado un valor");
+            }
+            catch (NotExistingProductInOrderException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (NotExistingOrderException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
         [Route("api/Order/Ship/{id}", Name = "Ship")]
         [HttpPut]
         public IHttpActionResult Ship(Guid id)

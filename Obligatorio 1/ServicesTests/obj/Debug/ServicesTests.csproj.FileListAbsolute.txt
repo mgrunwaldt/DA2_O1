@@ -44,3 +44,5 @@ C:\Users\Mati\ORT WINDOWS\Obligatorio 1\Obligatorio 1\ServicesTests\bin\Debug\En
 C:\Users\Mati\ORT WINDOWS\Obligatorio 1\Obligatorio 1\ServicesTests\obj\Debug\ServicesTests.csprojResolveAssemblyReference.cache
 C:\Users\Mati\ORT WINDOWS\Obligatorio 1\Obligatorio 1\ServicesTests\obj\Debug\ServicesTests.dll
 C:\Users\Mati\ORT WINDOWS\Obligatorio 1\Obligatorio 1\ServicesTests\obj\Debug\ServicesTests.pdb
+C:\Users\Mati\ORT WINDOWS\Obligatorio 1\Obligatorio 1\ServicesTests\bin\Debug\ServicesTests.dll.CodeAnalysisLog.xml
+C:\Users\Mati\ORT WINDOWS\Obligatorio 1\Obligatorio 1\ServicesTests\bin\Debug\ServicesTests.dll.lastcodeanalysissucceeded
